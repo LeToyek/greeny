@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:greenify/ui/layout/app_bar.dart';
+import 'package:greenify/states/bottom_nav_bar.dart';
 import 'package:greenify/ui/layout/bottom_nav_bar.dart';
-import 'package:greenify/ui/screen/home/content/home_screen.dart';
+import 'package:greenify/ui/screen/home/content/index.dart';
 
 class SekelatonScreen extends ConsumerWidget {
   const SekelatonScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final int index = ref.watch(bottomNavProvider);
     return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: const GrAppBar(),
-        body: const HomeScreen(),
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: contents.elementAt(index),
+        ),
         bottomNavigationBar: const GrBottomNavBar(),
         backgroundColor: Theme.of(context).colorScheme.background);
   }

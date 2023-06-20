@@ -1,16 +1,23 @@
-# greenify
+# Greenify 🌱
 
-A new Flutter project.
+Greenify adalah aplikasi mobile yang bertujuan untuk membuat kegiatan urban agriculture menjadi menyenangkan dan tertata. Aplikasi ini dirancang untuk membantu pengguna dalam memulai dan merawat kebun mereka sendiri, sehingga dapat menciptakan lingkungan hijau di tengah perkotaan.
 
-## Getting Started
+## Fitur Utama 🌿
 
-This project is a starting point for a Flutter application.
+- 📸 **Capture and Share**: Bagikan foto-foto indah dari tanaman Anda dengan komunitas Greenify.
+- 🤖 **Periksa Penyakit**: Periksa penyakit yang ada pada tanaman dengan bantuan AI.
+- 💦 **Pengingat Penyiraman**: Dapatkan notifikasi untuk menyiram tanaman pada waktu yang tepat.
+- 🌼 **Katalog Tanaman**: Jelajahi katalog tanaman lengkap dan temukan spesies baru untuk ditanam.
+- 🎉 **Pencapaian**: Dapatkan penghargaan khusus ketika tanaman Anda tumbuh dan berkembang dengan baik.
+- 📚 **Sumber Daya**: Akses panduan perawatan tanaman dan tips ahli untuk meningkatkan keahlian pertanian Anda.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Lisensi 📝
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Proyek Greenify berlisensi di bawah [MIT License](LICENSE.md).
+
+## Dukungan 📧
+
+Terima kasih telah menggunakan Greenify! 🌿🌼 Kami berharap aplikasi ini dapat membantu Anda dalam menjalankan kegiatan urban agriculture dengan lebih menyenangkan dan tertata.
+
+*Let's make our cities greener together!* 🌍💚

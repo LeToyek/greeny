@@ -21,11 +21,12 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
         themeMode = ThemeMode.dark;
         break;
     }
+    state = themeMode;
   }
 
   void setThemeMode(ThemeMode mode) {
-    print(mode);
     themeMode = mode;
+    Hive.box('prefs').put('themeMode', themeMode.toString());
     state = themeMode;
   }
 }

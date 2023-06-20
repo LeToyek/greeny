@@ -90,15 +90,13 @@ class HomeScreen extends ConsumerWidget {
                   title: 'Tentang Tanaman',
                   icon: Ionicons.book_outline,
                   position: "top_left",
-                  onPressed: () {
-                    context.push("/book");
-                    print("success");
-                  },
+                  onPressed: () => context.push("/book"),
                 ),
-                const TitledCard(
+                TitledCard(
                   title: 'Garden Space',
                   icon: Ionicons.leaf_outline,
                   position: "top_right",
+                  onPressed: () => context.push("/garden"),
                 ),
                 const TitledCard(
                   title: 'Deteksi Penyakit',

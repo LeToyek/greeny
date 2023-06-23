@@ -37,21 +37,23 @@ class GardenSpaceScreen extends StatelessWidget {
                   if (index == dumData.length) {
                     return InkWell(
                       onTap: () => context.push("/garden/form"),
-                      child: const PlantCard(
+                      child: PlantCard(
+                        status: PlantBoxStatus.empty,
                         title: 'Add Plant',
-                        imageURI: "assets/images/dumPlant.png",
+                        imageURI: "lib/assets/images/dumPlant.png",
                       ),
                     );
                   }
                   if (index > dumData.length) {
-                    return const PlantCard(
+                    return PlantCard(
                       title: 'Empty',
-                      imageURI: "",
+                      imageURI: "lib/assets/images/dumPlant.png",
                     );
                   }
-                  return const PlantCard(
+                  return PlantCard(
+                    status: PlantBoxStatus.filled,
                     title: 'Media ',
-                    imageURI: "",
+                    imageURI: "lib/assets/images/dumPlant.png",
                   );
                 },
               ),

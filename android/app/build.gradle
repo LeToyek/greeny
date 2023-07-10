@@ -22,12 +22,19 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
+// START: FlutterFire Configuration
+apply plugin: 'com.google.gms.google-services'
+// END: FlutterFire Configuration
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 33
     ndkVersion flutter.ndkVersion
+    aaptOptions {
+    noCompress 'tflite'
+    noCompress 'lite'
+}
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -68,5 +75,6 @@ flutter {
 }
 
 dependencies {
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

@@ -1,36 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Colors from Tailwind CSS (v3.0) - June 2022
-///
-/// https://tailwindcss.com/docs/customizing-colors
-
 const int _primaryColor = 0xFF26C486; // New primary color: Green 26C486
 const MaterialColor primarySwatch = MaterialColor(_primaryColor, <int, Color>{
-  50: Color(0xFFE0F7E5), // Green 50
-  100: Color(0xFFB3E8C9), // Green 100
-  200: Color(0xFF80D5AA), // Green 200
-  300: Color(0xFF4DC289), // Green 300
+  50: Color(0xFFE0F7E5),
+  100: Color(0xFFB3E8C9),
+  200: Color(0xFF80D5AA),
+  300: Color(0xFF4DC289),
   400: Color(0xFF26C486), // New primary color for 400
   500: Color(_primaryColor), // New primary color for 500
-  600: Color(0xFF229D75), // Green 600
-  700: Color(0xFF1D8B66), // Green 700
-  800: Color(0xFF187A57), // Green 800
-  900: Color(0xFF146848), // Green 900
+  600: Color(0xFF229D75),
+  700: Color(0xFF1D8B66),
+  800: Color(0xFF187A57),
+  900: Color(0xFF146848),
 });
 
 const int _textColor = 0xFF64748B;
 const MaterialColor textSwatch = MaterialColor(_textColor, <int, Color>{
-  50: Color(0xFFF8FAFC), // slate-50
-  100: Color(0xFFF1F5F9), // slate-100
-  200: Color(0xFFE2E8F0), // slate-200
-  300: Color(0xFFCBD5E1), // slate-300
-  400: Color(0xFF94A3B8), // slate-400
-  500: Color(_textColor), // slate-500
-  600: Color(0xFF475569), // slate-600
-  700: Color(0xFF334155), // slate-700
-  800: Color(0xFF1E293B), // slate-800
-  900: Color(0xFF0F172A), // slate-900
+  50: Color(0xFFF8FAFC),
+  100: Color(0xFFF1F5F9),
+  200: Color(0xFFE2E8F0),
+  300: Color(0xFFCBD5E1),
+  400: Color(0xFF94A3B8),
+  500: Color(_textColor),
+  600: Color(0xFF475569),
+  700: Color(0xFF334155),
+  800: Color(0xFF1E293B),
+  900: Color(0xFF0F172A),
 });
 
 const Color errorColor = Color(0xFFDC2626); // red-600

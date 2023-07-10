@@ -51,6 +51,8 @@ dependencies:
   hive: ^2.2.3
   image_picker: ^0.8.9
   firebase_storage: ^11.2.3
+  dotted_border: ^2.0.0+3
+  flutter_animate: ^4.2.0
 
 dev_dependencies:
   flutter_test:

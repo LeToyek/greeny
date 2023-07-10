@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/config/theme.dart';
@@ -10,9 +11,11 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   final Directory tempDir = await getTemporaryDirectory();
   Hive.init(tempDir.path);
   await Hive.openBox('prefs');
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

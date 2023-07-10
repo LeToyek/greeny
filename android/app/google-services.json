@@ -29,6 +29,13 @@
             {
               "client_id": "408888696472-v0jh7at4ka8nd9buvi4p1ofo3m2jk04u.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "408888696472-dnk5ecvg2n9qk4b6qaidjhss7jti4lh0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.greenify"
+              }
             }
           ]
         }

@@ -1,8 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:greenify/services/auth.dart';
+import 'package:greenify/services/bootstrap.dart';
 
 class SplashScreen extends ConsumerWidget {
   const SplashScreen({super.key});
@@ -10,22 +9,21 @@ class SplashScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Future.delayed(const Duration(seconds: 2), () async {
-      User? user = await FireAuth.getCurrentUser();
       if (context.mounted) {
-        if (user != null) {
-          context.pushReplacement("/");
-        } else {
-          context.pushReplacement("/login");
-        }
+        Bootstrap.checkUserExist(context);
       }
     });
-    return Center(
-      child: Text(
-        "Splash Screen",
-        style: Theme.of(context).textTheme.headlineLarge!.apply(
-              fontWeightDelta: 2,
-            ),
+    return Scaffold(
+      body: Center(
+        child: Text(
+          "Greenify",
+          style: Theme.of(context).textTheme.displaySmall!.apply(
+                fontWeightDelta: 2,
+                color: Colors.white,
+              ),
+        ),
       ),
+      backgroundColor: Theme.of(context).colorScheme.primary,
     );
   }
 }

@@ -40,6 +40,12 @@ class GrBottomNavBar extends ConsumerWidget {
             icon: Icon(Ionicons.information_circle_outline),
             label: "About",
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Ionicons.settings_outline),
+            label: "Settings",
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Ionicons.person_outline), label: "Profile"),
         ],
       ),
     );

@@ -8,10 +8,12 @@ import 'package:greenify/routes/index.dart';
 import 'package:greenify/states/theme_mode.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await dotenv.load();
   final Directory tempDir = await getTemporaryDirectory();
   Hive.init(tempDir.path);
   await Hive.openBox('prefs');

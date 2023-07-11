@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "408888696472-v0jh7at4ka8nd9buvi4p1ofo3m2jk04u.apps.googleusercontent.com",
+          "client_id": "408888696472-vqk71qhhfm75ak0oiknbtrqvseubl3ai.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.greenify",
+            "certificate_hash": "a7b035034ce2da92ab4cc0a0519786640898c774"
+          }
+        },
+        {
+          "client_id": "408888696472-tf6l18o852ebue8t8s6bab6uujv6cibd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +35,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "408888696472-v0jh7at4ka8nd9buvi4p1ofo3m2jk04u.apps.googleusercontent.com",
+              "client_id": "408888696472-tf6l18o852ebue8t8s6bab6uujv6cibd.apps.googleusercontent.com",
               "client_type": 3
             },
             {

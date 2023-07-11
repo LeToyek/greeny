@@ -1,4 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class FireAuth {
   static Future<User?> registerUser(
@@ -50,11 +54,45 @@ class FireAuth {
     return null;
   }
 
-  static Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
+  static Future<User?> signInWithGoogle() async {
+    try {
+      List<String> scopes = [
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ];
+
+      GoogleSignInAccount? googleUser = await GoogleSignIn(
+        scopes: scopes,
+        clientId: dotenv.env['GOOGLE_CLIENT_ID'],
+      ).signIn();
+      GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      User? user =
+          (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+      return user;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        throw Exception(
+            'The account already exists with a different credential.');
+      } else if (e.code == 'invalid-credential') {
+        throw Exception(
+            'Error occured while accessing credentials. Try again.');
+      }
+    } catch (e) {
+      throw Exception('Error occured!');
+    }
+    return null;
   }
 
-  static Future<User?> getCurrentUser() async {
+  static void signOut(BuildContext context) {
+    if (context.mounted) context.go('/login');
+    FirebaseAuth.instance.signOut();
+  }
+
+  static User? getCurrentUser() {
     User? user = FirebaseAuth.instance.currentUser;
     return user;
   }

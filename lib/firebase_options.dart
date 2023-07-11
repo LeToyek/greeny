@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '408888696472',
     projectId: 'greenify-f07ad',
     storageBucket: 'greenify-f07ad.appspot.com',
+    androidClientId: '408888696472-vqk71qhhfm75ak0oiknbtrqvseubl3ai.apps.googleusercontent.com',
     iosClientId: '408888696472-dnk5ecvg2n9qk4b6qaidjhss7jti4lh0.apps.googleusercontent.com',
     iosBundleId: 'com.example.greenify',
   );

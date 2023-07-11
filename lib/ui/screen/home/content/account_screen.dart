@@ -11,6 +11,7 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User? user = FireAuth.getCurrentUser();
+
     return Material(
       color: Theme.of(context).colorScheme.background,
       child: user == null
@@ -29,7 +30,11 @@ class AccountScreen extends StatelessWidget {
                           fit: BoxFit.cover,
                         )
                       : Image.network(
-                          'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png'),
+                          'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
+                        ),
                 ),
                 const SizedBox(height: 36),
                 PlainCard(

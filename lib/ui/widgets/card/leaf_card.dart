@@ -46,7 +46,7 @@ class LeafCard extends StatelessWidget {
                   child: SizedBox(
                     height: 80,
                     child: Wrap(
-                      children: const [
+                      children: [
                         Image(
                             width: double.infinity,
                             image: NetworkImage(

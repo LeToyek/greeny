@@ -19,33 +19,6 @@ class HomeScreen extends ConsumerWidget {
           physics: const BouncingScrollPhysics(),
           children: <Widget>[
             const Header(text: 'Home'),
-            // Card(
-            //   elevation: 2,
-            //   shadowColor: Theme.of(context).colorScheme.shadow,
-            //   color: Theme.of(context).colorScheme.surface,
-            //   shape: const RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.all(Radius.circular(12))),
-            //   child: SwitchListTile(
-            //     onChanged: (bool newValue) {},
-            //     shape: const RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.all(Radius.circular(12))),
-            //     value: true,
-            //     title: Row(
-            //       children: <Widget>[
-            //         Icon(Ionicons.language_outline,
-            //             color: Theme.of(context).colorScheme.primary),
-            //         const SizedBox(width: 16),
-            //         Text(
-            //           tr('language_switch_title'),
-            //           style: Theme.of(context)
-            //               .textTheme
-            //               .titleMedium!
-            //               .apply(fontWeightDelta: 2),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
             const SizedBox(height: 8),
             GridView.count(
                 physics: const NeverScrollableScrollPhysics(),
@@ -98,13 +71,15 @@ class HomeScreen extends ConsumerWidget {
                   position: "top_right",
                   onPressed: () => context.push("/garden"),
                 ),
-                const TitledCard(
+                TitledCard(
+                  onPressed: () {},
                   title: 'Deteksi Penyakit',
                   icon: Ionicons.heart_outline,
                   position: "bottom_left",
                 ),
-                const TitledCard(
+                TitledCard(
                   title: 'Peringkat',
+                  onPressed: () => context.push("/leaderboard"),
                   icon: Ionicons.trophy_outline,
                   position: "bottom_right",
                 ),

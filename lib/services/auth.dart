@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,6 +18,8 @@ class FireAuth {
           email: email, password: password);
       user = userCredential.user;
       await user!.updateDisplayName(name);
+      print(user);
+      await sendDataToCollection(user);
       await user.reload();
       return user;
     } on FirebaseAuthException catch (e) {
@@ -41,6 +44,7 @@ class FireAuth {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       user = userCredential.user;
+
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -72,6 +76,15 @@ class FireAuth {
       );
       User? user =
           (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+
+      final isExist = users.doc(user!.uid).get().then((doc) => doc.exists);
+      if (await isExist) {
+        return user;
+      } else {
+        await sendDataToCollection(user);
+      }
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
@@ -100,5 +113,26 @@ class FireAuth {
   static Future<void> refreshUser() async {
     User? user = FirebaseAuth.instance.currentUser;
     await user!.reload();
+  }
+
+  static Future<void> sendDataToCollection(User? user) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    try {
+      users.doc(user!.uid).set({
+        'name': user.displayName,
+        'email': user.email,
+        'image_url': user.photoURL,
+        'user_id': user.uid,
+        "exp": 0,
+        "level": 1,
+        "photo_frame": "default",
+        "title": "default",
+        "created_at": DateTime.now(),
+        "updated_at": DateTime.now(),
+      });
+      print("success$user");
+    } catch (e) {
+      throw Exception('Error occured!');
+    }
   }
 }

@@ -1,25 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:greenify/services/auth.dart';
+import 'package:greenify/states/user_action_state.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends State<RegisterScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     TextEditingController nameController = TextEditingController();
 
-    late bool isLoading = false;
+    final userAction = ref.watch(userActionProvider);
+    final funcUserAction = ref.read(userActionProvider.notifier);
 
     void _submitForm() async {
       try {
@@ -29,21 +25,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           String email = emailController.text;
           String password = passwordController.text;
 
-          setState(() {
-            isLoading = true;
-          });
-          User? user = await FireAuth.registerUser(
+          await funcUserAction.registerUser(
               email: email, password: password, name: name);
-          setState(() {
-            isLoading = false;
-          });
-          if (user != null) {
-            if (context.mounted) {
-              context.pushReplacement("/");
-            }
-          } else {
-            print("User is null");
-          }
+          context.pushReplacement("/");
         }
       } catch (e) {
         showDialog(
@@ -66,9 +50,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(title: const Text('Register')),
       body: Stack(
         children: [
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : const SizedBox.shrink(),
+          userAction.when(
+              data: (data) => Container(),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Container()),
           Center(
             child: Padding(
               padding: const EdgeInsets.all(16),

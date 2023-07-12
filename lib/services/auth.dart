@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FireAuth {
@@ -18,8 +16,7 @@ class FireAuth {
           email: email, password: password);
       user = userCredential.user;
       await user!.updateDisplayName(name);
-      print(user);
-      await sendDataToCollection(user);
+      await sendDataToCollection(user: user, name: name);
       await user.reload();
       return user;
     } on FirebaseAuthException catch (e) {
@@ -31,7 +28,6 @@ class FireAuth {
     } catch (e) {
       throw Exception('Error occured!');
     }
-    print("cannot");
     return null;
   }
 
@@ -44,7 +40,6 @@ class FireAuth {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       user = userCredential.user;
-
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -83,7 +78,7 @@ class FireAuth {
       if (await isExist) {
         return user;
       } else {
-        await sendDataToCollection(user);
+        await sendDataToCollection(user: user);
       }
       return user;
     } on FirebaseAuthException catch (e) {
@@ -100,8 +95,7 @@ class FireAuth {
     return null;
   }
 
-  static void signOut(BuildContext context) {
-    if (context.mounted) context.go('/login');
+  static void signOut() {
     FirebaseAuth.instance.signOut();
   }
 
@@ -115,11 +109,11 @@ class FireAuth {
     await user!.reload();
   }
 
-  static Future<void> sendDataToCollection(User? user) async {
+  static Future<void> sendDataToCollection({User? user, String? name}) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     try {
       users.doc(user!.uid).set({
-        'name': user.displayName,
+        'name': user.displayName ?? name,
         'email': user.email,
         'image_url': user.photoURL,
         'user_id': user.uid,

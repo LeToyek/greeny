@@ -6,64 +6,6 @@ import 'package:greenify/ui/widgets/card/plain_card.dart';
 class LeaderboardScreen extends ConsumerWidget {
   const LeaderboardScreen({super.key});
 
-  // final List<Map<String, String>> dummyUsers = [
-  //   {
-  //     "name": "user1",
-  //     "score": "232",
-  //     "rank": "1",
-  //     "image_url":
-  //         "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-  //   },
-  //   {
-  //     "name": "user2",
-  //     "score": "232",
-  //     "rank": "2",
-  //     "image_url":
-  //         "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-  //   },
-  //   {
-  //     "name": "user3",
-  //     "score": "232",
-  //     "rank": "3",
-  //     "image_url":
-  //         "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-  //   },
-  //   {
-  //     "name": "user4",
-  //     "score": "232",
-  //     "rank": "4",
-  //     "image_url":
-  //         "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-  //   },
-  //   {
-  //     "name": "user5",
-  //     "score": "232",
-  //     "rank": "5",
-  //     "image_url":
-  //         "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-  //   },
-  //   {
-  //     "name": "user6",
-  //     "score": "232",
-  //     "rank": "6",
-  //     "image_url":
-  //         "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-  //   },
-  //   {
-  //     "name": "user7",
-  //     "score": "232",
-  //     "rank": "7",
-  //     "image_url":
-  //         "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-  //   },
-  //   {
-  //     "name": "user8",
-  //     "score": "232",
-  //     "rank": "8",
-  //     "image_url":
-  //         "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-  //   }
-  // ];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(usersProvider);

@@ -26,7 +26,8 @@ final _appRoutes =
       path: "/garden/form",
       builder: (context, state) => const GardenFormScreen()),
   GoRoute(
-      path: "/leaderboard", builder: (context, state) => LeaderboardScreen()),
+      path: "/leaderboard",
+      builder: (context, state) => const LeaderboardScreen()),
   GoRoute(
     path: "/register",
     builder: (context, state) => const RegisterScreen(),

@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:greenify/utils/uuid.dart';
 
 class FireAuth {
+  static FirebaseAuth auth = FirebaseAuth.instance;
   static Future<User?> registerUser(
       {required String email,
       required String password,
       required String name}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
 
     try {
@@ -17,7 +18,7 @@ class FireAuth {
       user = userCredential.user;
       await user!.updateDisplayName(name);
       await sendDataToCollection(user: user, name: name);
-      await user.reload();
+      await refreshUser();
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -33,13 +34,13 @@ class FireAuth {
 
   static Future<User?> signInWithEmailPassword(
       {required String email, required String password}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
 
     try {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       user = userCredential.user;
+      await refreshUser();
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -76,6 +77,7 @@ class FireAuth {
 
       final isExist = users.doc(user!.uid).get().then((doc) => doc.exists);
       if (await isExist) {
+        refreshUser();
         return user;
       } else {
         await sendDataToCollection(user: user);
@@ -96,11 +98,13 @@ class FireAuth {
   }
 
   static void signOut() {
-    FirebaseAuth.instance.signOut();
+    auth.signOut();
   }
 
   static User? getCurrentUser() {
     User? user = FirebaseAuth.instance.currentUser;
+    user!.reload();
+    print("current user => ${user.email}");
     return user;
   }
 
@@ -110,9 +114,11 @@ class FireAuth {
   }
 
   static Future<void> sendDataToCollection({User? user, String? name}) async {
+    final gardenId = UUIDUtils.generateUUID();
+    final potId = UUIDUtils.generateUUID();
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     try {
-      users.doc(user!.uid).set({
+      await users.doc(user!.uid).set({
         'name': user.displayName ?? name,
         'email': user.email,
         'image_url': user.photoURL,
@@ -124,7 +130,30 @@ class FireAuth {
         "created_at": DateTime.now(),
         "updated_at": DateTime.now(),
       });
-      print("success$user");
+      await users.doc(user.uid).collection('gardens').doc(gardenId).set({
+        "name": "My Garden",
+        "background_url": "saodkoas",
+        "created_at": DateTime.now(),
+        "updated_at": DateTime.now(),
+      });
+      await users
+          .doc(user.uid)
+          .collection('gardens')
+          .doc(gardenId)
+          .collection('plants')
+          .doc(potId)
+          .set({
+        "name": "My Plant",
+        "description": "My Plant",
+        "image": "saodkoas",
+        "watering_schedule": "saodkoas",
+        "watering_time": "saodkoas",
+        "height": 0,
+        "status": "default",
+        "category": "default",
+        "created_at": DateTime.now(),
+        "updated_at": DateTime.now(),
+      });
     } catch (e) {
       throw Exception('Error occured!');
     }

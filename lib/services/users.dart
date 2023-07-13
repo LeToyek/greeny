@@ -19,9 +19,9 @@ class UsersServices {
     return usersList;
   }
 
-  Future<UserModel> getUser() async {
+  Future<UserModel> getUserById(String id) async {
     try {
-      DocumentSnapshot documentSnapshot = await users.doc(user!.uid).get();
+      DocumentSnapshot documentSnapshot = await users.doc(id).get();
       UserModel userMod = UserModel.fromQuery(documentSnapshot);
 
       return userMod;

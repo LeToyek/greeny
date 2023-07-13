@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:greenify/services/auth.dart';
-import 'package:greenify/states/user_action_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/layout/header.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
+import 'package:greenify/ui/widgets/pill.dart';
 import 'package:ionicons/ionicons.dart';
 
 class AccountScreen extends ConsumerWidget {
@@ -13,9 +12,6 @@ class AccountScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userAction = ref.watch(userActionProvider);
-    final funcUserAction = ref.read(userActionProvider.notifier);
-
     final userRef = ref.watch(singleUserProvider);
     final funcUserRef = ref.read(singleUserProvider.notifier);
 
@@ -29,29 +25,11 @@ class AccountScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(children: <Widget>[
-                      const Header(text: 'Account Screen'),
-                      const SizedBox(height: 36),
-                      Stack(
-                        children: [
-                          ClipOval(
-                            child: user.imageUrl != null
-                                ? Image.network(
-                                    user.imageUrl!,
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.network(
-                                    'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                  ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: GestureDetector(
+                      const Header(text: "Account Page"),
+                      PlainCard(
+                        child: Row(
+                          children: [
+                            GestureDetector(
                               onTap: () async {
                                 try {
                                   String photoUrl = "";
@@ -68,32 +46,70 @@ class AccountScreen extends ConsumerWidget {
                                 }
                               },
                               child: ClipOval(
-                                child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  color: Colors.white,
-                                  child: const Icon(
-                                    Ionicons.camera_outline,
-                                    color: Colors.black,
-                                  ),
-                                ),
+                                child: user.imageUrl != null
+                                    ? Image.network(
+                                        user.imageUrl!,
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.network(
+                                        'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _textAccount(
+                                      context: context, text: user.name!),
+                                  const SizedBox(height: 4),
+                                  _textAccount(
+                                      context: context,
+                                      text: user.email,
+                                      color: Colors.grey[600]),
+                                  const SizedBox(height: 4),
+                                  Pill(
+                                    icon: Ionicons.leaf,
+                                    title: "Pro",
+                                    color: Colors.red[200],
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
+                      const SizedBox(height: 12),
+                      PlainCard(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Garden",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .apply(fontWeightDelta: 2),
+                          ),
+                          Row(
+                            children: const [Text("data")],
+                          )
+                        ],
+                      )),
                       const SizedBox(height: 36),
-                      PlainCard(
-                          child:
-                              _textAccount(context: context, text: user.name!)),
-                      const SizedBox(height: 12),
-                      PlainCard(
-                          child:
-                              _textAccount(context: context, text: user.email)),
-                      const SizedBox(height: 12),
+
                       GestureDetector(
                         onTap: () {
-                          FireAuth.signOut();
-                          context.pushReplacement("/login");
+                          funcUserRef.logOut();
+                          context.go("/login");
                         },
                         child: PlainCard(
                             color: Theme.of(context).colorScheme.error,
@@ -114,11 +130,6 @@ class AccountScreen extends ConsumerWidget {
                       // const SizedBox(height: 12),
                     ]),
                   ),
-                  userAction.when(
-                      data: (act) => Container(),
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      error: (error, stack) => Container()),
                 ],
               );
             },

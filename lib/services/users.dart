@@ -9,6 +9,13 @@ class UsersServices {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   User? user = FirebaseAuth.instance.currentUser;
 
+  static DocumentReference getUserRef({String? id}) {
+    id ??= FireAuth.getCurrentUser()!.uid;
+    final userCollection = FirebaseFirestore.instance.collection("users");
+    final docRef = userCollection.doc(id);
+    return docRef;
+  }
+
   Future<List<UserModel>> getUsers() async {
     List<UserModel> usersList = [];
     QuerySnapshot querySnapshot = await users.get();

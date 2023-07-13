@@ -17,6 +17,14 @@ class PotModel {
         status = element['status'],
         plant = PlantModel.fromQuery(element['plant']),
         positionIndex = element['position_index'];
+
+  Map<String, dynamic> toQuery(PotModel potModel) {
+    return {
+      "id": potModel.id,
+      "status": potModel.status,
+      "position_index": potModel.positionIndex,
+    };
+  }
 }
 
 enum PotStatus { empty, locked, filled }

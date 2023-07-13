@@ -34,4 +34,18 @@ class PlantModel {
         status = json['status'],
         category = json['category'],
         id = json['id'];
+
+  Map<Object, Object?> toQuery(PlantModel plantModel) {
+    return {
+      "name": plantModel.name,
+      "description": plantModel.description,
+      "image": plantModel.image,
+      "watering_schedule": plantModel.wateringSchedule,
+      "watering_time": plantModel.wateringTime,
+      "height": plantModel.height,
+      "status": plantModel.status,
+      "category": plantModel.category,
+      "id": plantModel.id,
+    };
+  }
 }

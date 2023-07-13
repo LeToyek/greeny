@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/user_action_state.dart';
+import 'package:greenify/states/users_state.dart';
 
 class RegisterScreen extends ConsumerWidget {
   const RegisterScreen({super.key});
@@ -14,8 +15,8 @@ class RegisterScreen extends ConsumerWidget {
     TextEditingController passwordController = TextEditingController();
     TextEditingController nameController = TextEditingController();
 
-    final userAction = ref.watch(userActionProvider);
-    final funcUserAction = ref.read(userActionProvider.notifier);
+    final userAction = ref.watch(authUserProvider);
+    final funcUserAction = ref.read(authUserProvider.notifier);
 
     void _submitForm() async {
       try {

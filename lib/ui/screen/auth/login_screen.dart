@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:greenify/states/user_action_state.dart';
+import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -12,8 +12,8 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-    final userAct = ref.watch(userActionProvider);
-    final funcUserAct = ref.read(userActionProvider.notifier);
+    final userAct = ref.watch(authUserProvider);
+    final funcUserAct = ref.read(authUserProvider.notifier);
 
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
@@ -25,7 +25,7 @@ class LoginScreen extends ConsumerWidget {
           String email = emailController.text;
           String password = passwordController.text;
 
-          await funcUserAct.basicLoginUser(email: email, password: password);
+          await funcUserAct.basicLogin(email: email, password: password);
           if (context.mounted) context.pushReplacement("/");
         } catch (e) {
           showDialog(
@@ -108,7 +108,7 @@ class LoginScreen extends ConsumerWidget {
                       GestureDetector(
                         onTap: () async {
                           try {
-                            await funcUserAct.googleLoginUser();
+                            await funcUserAct.loginWithGoogle();
                             if (context.mounted) context.pushReplacement("/");
                           } catch (e) {
                             showDialog(

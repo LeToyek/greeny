@@ -46,7 +46,7 @@ class LeafCard extends StatelessWidget {
                   child: SizedBox(
                     height: 80,
                     child: Wrap(
-                      children: [
+                      children: const [
                         Image(
                             width: double.infinity,
                             image: NetworkImage(
@@ -66,8 +66,9 @@ class LeafCard extends StatelessWidget {
                     style: textTheme.titleMedium!.apply(fontWeightDelta: 2),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 12, bottom: 12, right: 12),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 12, bottom: 12, right: 12),
                   child: Pill(icon: Ionicons.water, title: "12:00 PM"),
                 ),
               ],

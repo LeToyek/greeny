@@ -14,9 +14,9 @@ class PlainCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: Theme.of(context).colorScheme.shadow,
+            blurRadius: 2,
+            offset: const Offset(0, 2),
           ),
         ],
       ),

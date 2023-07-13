@@ -1,7 +1,9 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/services/garden.dart';
 import 'package:greenify/states/theme_mode.dart';
+import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:ionicons/ionicons.dart';
 
 class GardenFormScreen extends ConsumerStatefulWidget {
@@ -52,99 +54,125 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-        appBar: AppBar(
-          actions: const [],
-          title: const Text("Add Plant"),
-          centerTitle: true,
-        ),
-        body: Material(
-          color: Theme.of(context).colorScheme.background,
-          child: Card(
-            margin: const EdgeInsets.all(16),
-            elevation: 2,
-            shadowColor: Theme.of(context).colorScheme.shadow,
-            color: Theme.of(context).colorScheme.surface,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12))),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  child: ListView(
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        Text(
-                          "Kategori",
-                          style:
-                              textTheme.titleMedium!.apply(fontWeightDelta: 2),
-                          textAlign: TextAlign.start,
-                        ),
-                        Text(
-                          "Pilihlah kategori yang sesuai untuk tanaman anda",
-                          style:
-                              textTheme.bodyMedium!.apply(color: Colors.grey),
-                          textAlign: TextAlign.start,
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        _plantChoose(),
-                        _platFormField(
-                            "Nama", "Masukkan nama tanaman", context),
-                        const SizedBox(height: 16),
-                        Text(
-                          "Jadwal Penyiraman",
-                          style:
-                              textTheme.titleMedium!.apply(fontWeightDelta: 2),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        _wateringSchedule(context),
-                        const SizedBox(height: 16),
-                        Text(
-                          "Gambar Tanaman",
-                          style:
-                              textTheme.titleMedium!.apply(fontWeightDelta: 2),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: DottedBorder(
-                            borderType: BorderType.RRect,
-                            radius: const Radius.circular(8),
-                            dashPattern: const [8, 8],
-                            color: Colors.grey,
-                            strokeWidth: 2,
-                            child: SizedBox(
-                              height: 180,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.image,
-                                      color: Colors.grey,
-                                    ),
-                                    Text(
-                                      "Tambahkan Gambar",
-                                      style: textTheme.bodySmall!.apply(
-                                          fontWeightDelta: 2,
-                                          color: Colors.grey),
-                                    )
-                                  ],
+    return NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              title: const Text("Tambah Tanaman"),
+              pinned: true,
+              floating: true,
+              snap: true,
+              forceElevated: innerBoxIsScrolled,
+            )
+          ];
+        },
+        body: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Material(
+            color: Theme.of(context).colorScheme.background,
+            child: Card(
+              margin: const EdgeInsets.all(16),
+              elevation: 2,
+              shadowColor: Theme.of(context).colorScheme.shadow,
+              color: Theme.of(context).colorScheme.surface,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12))),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Kategori",
+                            style: textTheme.titleMedium!
+                                .apply(fontWeightDelta: 2),
+                            textAlign: TextAlign.start,
+                          ),
+                          Text(
+                            "Pilihlah kategori yang sesuai untuk tanaman anda",
+                            style:
+                                textTheme.bodyMedium!.apply(color: Colors.grey),
+                            textAlign: TextAlign.start,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          _plantChoose(),
+                          _platFormField(
+                              "Nama", "Masukkan nama tanaman", context),
+                          const SizedBox(height: 16),
+                          Text(
+                            "Jadwal Penyiraman",
+                            style: textTheme.titleMedium!
+                                .apply(fontWeightDelta: 2),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          _wateringSchedule(context),
+                          const SizedBox(height: 16),
+                          Text(
+                            "Gambar Tanaman",
+                            style: textTheme.titleMedium!
+                                .apply(fontWeightDelta: 2),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: DottedBorder(
+                              borderType: BorderType.RRect,
+                              radius: const Radius.circular(8),
+                              dashPattern: const [8, 8],
+                              color: Colors.grey,
+                              strokeWidth: 2,
+                              child: SizedBox(
+                                height: 180,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.image,
+                                        color: Colors.grey,
+                                      ),
+                                      Text(
+                                        "Tambahkan Gambar",
+                                        style: textTheme.bodySmall!.apply(
+                                            fontWeightDelta: 2,
+                                            color: Colors.grey),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                      ])),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              final gardens =
+                                  await GardensServices.getGardens();
+                              print(gardens[0].name);
+                            },
+                            child: PlainCard(
+                                child: Center(
+                              child: Text(
+                                "Masukkan",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .apply(fontWeightDelta: 2),
+                              ),
+                            )),
+                          )
+                        ])),
+              ),
             ),
           ),
         ));
@@ -236,6 +264,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
           child: SizedBox(
             height: 210,
             child: PageView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               controller: _pageController,
               itemCount: _characterImages.length,
               itemBuilder: (context, index) {

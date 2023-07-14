@@ -7,12 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/config/theme.dart';
 import 'package:greenify/routes/index.dart';
 import 'package:greenify/states/theme_mode.dart';
+import 'package:greenify/utils/notification.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await initializeNotification();
+
   await dotenv.load();
   final Directory tempDir = await getTemporaryDirectory();
   Hive.init(tempDir.path);

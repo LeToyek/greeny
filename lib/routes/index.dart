@@ -7,6 +7,7 @@ import 'package:greenify/ui/screen/auth/register_screen.dart';
 import 'package:greenify/ui/screen/book/book_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_form_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_space_screen.dart';
+import 'package:greenify/ui/screen/garden/list_garden_space_screen.dart';
 import 'package:greenify/ui/screen/home/sekelaton_screen.dart';
 import 'package:greenify/ui/screen/leaderboard/leaderboard_screen.dart';
 import 'package:greenify/ui/screen/starter/splash_screen.dart';
@@ -21,10 +22,18 @@ final _appRoutes =
   ),
   GoRoute(path: "/book", builder: (context, state) => const BookScreen()),
   GoRoute(
-      path: "/garden", builder: (context, state) => const GardenSpaceScreen()),
+      path: "/garden",
+      builder: (context, state) => const ListGardenSpaceScreen()),
   GoRoute(
       path: "/garden/form",
       builder: (context, state) => const GardenFormScreen()),
+  GoRoute(
+      name: "garden_detail",
+      path: "/garden/:id",
+      builder: (context, state) {
+        final id = state.pathParameters["id"]!;
+        return GardenSpaceScreen(id: id);
+      }),
   GoRoute(
       path: "/leaderboard",
       builder: (context, state) => const LeaderboardScreen()),

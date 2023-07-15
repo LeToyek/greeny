@@ -1,6 +1,8 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/services/background.dart';
 import 'package:greenify/services/garden.dart';
 import 'package:greenify/states/theme_mode.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
@@ -156,9 +158,14 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              final gardens =
-                                  await GardensServices.getGardens();
-                              print(gardens[0].name);
+                              // await AndroidAlarmManager.periodic(
+                              //   const Duration(seconds: 30),
+                              //   1,
+                              //   BackgroundServices.callback,
+                              //   startAt: DateTime.now(),
+                              //   exact: true,
+                              //   wakeup: true,
+                              // );
                             },
                             child: PlainCard(
                                 child: Center(

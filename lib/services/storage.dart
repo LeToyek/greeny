@@ -4,17 +4,24 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class Storage {
+  Future<PlatformFile> pickFile() async {
+    final res = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'pdf', 'doc'],
+    );
+
+    if (res == null) return PlatformFile(name: "", path: "", size: 0);
+    final file = res.files.first;
+    return file;
+  }
+
   Future<String> uploadFile() async {
     try {
-      final res = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'png', 'pdf', 'doc'],
-      );
-
-      if (res == null) return "Failed";
-      final file = res.files.first;
+      PlatformFile file = await pickFile();
+      if (file.name == "" || file.size == 0) {
+        return "Failed";
+      }
       File selectedFile = File(file.path!);
-
       FirebaseStorage fStorage = FirebaseStorage.instance;
 
       await fStorage.ref('uploads/${file.name}').putFile(selectedFile);

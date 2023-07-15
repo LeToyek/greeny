@@ -1,60 +1,57 @@
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:greenify/services/background.dart';
-import 'package:greenify/services/garden.dart';
+import 'package:greenify/states/plant_avatar_state.dart';
+import 'package:greenify/states/scheduler/schedule_picker_state.dart';
+import 'package:greenify/states/scheduler/time_picker_state.dart';
 import 'package:greenify/states/theme_mode.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
+import 'package:greenify/ui/widgets/numberpicker.dart';
+import 'package:greenify/ui/widgets/upload_image_container.dart';
 import 'package:ionicons/ionicons.dart';
 
-class GardenFormScreen extends ConsumerStatefulWidget {
+final List<Map<String, dynamic>> _characterImages = [
+  {
+    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
+    "name": "Sayuran"
+  },
+  {
+    "image":
+        'https://friendlystock.com/wp-content/uploads/2020/12/3-kawaii-indoor-plant-cartoon-clipart.jpg',
+    "name": "Bunga"
+  },
+  {
+    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
+    "name": "Sayuran"
+  },
+  {
+    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
+    "name": "Sayuran"
+  },
+  {
+    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
+    "name": "Sayuran"
+  },
+  {
+    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
+    "name": "Sayuran"
+  },
+];
+
+class GardenFormScreen extends ConsumerWidget {
   const GardenFormScreen({super.key});
 
   @override
-  ConsumerState<GardenFormScreen> createState() => _GardenFormScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageController = ref.watch(plantAvatarProvider);
 
-class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
-  late final PageController _pageController =
-      PageController(initialPage: 0, viewportFraction: 0.8);
+    final themeController = ref.watch(themeProvider);
 
-  final List<Map<String, dynamic>> _characterImages = [
-    {
-      "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-      "name": "Sayuran"
-    },
-    {
-      "image":
-          'https://friendlystock.com/wp-content/uploads/2020/12/3-kawaii-indoor-plant-cartoon-clipart.jpg',
-      "name": "Bunga"
-    },
-    {
-      "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-      "name": "Sayuran"
-    },
-    {
-      "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-      "name": "Sayuran"
-    },
-    {
-      "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-      "name": "Sayuran"
-    },
-    {
-      "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-      "name": "Sayuran"
-    },
-  ];
+    final scheduleController = ref.watch(schedulePickerProvider);
+    final funcScheduleController = ref.read(schedulePickerProvider.notifier);
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
+    final timeController = ref.watch(timePickerProvider);
+    final funcTimeController = ref.read(timePickerProvider.notifier);
 
-  @override
-  Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -101,7 +98,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                           const SizedBox(
                             height: 8,
                           ),
-                          _plantChoose(),
+                          _plantChoose(pageController, context, ref),
                           _platFormField(
                               "Nama", "Masukkan nama tanaman", context),
                           const SizedBox(height: 16),
@@ -110,10 +107,19 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                             style: textTheme.titleMedium!
                                 .apply(fontWeightDelta: 2),
                           ),
+                          Text(
+                              "Anda akan diingatkan untuk menyiram tanaman melalui notifikasi",
+                              style: textTheme.bodyMedium!
+                                  .apply(color: Colors.grey)),
                           const SizedBox(
                             height: 8,
                           ),
-                          _wateringSchedule(context),
+                          _wateringSchedule(
+                              context,
+                              scheduleController,
+                              funcScheduleController,
+                              timeController,
+                              funcTimeController),
                           const SizedBox(height: 16),
                           Text(
                             "Gambar Tanaman",
@@ -123,36 +129,10 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                           const SizedBox(
                             height: 8,
                           ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: DottedBorder(
-                              borderType: BorderType.RRect,
-                              radius: const Radius.circular(8),
-                              dashPattern: const [8, 8],
-                              color: Colors.grey,
-                              strokeWidth: 2,
-                              child: SizedBox(
-                                height: 180,
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.image,
-                                        color: Colors.grey,
-                                      ),
-                                      Text(
-                                        "Tambahkan Gambar",
-                                        style: textTheme.bodySmall!.apply(
-                                            fontWeightDelta: 2,
-                                            color: Colors.grey),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
+                          const SizedBox(
+                            height: 16,
                           ),
+                          const UploadImageContainer(),
                           const SizedBox(
                             height: 16,
                           ),
@@ -168,15 +148,18 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                               // );
                             },
                             child: PlainCard(
+                                color: Theme.of(context).colorScheme.primary,
                                 child: Center(
-                              child: Text(
-                                "Masukkan",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .apply(fontWeightDelta: 2),
-                              ),
-                            )),
+                                  child: Text(
+                                    "Tambahkan Tanaman",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .apply(
+                                            fontWeightDelta: 2,
+                                            color: Colors.white),
+                                  ),
+                                )),
                           )
                         ])),
               ),
@@ -185,37 +168,99 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
         ));
   }
 
-  Widget _wateringSchedule(context) {
+  Widget _wateringSchedule(
+      context,
+      int schedule,
+      SchedulePickerNotifier scheduleNotifier,
+      TimeOfDay? val,
+      TimePickerNotifier timeController) {
     return Row(
       children: [
         Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            child: const Icon(
-              Ionicons.alarm_outline,
-              color: Colors.white,
-            ),
-          ),
-        ),
+            child: GestureDetector(
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      content: GreenNumberPicker(
+                          schedulePickerNotifier: scheduleNotifier),
+                    ));
+          },
+          child: schedule == 0
+              ? Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  child: const Icon(
+                    Ionicons.alarm_outline,
+                    color: Colors.white,
+                  ),
+                )
+              : Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "setiap ${schedule.toString()} hari",
+                        style: Theme.of(context).textTheme.bodyMedium!.apply(
+                            color: Colors.white,
+                            fontWeightDelta: 2,
+                            fontSizeDelta: 4),
+                      ),
+                    ],
+                  ),
+                ),
+        )),
         const SizedBox(
           width: 8,
         ),
         Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            child: const Icon(
-              Ionicons.alarm_outline,
-              color: Colors.white,
-            ),
-          ),
+          child: GestureDetector(
+              onTap: () {
+                timeController.selectTime(context);
+              },
+              child: val == null
+                  ? Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      child: const Icon(
+                        Ionicons.alarm_outline,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            val.format(context),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .apply(
+                                    color: Colors.white,
+                                    fontWeightDelta: 2,
+                                    fontSizeDelta: 4),
+                          ),
+                        ],
+                      ),
+                    )),
         ),
       ],
     );
@@ -245,18 +290,19 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
     );
   }
 
-  Widget _plantChoose() {
+  Widget _plantChoose(
+      PageController pageController, BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeProvider);
     return Row(
       children: [
         InkWell(
             onTap: () {
-              if (_pageController.page! > 0) {
-                _pageController.previousPage(
+              if (pageController.page! > 0) {
+                pageController.previousPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOut);
               } else {
-                _pageController.animateToPage(_characterImages.length - 1,
+                pageController.animateToPage(_characterImages.length - 1,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOut);
               }
@@ -272,15 +318,15 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
             height: 210,
             child: PageView.builder(
               physics: const NeverScrollableScrollPhysics(),
-              controller: _pageController,
+              controller: pageController,
               itemCount: _characterImages.length,
               itemBuilder: (context, index) {
                 return AnimatedBuilder(
-                  animation: _pageController,
+                  animation: pageController,
                   builder: (context, child) {
                     double value = 1;
-                    if (_pageController.position.haveDimensions) {
-                      value = _pageController.page! - index;
+                    if (pageController.position.haveDimensions) {
+                      value = pageController.page! - index;
                       value = (1 - (value.abs() * 0.5)).clamp(0.0, 1.0);
                     }
                     return Center(
@@ -316,12 +362,12 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
         ),
         InkWell(
             onTap: () {
-              if (_pageController.page! < _characterImages.length - 1) {
-                _pageController.nextPage(
+              if (pageController.page! < _characterImages.length - 1) {
+                pageController.nextPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOut);
               } else {
-                _pageController.animateToPage(0,
+                pageController.animateToPage(0,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOut);
               }

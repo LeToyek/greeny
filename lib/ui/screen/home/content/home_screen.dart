@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/ui/layout/header.dart';
 import 'package:greenify/ui/widgets/branch/stem.dart';
-import 'package:greenify/ui/widgets/card/icon_card.dart';
 import 'package:greenify/ui/widgets/card/titled_card.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -19,29 +18,6 @@ class HomeScreen extends ConsumerWidget {
           physics: const BouncingScrollPhysics(),
           children: <Widget>[
             const Header(text: 'Home'),
-            const SizedBox(height: 8),
-            GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                crossAxisCount: 3,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 1.75 / 1,
-                padding: EdgeInsets.zero,
-                children: const <GrIconCard>[
-                  GrIconCard(
-                    mode: ThemeMode.system,
-                    icon: Ionicons.contrast_outline,
-                  ),
-                  GrIconCard(
-                    mode: ThemeMode.light,
-                    icon: Ionicons.sunny_outline,
-                  ),
-                  GrIconCard(
-                    mode: ThemeMode.dark,
-                    icon: Ionicons.moon_outline,
-                  ),
-                ]),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),

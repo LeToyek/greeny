@@ -140,19 +140,11 @@ class FireAuth {
           .doc(user.uid)
           .collection('gardens')
           .doc(gardenId)
-          .collection('plants')
+          .collection('pots')
           .doc(potId)
           .set({
-        "name": "My Plant",
-        "description": "My Plant",
-        "image": "saodkoas",
-        "watering_schedule": "saodkoas",
-        "watering_time": "saodkoas",
-        "height": 0,
-        "status": "default",
-        "category": "default",
-        "created_at": DateTime.now(),
-        "updated_at": DateTime.now(),
+        "status": "empty",
+        "position_index": 0,
       });
     } catch (e) {
       throw Exception('Error occured!');

@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 enum PlantStatus { healthy, dry, dead }
 
 class PlantModel {
@@ -11,7 +9,6 @@ class PlantModel {
   double height;
   PlantStatus status;
   String category;
-  String id;
 
   PlantModel(
       {required this.name,
@@ -21,10 +18,9 @@ class PlantModel {
       required this.wateringTime,
       required this.height,
       required this.status,
-      required this.category,
-      required this.id});
+      required this.category});
 
-  PlantModel.fromQuery(DocumentSnapshot<Object?> json)
+  PlantModel.fromQuery(Map<String, dynamic> json)
       : name = json['name'],
         description = json['description'],
         image = json['image'],
@@ -32,8 +28,7 @@ class PlantModel {
         wateringTime = json['watering_time'],
         height = json['height'],
         status = json['status'],
-        category = json['category'],
-        id = json['id'];
+        category = json['category'];
 
   Map<Object, Object?> toQuery(PlantModel plantModel) {
     return {
@@ -45,7 +40,6 @@ class PlantModel {
       "height": plantModel.height,
       "status": plantModel.status,
       "category": plantModel.category,
-      "id": plantModel.id,
     };
   }
 }

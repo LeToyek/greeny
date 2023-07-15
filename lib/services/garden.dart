@@ -13,17 +13,22 @@ class GardensServices {
   static Future<List<GardenModel>> getGardens() async {
     final gardenCollection =
         UsersServices.getUserRef().collection(GardenModel.collectionPath);
-    final gardens = gardenCollection.get().then(
-        (value) => value.docs.map((e) => GardenModel.fromQuery(e)).toList());
+
+    final rawGardens = await gardenCollection.get();
+    final gardens =
+        rawGardens.docs.map((e) => GardenModel.fromQuery(e)).toList();
+    print(gardens[0].backgroundUrl);
 
     return gardens;
   }
 
-  Future<GardenModel> getGardenById(String id) async {
+  static Future<GardenModel> getGardenById(String id) async {
     try {
-      DocumentSnapshot documentSnapshot =
-          await FirebaseFirestore.instance.collection('gardens').doc(id).get();
-      GardenModel garden = GardenModel.fromQuery(documentSnapshot);
+      final gardenDoc = await UsersServices.getUserRef()
+          .collection(GardenModel.collectionPath)
+          .doc(id)
+          .get();
+      GardenModel garden = GardenModel.fromQuery(gardenDoc);
 
       return garden;
     } catch (e) {

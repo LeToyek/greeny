@@ -16,7 +16,7 @@ class BookCreateScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bookRef = ref.watch(bookProvider);
-    final funcBookRef = ref.watch(bookProvider.notifier);
+    final funcBookRef = ref.read(bookProvider.notifier);
 
     final funcFileRef = ref.read(fileProvider.notifier);
 
@@ -56,7 +56,7 @@ class _TextEditorState extends State<TextEditor> {
   final HtmlEditorController controller = HtmlEditorController();
   TextEditingController titleController = TextEditingController();
   final categoryList = BookServices.bookCategoryList;
-  String? selectedChips;
+  String? selectedChips = BookServices.bookCategoryList.first.name;
 
   void _toggleChip(String chip) {
     setState(() {
@@ -72,7 +72,6 @@ class _TextEditorState extends State<TextEditor> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    controller.clear();
     titleController.dispose();
   }
 
@@ -86,6 +85,7 @@ class _TextEditorState extends State<TextEditor> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
+              backgroundColor: Theme.of(context).colorScheme.background,
               title: const Text("Konfirmasi"),
               content:
                   const Text("Apakah anda yakin ingin membuat artikel ini?"),
@@ -111,11 +111,11 @@ class _TextEditorState extends State<TextEditor> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     List<Widget> chipWidgets = categoryList.map((chip) {
-      bool isSelected = selectedChips == chip;
+      bool isSelected = selectedChips == chip.name;
       return GestureDetector(
-        onTap: () => _toggleChip(chip),
+        onTap: () => _toggleChip(chip.name),
         child: Chip(
-          label: Text(chip,
+          label: Text(chip.name,
               style: textTheme.bodyMedium!.apply(
                 fontWeightDelta: 1,
                 color: Colors.white,
@@ -210,6 +210,8 @@ class _TextEditorState extends State<TextEditor> {
                     hint: 'Your text here...',
                     shouldEnsureVisible: true,
                     adjustHeightForKeyboard: true,
+                    autoAdjustHeight: true,
+
                     //initialText: "<p>text content initial, if any</p>",
                   ),
                   htmlToolbarOptions: HtmlToolbarOptions(
@@ -221,6 +223,7 @@ class _TextEditorState extends State<TextEditor> {
                           "button pressed, the current selected status is $status");
                       return true;
                     },
+
                     onDropdownChanged: (DropdownType type, dynamic changed,
                         Function(dynamic)? updateSelectedItem) {
                       print("dropdown  changed to $changed");
@@ -241,6 +244,9 @@ class _TextEditorState extends State<TextEditor> {
                   ),
                   otherOptions: const OtherOptions(height: 550),
                   callbacks: Callbacks(
+                    onBeforeCommand: (String? currentHtml) {
+                      print('html before change is $currentHtml');
+                    },
                     onImageUploadError: (FileUpload? file, String? base64Str,
                         UploadError error) {
                       print(base64Str ?? '');
@@ -249,10 +255,6 @@ class _TextEditorState extends State<TextEditor> {
                         print(file.size);
                         print(file.type);
                       }
-                    },
-                    onNavigationRequestMobile: (String url) {
-                      print(url);
-                      return NavigationActionPolicy.ALLOW;
                     },
                   ),
                   plugins: [

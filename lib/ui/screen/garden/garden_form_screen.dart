@@ -9,7 +9,6 @@ import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/ui/widgets/numberpicker.dart';
 import 'package:greenify/ui/widgets/upload_image_container.dart';
 import 'package:ionicons/ionicons.dart';
-
 final List<Map<String, dynamic>> _characterImages = [
   {
     "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',

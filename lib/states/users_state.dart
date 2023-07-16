@@ -28,6 +28,17 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
     }
   }
 
+  Future<void> getUserById(String id) async {
+    try {
+      state = const AsyncValue.loading();
+      final user = await usersServices.getUserById(id);
+      state = AsyncValue.data([user]);
+    } catch (e) {
+      state = AsyncError(e, StackTrace.current);
+      throw Exception(e);
+    }
+  }
+
   void createNull() {
     try {
       state = const AsyncValue.data([]);

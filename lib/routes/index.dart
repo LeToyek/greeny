@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:greenify/ui/screen/auth/login_screen.dart';
 import 'package:greenify/ui/screen/auth/register_screen.dart';
 import 'package:greenify/ui/screen/book/book_create_screen.dart';
+import 'package:greenify/ui/screen/book/book_detail_screen.dart';
 import 'package:greenify/ui/screen/book/book_list_screen.dart';
 import 'package:greenify/ui/screen/book/book_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_form_screen.dart';
@@ -31,6 +32,13 @@ final _appRoutes =
       builder: (context, state) {
         final category = state.pathParameters["category"]!;
         return BookListScreen(category: category);
+      }),
+  GoRoute(
+      name: "book_detail",
+      path: "/book/detail/:id",
+      builder: (context, state) {
+        final id = state.pathParameters["id"]!;
+        return BookDetailScreen(bookId: id);
       }),
   GoRoute(
       path: "/garden",

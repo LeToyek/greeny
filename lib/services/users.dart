@@ -5,7 +5,7 @@ import 'package:greenify/services/auth.dart';
 import 'package:greenify/services/storage.dart';
 
 class UsersServices {
-  Storage storage = Storage();
+  StorageService storage = StorageService();
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   User? user = FirebaseAuth.instance.currentUser;
 

@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/services/storage.dart';
 
 class StorageNotifier extends StateNotifier<AsyncValue<String>> {
-  final Storage storage;
+  final StorageService storage;
   StorageNotifier({required this.storage})
       : super(const AsyncValue.data("waiting"));
 
@@ -21,4 +21,4 @@ class StorageNotifier extends StateNotifier<AsyncValue<String>> {
 
 final fileUploadProvider =
     StateNotifierProvider<StorageNotifier, AsyncValue<String>>(
-        (ref) => StorageNotifier(storage: Storage()));
+        (ref) => StorageNotifier(storage: StorageService()));

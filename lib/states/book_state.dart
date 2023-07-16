@@ -35,3 +35,8 @@ final bookProvider =
     StateNotifierProvider<BookNotifier, AsyncValue<List<BookModel>>>((ref) {
   return BookNotifier(bookServices: BookServices());
 });
+
+final bookFamilyProvider = StateNotifierProviderFamily<BookNotifier,
+    AsyncValue<List<BookModel>>, String>((ref, arg) {
+  return BookNotifier(bookServices: BookServices())..getAllBooks(arg);
+});

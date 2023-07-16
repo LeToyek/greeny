@@ -46,7 +46,7 @@ class BookListScreen extends ConsumerWidget {
                                                 data[index].imageUrl),
                                             onTap: () {
                                               context.push(
-                                                  "/book/$category/${data[index]}}");
+                                                  "/book/detail/${data[index].id}");
                                             },
                                           ),
                                           const SizedBox(height: 10),

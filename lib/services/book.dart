@@ -57,6 +57,15 @@ class BookServices {
     return books;
   }
 
+  Future<BookModel> getBookByIDFromDB(String id) async {
+    CollectionReference bookRef =
+        FirebaseFirestore.instance.collection('books');
+    final res = await bookRef.doc(id).get();
+    print("res: $res");
+    print("id: $id");
+    return BookModel.fromQuery(res);
+  }
+
   Future<BookModel> insertBookToDB(BookModel book) async {
     CollectionReference bookRef =
         FirebaseFirestore.instance.collection('books');

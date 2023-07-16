@@ -1,9 +1,13 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:greenify/model/book_model.dart';
 import 'package:greenify/services/book.dart';
+import 'package:greenify/states/book_state.dart';
+import 'package:greenify/states/file_notifier.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
+import 'package:greenify/ui/widgets/upload_image_container.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
 class BookCreateScreen extends ConsumerWidget {
@@ -11,6 +15,11 @@ class BookCreateScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bookRef = ref.watch(bookProvider);
+    final funcBookRef = ref.watch(bookProvider.notifier);
+
+    final funcFileRef = ref.read(fileProvider.notifier);
+
     return Scaffold(
         appBar: AppBar(
           actions: const [],
@@ -19,12 +28,24 @@ class BookCreateScreen extends ConsumerWidget {
         ),
         body: Material(
             color: Theme.of(context).colorScheme.background,
-            child: const TextEditor()));
+            child: bookRef.when(
+                data: (_) => TextEditor(
+                    bookNotifier: funcBookRef, fileNotifier: funcFileRef),
+                error: (e, s) => Center(
+                      child: Text(e.toString()),
+                    ),
+                loading: () => const Center(
+                      child: CircularProgressIndicator(),
+                    ))));
   }
 }
 
 class TextEditor extends StatefulWidget {
-  const TextEditor({super.key});
+  final BookNotifier bookNotifier;
+  final FileNotifier fileNotifier;
+
+  const TextEditor(
+      {super.key, required this.bookNotifier, required this.fileNotifier});
 
   @override
   State<TextEditor> createState() => _TextEditorState();
@@ -35,23 +56,62 @@ class _TextEditorState extends State<TextEditor> {
   final HtmlEditorController controller = HtmlEditorController();
   TextEditingController titleController = TextEditingController();
   final categoryList = BookServices.bookCategoryList;
-  List<String> selectedChips = [];
+  String? selectedChips;
 
   void _toggleChip(String chip) {
     setState(() {
-      if (selectedChips.contains(chip)) {
-        selectedChips.remove(chip);
+      if (selectedChips == chip) {
+        selectedChips = null;
       } else {
-        selectedChips.add(chip);
+        selectedChips = chip;
       }
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    controller.clear();
+    titleController.dispose();
+  }
+
+  Future<void> _submitForm() async {
+    final fullPath = await widget.fileNotifier.uploadFile();
+    if (result.length < 10 ||
+        titleController.value.text.isEmpty ||
+        selectedChips == null) {
+      return;
+    }
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text("Konfirmasi"),
+              content:
+                  const Text("Apakah anda yakin ingin membuat artikel ini?"),
+              actions: [
+                TextButton(
+                    onPressed: () => context.pop(), child: const Text("Batal")),
+                TextButton(
+                    onPressed: () {
+                      widget.bookNotifier.createBook(BookModel(
+                        imageUrl: fullPath,
+                        title: titleController.value.text,
+                        category: selectedChips!,
+                        content: result,
+                      ));
+                      context.push("/");
+                    },
+                    child: const Text("Ya")),
+              ],
+            ));
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     List<Widget> chipWidgets = categoryList.map((chip) {
-      bool isSelected = selectedChips.contains(chip);
+      bool isSelected = selectedChips == chip;
       return GestureDetector(
         onTap: () => _toggleChip(chip),
         child: Chip(
@@ -79,6 +139,12 @@ class _TextEditorState extends State<TextEditor> {
               PlainCard(
                 child: TextFormField(
                   controller: titleController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Judul tidak boleh kosong';
+                    }
+                    return null;
+                  },
                   style: textTheme.headlineSmall!.apply(fontWeightDelta: 2),
                   decoration: InputDecoration(
                       hintText: 'Judul Artikel',
@@ -86,6 +152,21 @@ class _TextEditorState extends State<TextEditor> {
                           textTheme.headlineSmall!.apply(fontWeightDelta: 2)),
                 ),
               ),
+              const SizedBox(
+                height: 16,
+              ),
+              PlainCard(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Gambar Sampul",
+                      style: textTheme.bodyLarge!.apply(fontWeightDelta: 2)),
+                  const SizedBox(height: 8),
+                  UploadImageContainer(
+                    fileNotifier: widget.fileNotifier,
+                  ),
+                ],
+              )),
               const SizedBox(
                 height: 16,
               ),
@@ -108,6 +189,15 @@ class _TextEditorState extends State<TextEditor> {
                       children: chipWidgets,
                     ),
                   ),
+                  selectedChips != null
+                      ? const SizedBox(
+                          height: 8,
+                        )
+                      : Text(
+                          "Kategori tidak boleh kosong",
+                          style: textTheme.bodyMedium!
+                              .apply(fontWeightDelta: 1, color: Colors.red),
+                        ),
                 ],
               )),
               const SizedBox(
@@ -119,6 +209,7 @@ class _TextEditorState extends State<TextEditor> {
                   htmlEditorOptions: const HtmlEditorOptions(
                     hint: 'Your text here...',
                     shouldEnsureVisible: true,
+                    adjustHeightForKeyboard: true,
                     //initialText: "<p>text content initial, if any</p>",
                   ),
                   htmlToolbarOptions: HtmlToolbarOptions(
@@ -149,64 +240,21 @@ class _TextEditorState extends State<TextEditor> {
                     },
                   ),
                   otherOptions: const OtherOptions(height: 550),
-                  callbacks: Callbacks(onBeforeCommand: (String? currentHtml) {
-                    print('html before change is $currentHtml');
-                  }, onChangeContent: (String? changed) {
-                    print('content changed to $changed');
-                  }, onChangeCodeview: (String? changed) {
-                    print('code changed to $changed');
-                  }, onChangeSelection: (EditorSettings settings) {
-                    print('parent element is ${settings.parentElement}');
-                    print('font name is ${settings.fontName}');
-                  }, onDialogShown: () {
-                    print('dialog shown');
-                  }, onEnter: () {
-                    print('enter/return pressed');
-                  }, onFocus: () {
-                    print('editor focused');
-                  }, onBlur: () {
-                    print('editor unfocused');
-                  }, onBlurCodeview: () {
-                    print('codeview either focused or unfocused');
-                  }, onInit: () {
-                    print('init');
-                  },
-                      //this is commented because it overrides the default Summernote handlers
-                      /*onImageLinkInsert: (String? url) {
-                          print(url ?? "unknown url");
-                        },
-                        onImageUpload: (FileUpload file) async {
-                          print(file.name);
-                          print(file.size);
-                          print(file.type);
-                          print(file.base64);
-                        },*/
-                      onImageUploadError: (FileUpload? file, String? base64Str,
-                          UploadError error) {
-                    print(base64Str ?? '');
-                    if (file != null) {
-                      print(file.name);
-                      print(file.size);
-                      print(file.type);
-                    }
-                  }, onKeyDown: (int? keyCode) {
-                    print('$keyCode key downed');
-                    print(
-                        'current character count: ${controller.characterCount}');
-                  }, onKeyUp: (int? keyCode) {
-                    print('$keyCode key released');
-                  }, onMouseDown: () {
-                    print('mouse downed');
-                  }, onMouseUp: () {
-                    print('mouse released');
-                  }, onNavigationRequestMobile: (String url) {
-                    print(url);
-                    return NavigationActionPolicy.ALLOW;
-                  }, onPaste: () {
-                    print('pasted into editor');
-                  }, onScroll: () {
-                    print('editor scrolled');
-                  }),
+                  callbacks: Callbacks(
+                    onImageUploadError: (FileUpload? file, String? base64Str,
+                        UploadError error) {
+                      print(base64Str ?? '');
+                      if (file != null) {
+                        print(file.name);
+                        print(file.size);
+                        print(file.type);
+                      }
+                    },
+                    onNavigationRequestMobile: (String url) {
+                      print(url);
+                      return NavigationActionPolicy.ALLOW;
+                    },
+                  ),
                   plugins: [
                     SummernoteAtMention(
                         getSuggestionsMobile: (String value) {
@@ -277,7 +325,7 @@ class _TextEditorState extends State<TextEditor> {
                   setState(() {
                     result = txt;
                   });
-                  print(result);
+                  await _submitForm();
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -292,9 +340,6 @@ class _TextEditorState extends State<TextEditor> {
               const SizedBox(
                 width: 16,
               ),
-              result.isNotEmpty || result != ""
-                  ? Html(data: result)
-                  : Container(),
             ],
           ),
         ),

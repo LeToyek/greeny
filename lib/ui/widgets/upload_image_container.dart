@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:greenify/services/storage.dart';
+import 'package:greenify/states/file_notifier.dart';
 
 class UploadImageContainer extends StatefulWidget {
-  const UploadImageContainer({super.key});
+  final FileNotifier fileNotifier;
+  const UploadImageContainer({super.key, required this.fileNotifier});
 
   @override
   State<UploadImageContainer> createState() => _UploadImageContainerState();
@@ -18,13 +20,15 @@ class _UploadImageContainerState extends State<UploadImageContainer> {
     final textTheme = Theme.of(context).textTheme;
     return GestureDetector(
       onTap: () async {
-        final file = await Storage().pickFile();
+        final file = await StorageService().pickFile();
         if (file.name == "") {
           return;
         }
         setState(() {
           imageFile = File(file.path!);
         });
+        widget.fileNotifier.setFile(imageFile!);
+        widget.fileNotifier.setFileName(file.name);
       },
       child: imageFile != null
           ? Container(

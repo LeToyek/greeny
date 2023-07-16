@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/states/file_notifier.dart';
 import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
 import 'package:greenify/states/scheduler/time_picker_state.dart';
@@ -45,6 +46,7 @@ class GardenFormScreen extends ConsumerWidget {
     final pageController = ref.watch(plantAvatarProvider);
 
     final themeController = ref.watch(themeProvider);
+    final fileController = ref.read(fileProvider.notifier);
 
     final scheduleController = ref.watch(schedulePickerProvider);
     final funcScheduleController = ref.read(schedulePickerProvider.notifier);
@@ -132,7 +134,9 @@ class GardenFormScreen extends ConsumerWidget {
                           const SizedBox(
                             height: 16,
                           ),
-                          const UploadImageContainer(),
+                          UploadImageContainer(
+                            fileNotifier: fileController,
+                          ),
                           const SizedBox(
                             height: 16,
                           ),

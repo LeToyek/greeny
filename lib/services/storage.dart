@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class Storage {
+class StorageService {
   Future<PlatformFile> pickFile() async {
     final res = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -32,7 +32,19 @@ class Storage {
     }
   }
 
+  Future<void> uploadFileWithFile(File file, String name) async {
+    try {
+      FirebaseStorage fStorage = FirebaseStorage.instance;
+
+      await fStorage.ref('uploads/$name').putFile(file);
+    } on FirebaseException catch (e) {
+      print(e);
+      throw Exception('Error occured!');
+    }
+  }
+
   Future<String?> getLinkDownloadFile(String url) async {
+    print(url);
     try {
       FirebaseStorage fStorage = FirebaseStorage.instance;
 
@@ -42,8 +54,7 @@ class Storage {
           .then((value) => value.toString());
       return downloadURL;
     } on FirebaseException catch (e) {
-      print(e);
-      throw Exception('Error occured!');
+      throw Exception('Error occured! $e');
     }
   }
 

@@ -2,33 +2,55 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:greenify/model/plant_model.dart';
 
 class PotModel {
-  final String id;
-  final PotStatus status;
+  String? id;
+  late PotStatus status;
   final int positionIndex;
   final PlantModel plant;
   static const String collectionPath = 'pots';
 
   PotModel(
-      {required this.id,
-      required this.status,
-      required this.positionIndex,
-      required this.plant});
+      {required this.status, required this.positionIndex, required this.plant});
 
   PotModel.fromQuery(DocumentSnapshot<Object?> element)
       : id = element.id,
-        status = element['status'],
         positionIndex = element['position_index'],
-        plant = PlantModel.fromQuery(element['plant']);
+        plant = PlantModel.fromQuery(element['plant']) {
+    status = reverseStatusParse(element['status']);
+  }
 
-  //       plant = Potserv
+  PotStatus reverseStatusParse(String status) {
+    switch (status) {
+      case "empty":
+        return PotStatus.empty;
+      case "locked":
+        return PotStatus.locked;
+      case "filled":
+        return PotStatus.filled;
+      default:
+        return PotStatus.empty;
+    }
+  }
 
-  // Map<String, dynamic> toQuery(PotModel potModel) {
-  //   return {
-  //     "id": potModel.id,
-  //     "status": potModel.status,
-  //     "position_index": potModel.positionIndex,
-  //   };
-  // }
+  String statusParse(PotStatus status) {
+    switch (status) {
+      case PotStatus.empty:
+        return "empty";
+      case PotStatus.locked:
+        return "locked";
+      case PotStatus.filled:
+        return "filled";
+      default:
+        return "empty";
+    }
+  }
+
+  Map<String, dynamic> toQuery() {
+    return {
+      "status": statusParse(status),
+      "position_index": positionIndex,
+      "plant": plant.toQuery(),
+    };
+  }
 }
 
 enum PotStatus { empty, locked, filled }

@@ -44,8 +44,11 @@ final _appRoutes =
       path: "/garden",
       builder: (context, state) => const ListGardenSpaceScreen()),
   GoRoute(
-      path: "/garden/form",
-      builder: (context, state) => const GardenFormScreen()),
+      path: "/garden/form/:id",
+      builder: (context, state) {
+        final id = state.pathParameters["id"]!;
+        return GardenFormScreen(id: id);
+      }),
   GoRoute(
       name: "garden_detail",
       path: "/garden/:id",

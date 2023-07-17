@@ -76,7 +76,6 @@ class _TextEditorState extends State<TextEditor> {
   }
 
   Future<void> _submitForm() async {
-    final fullPath = await widget.fileNotifier.uploadFile();
     if (result.length < 10 ||
         titleController.value.text.isEmpty ||
         selectedChips == null) {
@@ -93,14 +92,17 @@ class _TextEditorState extends State<TextEditor> {
                 TextButton(
                     onPressed: () => context.pop(), child: const Text("Batal")),
                 TextButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      final fullPath = await widget.fileNotifier.uploadFile();
                       widget.bookNotifier.createBook(BookModel(
                         imageUrl: fullPath,
                         title: titleController.value.text,
                         category: selectedChips!,
                         content: result,
                       ));
-                      context.push("/");
+                      if (context.mounted) {
+                        context.push("/");
+                      }
                     },
                     child: const Text("Ya")),
               ],

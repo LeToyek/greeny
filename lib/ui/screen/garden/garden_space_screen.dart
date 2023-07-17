@@ -47,7 +47,7 @@ class GardenSpaceScreen extends ConsumerWidget {
                           itemBuilder: (context, index) {
                             if (index == data.length) {
                               return GestureDetector(
-                                onTap: () => context.push("/garden/form"),
+                                onTap: () => context.push("/garden/form/$id"),
                                 child: PlantCard(
                                   status: PlantBoxStatus.empty,
                                   title: 'Add Plant',
@@ -80,7 +80,6 @@ class GardenSpaceScreen extends ConsumerWidget {
                     child: CircularProgressIndicator(),
                   );
                 });
-                return null;
               },
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, s) => Center(child: Text(e.toString())))),

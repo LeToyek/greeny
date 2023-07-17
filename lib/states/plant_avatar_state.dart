@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PlantAvatarNotifier extends StateNotifier<PageController> {
-  PlantAvatarNotifier()
-      : super(PageController(initialPage: 0, viewportFraction: 0.8));
+  int pageIndex = 0;
+  PlantAvatarNotifier() : super(PageController(initialPage: 0));
 
   void setPage(int index) {
     state.animateToPage(index,
         duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+    pageIndex = index;
+  }
+
+  int getPage() {
+    return pageIndex;
   }
 
   @override

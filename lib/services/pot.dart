@@ -28,4 +28,14 @@ class PotServices {
       throw Exception(e);
     }
   }
+
+  Future<String> createPot(PotModel potModel) async {
+    try {
+      await gardenRef.collection(collectionPath).add(potModel.toQuery());
+
+      return "success";
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

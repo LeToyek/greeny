@@ -14,8 +14,8 @@ class RegisterScreen extends ConsumerWidget {
     TextEditingController passwordController = TextEditingController();
     TextEditingController nameController = TextEditingController();
 
-    final userAction = ref.watch(authUserProvider);
-    final funcUserAction = ref.read(authUserProvider.notifier);
+    final userAction = ref.watch(singleUserProvider);
+    final funcUserAction = ref.read(singleUserProvider.notifier);
 
     void _submitForm() async {
       try {

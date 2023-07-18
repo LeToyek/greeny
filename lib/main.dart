@@ -41,6 +41,9 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(appRouteProvider);
 
     return MaterialApp.router(
+      color: themeUsed == ThemeMode.light
+          ? lightTheme.colorScheme.background
+          : darkTheme.colorScheme.background,
       title: "Greenify",
       routerConfig: router,
       themeMode: themeUsed,

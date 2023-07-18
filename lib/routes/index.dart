@@ -9,8 +9,10 @@ import 'package:greenify/ui/screen/book/book_detail_screen.dart';
 import 'package:greenify/ui/screen/book/book_list_screen.dart';
 import 'package:greenify/ui/screen/book/book_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_form_screen.dart';
+import 'package:greenify/ui/screen/garden/garden_pot_detail_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_space_screen.dart';
 import 'package:greenify/ui/screen/garden/list_garden_space_screen.dart';
+import 'package:greenify/ui/screen/home/content/account_screen.dart';
 import 'package:greenify/ui/screen/home/sekelaton_screen.dart';
 import 'package:greenify/ui/screen/leaderboard/leaderboard_screen.dart';
 import 'package:greenify/ui/screen/starter/splash_screen.dart';
@@ -23,6 +25,11 @@ final _appRoutes =
     path: "/",
     builder: (context, state) => const SekelatonScreen(),
   ),
+  GoRoute(
+      path: "/user/detail",
+      builder: (context, state) {
+        return const AccountScreen();
+      }),
   GoRoute(path: "/book", builder: (context, state) => const BookScreen()),
   GoRoute(
       path: "/book/create",
@@ -48,6 +55,13 @@ final _appRoutes =
       builder: (context, state) {
         final id = state.pathParameters["id"]!;
         return GardenFormScreen(id: id);
+      }),
+  GoRoute(
+      path: "/garden/:gardenID/detail/:potID",
+      builder: (context, state) {
+        final gardenID = state.pathParameters["gardenID"]!;
+        final potID = state.pathParameters["potID"]!;
+        return GardenPotDetailScreen(gardenID: gardenID, potID: potID);
       }),
   GoRoute(
       name: "garden_detail",

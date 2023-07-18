@@ -22,9 +22,23 @@ class GardenNotifier extends StateNotifier<AsyncValue<List<GardenModel>>> {
       state = AsyncValue.error(e, StackTrace.current);
     }
   }
+
+  Future<void> getGardensByUserId({String? id}) async {
+    try {
+      final gardens = await GardensServices.getGardenByUserId(id);
+      state = AsyncValue.data(gardens);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
 }
 
 final gardenProvider =
     StateNotifierProvider<GardenNotifier, AsyncValue<List<GardenModel>>>((ref) {
   return GardenNotifier()..getGardens();
+});
+
+final userGardenProvider =
+    StateNotifierProvider<GardenNotifier, AsyncValue<List<GardenModel>>>((ref) {
+  return GardenNotifier()..getGardensByUserId();
 });

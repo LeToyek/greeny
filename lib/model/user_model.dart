@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:greenify/model/garden_model.dart';
+import 'package:greenify/services/users.dart';
 
 class UserModel {
   String userId;
@@ -19,7 +20,7 @@ class UserModel {
       this.level = 1,
       this.exp = 0,
       this.photoFrame,
-      this.gardens});
+      required this.gardens});
 
   UserModel.fromQuery(DocumentSnapshot<Object?> element)
       : email = element['email'],

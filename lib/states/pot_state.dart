@@ -4,15 +4,28 @@ import 'package:greenify/services/garden.dart';
 import 'package:greenify/services/pot.dart';
 
 class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
-  List<PotModel> tempData = [];
+  final List<PotModel> tempData = [];
+  final List<PotModel> fullData = [];
   final PotServices potServices;
   PotNotifier({required this.potServices}) : super(const AsyncValue.data([]));
 
   Future<void> getPots() async {
     try {
+      state = const AsyncValue.loading();
       final pots = await potServices.getPotsFromDB();
       state = AsyncValue.data(pots);
-      tempData = pots;
+      tempData.addAll(pots);
+      fullData.addAll(pots);
+      print('tempData = $tempData');
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
+  Future<void> turnBackData() async {
+    try {
+      state = const AsyncValue.loading();
+      state = AsyncValue.data(fullData);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }
@@ -21,8 +34,8 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
   Future<void> getPotById(String potId) async {
     try {
       state = const AsyncValue.loading();
-      final pot = await potServices.getPotById(potId);
-      state = AsyncValue.data([pot]);
+      final pot = tempData.where((element) => element.id == potId).toList();
+      state = AsyncValue.data(pot);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }
@@ -43,11 +56,19 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
 final potProvider = StateNotifierProviderFamily<PotNotifier,
         AsyncValue<List<PotModel>>, String>(
     (ref, arg) => PotNotifier(
-        potServices: PotServices(gardenRef: GardensServices.getGardenRef(arg)))
+        potServices: PotServices.getInstance(
+            gardenRef: GardensServices.getGardenRef(arg)))
       ..getPots());
+
+// final detailPotProvider = StateNotifierProviderFamily<PotNotifier,
+//         AsyncValue<List<PotModel>>, List<String>>(
+//     (ref, arg) => PotNotifier(
+//         potServices: PotServices.getInstance(
+//             gardenRef: GardensServices.getGardenRef(arg.first)))
+//       ..getPotById(arg.last));
 
 final singlePotProvider = StateNotifierProviderFamily<PotNotifier,
         AsyncValue<List<PotModel>>, String>(
     (ref, arg) => PotNotifier(
-        potServices:
-            PotServices(gardenRef: GardensServices.getGardenRef(arg))));
+        potServices: PotServices.getInstance(
+            gardenRef: GardensServices.getGardenRef(arg))));

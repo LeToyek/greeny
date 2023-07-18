@@ -5,7 +5,14 @@ class PotServices {
   static const String collectionPath = 'pots';
   final DocumentReference gardenRef;
 
-  PotServices({required this.gardenRef});
+  static PotServices? _instance;
+
+  PotServices._internal({required this.gardenRef});
+
+  factory PotServices.getInstance({required DocumentReference gardenRef}) {
+    _instance ??= PotServices._internal(gardenRef: gardenRef);
+    return _instance!;
+  }
 
   Future<List<PotModel>> getPotsFromDB() async {
     try {
@@ -18,7 +25,7 @@ class PotServices {
     }
   }
 
-  Future<PotModel> getPotById(String potId) async {
+  Future<PotModel?> getPotByIdFromDb(String potId) async {
     try {
       final potDoc =
           await gardenRef.collection(collectionPath).doc(potId).get();

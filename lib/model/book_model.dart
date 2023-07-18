@@ -30,6 +30,6 @@ class BookModel {
         updatedAt = data['updated_at'].toString();
 
   Future<UserModel> getUserModel() async {
-    return await UsersServices().getUserById(userID!);
+    return await UsersServices().getUserById(id: userID!);
   }
 }

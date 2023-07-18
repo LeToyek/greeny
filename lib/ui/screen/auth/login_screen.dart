@@ -12,8 +12,8 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-    final userAct = ref.watch(authUserProvider);
-    final funcUserAct = ref.read(authUserProvider.notifier);
+    final userAct = ref.watch(singleUserProvider);
+    final funcUserAct = ref.read(singleUserProvider.notifier);
 
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();

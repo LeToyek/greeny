@@ -42,16 +42,16 @@ class FireAuth {
       user = userCredential.user;
       await refreshUser();
       return user;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        throw Exception('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        throw Exception('Wrong password provided for that user.');
-      }
     } catch (e) {
-      throw Exception('Error occured!');
+      if (e is FirebaseAuthException) {
+        if (e.code == 'user-not-found') {
+          throw Exception('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          throw Exception('Wrong password provided for that user.');
+        }
+      }
+      throw Exception('Error occurred!');
     }
-    return null;
   }
 
   static Future<User?> signInWithGoogle() async {
@@ -103,8 +103,6 @@ class FireAuth {
 
   static User? getCurrentUser() {
     User? user = FirebaseAuth.instance.currentUser;
-    user!.reload();
-    print("current user => ${user.email}");
     return user;
   }
 

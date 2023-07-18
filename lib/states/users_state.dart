@@ -5,11 +5,13 @@ import 'package:greenify/services/users.dart';
 
 class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   UsersServices usersServices;
+  String? visitedUser;
 
   UsersNotifier({required this.usersServices})
-      : super(const AsyncValue.loading());
+      : super(const AsyncValue.data([]));
   Future<void> getUsers() async {
     try {
+      state = const AsyncValue.loading();
       final users = await UsersServices().getUsers();
       state = AsyncValue.data(users);
     } catch (e) {
@@ -19,30 +21,40 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
 
   Future<void> getUser() async {
     try {
+      state = const AsyncValue.loading();
       final authUser = FireAuth.getCurrentUser();
-      final user = await usersServices.getUserById(authUser!.uid);
+      if (authUser == null) {
+        state = const AsyncValue.data([]);
+        return;
+      }
+      final user = await usersServices.getUserById(id: authUser.uid);
       state = AsyncValue.data([user]);
     } catch (e) {
       state = AsyncError(e, StackTrace.current);
       throw Exception(e);
     }
+  }
+
+  void setVisitedUser(String id) {
+    visitedUser = id;
+  }
+
+  bool isSelf() {
+    final authUser = FireAuth.getCurrentUser();
+    if (authUser == null) {
+      return false;
+    }
+    return authUser.uid == visitedUser;
   }
 
   Future<void> getUserById(String id) async {
     try {
       state = const AsyncValue.loading();
-      final user = await usersServices.getUserById(id);
+      final user = await usersServices.getUserById(id: id);
+
       state = AsyncValue.data([user]);
     } catch (e) {
       state = AsyncError(e, StackTrace.current);
-      throw Exception(e);
-    }
-  }
-
-  void createNull() {
-    try {
-      state = const AsyncValue.data([]);
-    } catch (e) {
       throw Exception(e);
     }
   }
@@ -52,10 +64,10 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
       required String password,
       required String name}) async {
     try {
-      state = const AsyncLoading();
+      state = const AsyncValue.loading();
       final authUser = await FireAuth.registerUser(
           email: email, password: password, name: name);
-      final userMod = await usersServices.getUserById(authUser!.uid);
+      final userMod = await usersServices.getUserById(id: authUser!.uid);
       state = AsyncValue.data([userMod]);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
@@ -64,9 +76,9 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
 
   Future<void> loginWithGoogle() async {
     try {
-      state = const AsyncLoading();
+      state = const AsyncValue.loading();
       final authUser = await FireAuth.signInWithGoogle();
-      final userMod = await usersServices.getUserById(authUser!.uid);
+      final userMod = await usersServices.getUserById(id: authUser!.uid);
       state = AsyncValue.data([userMod]);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
@@ -76,10 +88,10 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   Future<void> basicLogin(
       {required String email, required String password}) async {
     try {
-      state = const AsyncLoading();
+      state = const AsyncValue.loading();
       final authUser = await FireAuth.signInWithEmailPassword(
           email: email, password: password);
-      final userMod = await usersServices.getUserById(authUser!.uid);
+      final userMod = await usersServices.getUserById(id: authUser!.uid);
       state = AsyncValue.data([userMod]);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
@@ -97,10 +109,10 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
 
   Future<void> updateProfilePhoto(String? oldUrl) async {
     try {
-      state = const AsyncLoading();
+      state = const AsyncValue.loading();
       String photoUrl = await UsersServices().updateProfilePhoto(oldUrl);
       final authUser = FireAuth.getCurrentUser();
-      UserModel user = await usersServices.getUserById(authUser!.uid);
+      UserModel user = await usersServices.getUserById(id: authUser!.uid);
       user.imageUrl = photoUrl;
       state = AsyncValue.data([user]);
     } catch (e) {
@@ -116,7 +128,3 @@ final usersProvider =
 final singleUserProvider =
     StateNotifierProvider<UsersNotifier, AsyncValue<List<UserModel>>>(
         (ref) => UsersNotifier(usersServices: UsersServices())..getUser());
-
-final authUserProvider =
-    StateNotifierProvider<UsersNotifier, AsyncValue<List<UserModel>>>(
-        (ref) => UsersNotifier(usersServices: UsersServices())..createNull());

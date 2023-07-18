@@ -13,6 +13,7 @@ class GardenSpaceScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gardenRef = ref.watch(gardenProvider);
     final potsRef = ref.watch(potProvider(id));
+    final potsNotifier = ref.watch(potProvider(id).notifier);
 
     const int maxPlantCount = 16;
     return Scaffold(
@@ -61,10 +62,18 @@ class GardenSpaceScreen extends ConsumerWidget {
                                 imageURI: "lib/assets/images/dumPlant.png",
                               );
                             }
-                            return PlantCard(
-                              status: PlantBoxStatus.filled,
-                              title: data[index].plant.name,
-                              imageURI: "lib/assets/images/dumPlant.png",
+                            return GestureDetector(
+                              onTap: () {
+                                potsNotifier.getPotById(data[index].id!);
+                                context.push(
+                                    "/garden/$id/detail/${data[index].id}");
+                                return;
+                              },
+                              child: PlantCard(
+                                status: PlantBoxStatus.filled,
+                                title: data[index].plant.name,
+                                imageURI: "lib/assets/images/dumPlant.png",
+                              ),
                             );
                           },
                         ),

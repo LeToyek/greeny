@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/model/plant_model.dart';
 import 'package:greenify/model/pot_model.dart';
+import 'package:greenify/states/exp_state.dart';
 import 'package:greenify/states/file_notifier.dart';
 import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/pot_state.dart';
@@ -53,6 +54,8 @@ class GardenFormScreen extends ConsumerStatefulWidget {
 
 class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   late TextEditingController nameController;
+
+  final _expValue = 300;
   @override
   void initState() {
     // TODO: implement initState
@@ -83,11 +86,13 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
     final potController = ref.read(singlePotProvider(widget.id).notifier);
     final potRef = ref.watch(singlePotProvider(widget.id));
 
+    final expController = ref.read(expProvider.notifier);
+
     Future<void> _submitForm() async {
       String name = nameController.text;
       String description = "sample Description";
       String wateringSchedule = scheduleController.toString();
-      String wateringTime = timeController.toString();
+      String wateringTime = timeController!.format(context);
       double height = 0;
       PlantStatus status = PlantStatus.healthy;
       String category = _characterImages[pageNotifier.getPage()]["name"];
@@ -118,6 +123,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                 height: height,
                                 status: status,
                                 category: category)));
+                        expController.increaseExp(_expValue);
                         if (context.mounted) {
                           context.push("/");
                         }

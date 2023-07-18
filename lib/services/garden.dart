@@ -22,6 +22,17 @@ class GardensServices {
     return gardens;
   }
 
+  static Future<List<GardenModel>> getGardenByUserId(String? id) async {
+    final gardenCollection =
+        UsersServices.getUserRef(id: id).collection(GardenModel.collectionPath);
+
+    final rawGardens = await gardenCollection.get();
+    final gardens =
+        rawGardens.docs.map((e) => GardenModel.fromQuery(e)).toList();
+
+    return gardens;
+  }
+
   static Future<GardenModel> getGardenById(String id) async {
     try {
       final gardenDoc = await UsersServices.getUserRef()

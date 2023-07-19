@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:greenify/services/storage.dart';
+import 'package:greenify/services/storage_service.dart';
 
 class StorageNotifier extends StateNotifier<AsyncValue<String>> {
   final StorageService storage;

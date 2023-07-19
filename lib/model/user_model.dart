@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:greenify/model/garden_model.dart';
-import 'package:greenify/services/users.dart';
+import 'package:greenify/services/users_service.dart';
 
 class UserModel {
   String userId;

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:greenify/services/storage.dart';
+import 'package:greenify/services/storage_service.dart';
 
 class FileNotifier extends StateNotifier<File?> {
   String? fileName;

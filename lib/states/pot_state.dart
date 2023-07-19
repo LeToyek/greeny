@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/model/pot_model.dart';
-import 'package:greenify/services/garden.dart';
-import 'package:greenify/services/pot.dart';
+import 'package:greenify/services/garden_service.dart';
+import 'package:greenify/services/pot_service.dart';
 
 class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
   final List<PotModel> tempData = [];

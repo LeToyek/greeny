@@ -11,7 +11,7 @@ class LeaderboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(usersProvider);
 
-    final singleUserController = ref.read(singleUserProvider.notifier);
+    final userClientController = ref.read(userClientProvider.notifier);
     return NestedScrollView(
       headerSliverBuilder: (context, innerBoxIsScrolled) => [
         SliverAppBar(
@@ -55,7 +55,7 @@ class LeaderboardScreen extends ConsumerWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                singleUserController
+                                userClientController
                                     .getUserById(data[index].userId);
                                 context.push("/user/detail");
                               },

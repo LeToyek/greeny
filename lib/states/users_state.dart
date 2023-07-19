@@ -128,3 +128,8 @@ final usersProvider =
 final singleUserProvider =
     StateNotifierProvider<UsersNotifier, AsyncValue<List<UserModel>>>(
         (ref) => UsersNotifier(usersServices: UsersServices())..getUser());
+
+final userClientProvider =
+    StateNotifierProvider<UsersNotifier, AsyncValue<List<UserModel>>>((ref) {
+  return UsersNotifier(usersServices: UsersServices())..getUsers();
+});

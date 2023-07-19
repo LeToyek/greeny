@@ -15,6 +15,8 @@ class TimePickerNotifier extends StateNotifier<TimeOfDay?> {
       print(pickedTime);
     }
   }
+
+  void resetTime() => state = null;
 }
 
 final timePickerProvider =

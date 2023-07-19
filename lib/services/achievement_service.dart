@@ -44,7 +44,7 @@ class AchievementService {
       achievementModel = AchievementModel.fromQuery(res);
       achievementModel.emblem = emblem;
 
-      if (emblem.counter <= achievementModel.counter) {
+      if (emblem.counter == achievementModel.counter) {
         await achievementRef.update({'isExist': true, 'isClaimed': true});
         achievementModel.isExist = true;
         return achievementModel;

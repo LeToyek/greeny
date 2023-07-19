@@ -12,6 +12,12 @@ Widget platFormField(
       const SizedBox(height: 8.0),
       TextFormField(
         controller: nameController,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter some text';
+          }
+          return null;
+        },
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: Theme.of(context).textTheme.bodyMedium!.apply(

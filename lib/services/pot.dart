@@ -5,14 +5,15 @@ class PotServices {
   static const String collectionPath = 'pots';
   final DocumentReference gardenRef;
 
-  static PotServices? _instance;
+  // static PotServices? _instance;
 
-  PotServices._internal({required this.gardenRef});
+  PotServices({required this.gardenRef});
+  // PotServices._internal({required this.gardenRef});
 
-  factory PotServices.getInstance({required DocumentReference gardenRef}) {
-    _instance ??= PotServices._internal(gardenRef: gardenRef);
-    return _instance!;
-  }
+  // factory PotServices.getInstance({required DocumentReference gardenRef}) {
+  //   _instance ??= PotServices._internal(gardenRef: gardenRef);
+  //   return _instance!;
+  // }
 
   Future<List<PotModel>> getPotsFromDB() async {
     try {

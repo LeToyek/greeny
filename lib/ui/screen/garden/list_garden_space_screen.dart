@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/garden_state.dart';
+import 'package:greenify/states/pot_state.dart';
 
 class ListGardenSpaceScreen extends ConsumerWidget {
   const ListGardenSpaceScreen({super.key});
@@ -36,8 +37,13 @@ class ListGardenSpaceScreen extends ConsumerWidget {
                     (context, index) {
                       final garden = data[index];
                       return GestureDetector(
-                          onTap: () => context.pushNamed("garden_detail",
-                              pathParameters: {"id": data[index].id}),
+                          onTap: () {
+                            ref
+                                .read(potProvider(data[index].id).notifier)
+                                .getPotsByGardenId(data[index].id);
+                            context.pushNamed("garden_detail",
+                                pathParameters: {"id": data[index].id});
+                          },
                           child: Container(
                             margin: const EdgeInsets.only(top: 8),
                             child: ClipRRect(

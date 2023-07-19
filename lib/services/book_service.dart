@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:greenify/model/book_model.dart';
-import 'package:greenify/services/auth.dart';
+import 'package:greenify/services/auth_service.dart';
 import 'package:ionicons/ionicons.dart';
 
 class CategoryModel {

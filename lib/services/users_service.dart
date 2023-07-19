@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:greenify/model/garden_model.dart';
 import 'package:greenify/model/user_model.dart';
-import 'package:greenify/services/auth.dart';
-import 'package:greenify/services/storage.dart';
+import 'package:greenify/services/auth_service.dart';
+import 'package:greenify/services/storage_service.dart';
 
 class UsersServices {
   StorageService storage = StorageService();

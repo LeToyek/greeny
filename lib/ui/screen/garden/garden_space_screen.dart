@@ -73,9 +73,9 @@ class GardenSpaceScreen extends ConsumerWidget {
                                 }
                                 return GestureDetector(
                                   onTap: () {
-                                    potsNotifier.getPotById(data[index].id!);
                                     context.push(
                                         "/garden/$id/detail/${data[index].id}");
+                                    potsNotifier.getPotById(data[index].id!);
                                     return;
                                   },
                                   child: PlantCard(

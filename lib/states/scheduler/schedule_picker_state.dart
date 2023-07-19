@@ -26,6 +26,8 @@ class SchedulePickerNotifier extends StateNotifier<int> {
       state = index;
     }
   }
+
+  void resetSchedule() => state = 0;
 }
 
 final schedulePickerProvider =

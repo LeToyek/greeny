@@ -52,10 +52,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pageController = ref.watch(plantAvatarProvider);
     final pageNotifier = ref.watch(plantAvatarProvider.notifier);
-
-    final fileController = ref.read(fileProvider.notifier);
 
     final scheduleController = ref.watch(schedulePickerProvider);
     final funcScheduleController = ref.read(schedulePickerProvider.notifier);
@@ -67,13 +64,13 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
     final potRef = ref.watch(potProvider(widget.gardenID));
 
     Future<void> _submitForm() async {
-      String name = nameController.text;
-      String description = "sample Description";
-      String wateringSchedule = scheduleController.toString();
-      String wateringTime = timeController.toString();
-      double height = 0;
-      PlantStatus status = PlantStatus.healthy;
-      String category = _characterImages[pageNotifier.getPage()]["name"];
+      // String name = nameController.text;
+      // String description = "sample Description";
+      // String wateringSchedule = scheduleController.toString();
+      // String wateringTime = timeController.toString();
+      // double height = 0;
+      // PlantStatus status = PlantStatus.healthy;
+      // String category = _characterImages[pageNotifier.getPage()]["name"];
 
       showDialog(
           context: context,

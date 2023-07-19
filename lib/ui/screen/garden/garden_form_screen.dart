@@ -55,6 +55,8 @@ class GardenFormScreen extends ConsumerStatefulWidget {
 class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   late TextEditingController nameController;
 
+  final _formKey = GlobalKey<FormState>();
+
   final _expValue = 300;
   final achievementId = "23UcfevnxkIp3J5sUSAz";
 
@@ -88,51 +90,83 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
     final potController = ref.read(singlePotProvider(widget.id).notifier);
     final potRef = ref.watch(singlePotProvider(widget.id));
 
+    final potSpaceController = ref.read(potProvider(widget.id).notifier);
+
     final expController = ref.read(expProvider.notifier);
 
     Future<void> _submitForm() async {
-      String name = nameController.text;
-      String description = "sample Description";
-      String wateringSchedule = scheduleController.toString();
-      String wateringTime = timeController!.format(context);
-      double height = 0;
-      PlantStatus status = PlantStatus.healthy;
-      String category = _characterImages[pageNotifier.getPage()]["name"];
+      if (!_formKey.currentState!.validate()) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Processing Data')));
+      } else {
+        if (timeController == null || scheduleController == 0) {
+          showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    icon: const Icon(Icons.warning),
+                    iconColor: Colors.orange.shade300,
+                    title: const Text("Perhatian"),
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    content: const Text(
+                        "Mohon isi jadwal penyiraman dan waktu penyiraman"),
+                  ));
+          return;
+        }
+        var realHour = timeController.hour.toString();
+        var realMinute = timeController.minute.toString();
+        if (realMinute.length == 1) {
+          realMinute = "0$realMinute";
+        }
+        if (realHour.length == 1) {
+          realHour = "0$realHour";
+        }
+        String name = nameController.text;
+        String description = "sample Description";
+        String wateringSchedule = scheduleController.toString();
+        String wateringTime = "$realHour:$realMinute";
+        double height = 0;
+        PlantStatus status = PlantStatus.healthy;
+        String category = _characterImages[pageNotifier.getPage()]["name"];
 
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                backgroundColor: Theme.of(context).colorScheme.background,
-                title: const Text("Konfirmasi"),
-                content:
-                    const Text("Apakah anda yakin ingin membuat artikel ini?"),
-                actions: [
-                  TextButton(
-                      onPressed: () => context.pop(),
-                      child: const Text("Batal")),
-                  TextButton(
-                      onPressed: () async {
-                        String image = await fileController.uploadFile();
-                        potController.createPot(PotModel(
-                            status: PotStatus.filled,
-                            positionIndex: 0,
-                            plant: PlantModel(
-                                name: name,
-                                description: description,
-                                image: image,
-                                wateringSchedule: wateringSchedule,
-                                wateringTime: wateringTime,
-                                height: height,
-                                status: status,
-                                category: category)));
-                        expController.increaseExp(_expValue, achievementId);
-                        if (context.mounted) {
-                          context.pop();
-                        }
-                      },
-                      child: const Text("Ya")),
-                ],
-              ));
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  title: const Text("Konfirmasi"),
+                  content: const Text(
+                      "Apakah anda yakin ingin membuat artikel ini?"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => context.pop(),
+                        child: const Text("Batal")),
+                    TextButton(
+                        onPressed: () async {
+                          String image = await fileController.uploadFile();
+                          potController.createPot(PotModel(
+                              status: PotStatus.filled,
+                              positionIndex: 0,
+                              plant: PlantModel(
+                                  name: name,
+                                  description: description,
+                                  image: image,
+                                  wateringSchedule: wateringSchedule,
+                                  wateringTime: wateringTime,
+                                  height: height,
+                                  status: status,
+                                  category: category)));
+                          expController.increaseExp(_expValue, achievementId);
+                          funcScheduleController.resetSchedule();
+                          funcTimeController.resetTime();
+                          if (context.mounted) {
+                            potSpaceController.getPots();
+                            context.pop();
+                            context.pop();
+                          }
+                        },
+                        child: const Text("Ya")),
+                  ],
+                ));
+      }
     }
 
     final textTheme = Theme.of(context).textTheme;
@@ -165,6 +199,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                       padding: const EdgeInsets.all(16.0),
                       child: Form(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
+                          key: _formKey,
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

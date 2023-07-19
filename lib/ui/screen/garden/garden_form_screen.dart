@@ -56,6 +56,8 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   late TextEditingController nameController;
 
   final _expValue = 300;
+  final achievementId = "23UcfevnxkIp3J5sUSAz";
+
   @override
   void initState() {
     // TODO: implement initState
@@ -123,9 +125,9 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                 height: height,
                                 status: status,
                                 category: category)));
-                        expController.increaseExp(_expValue);
+                        expController.increaseExp(_expValue, achievementId);
                         if (context.mounted) {
-                          context.push("/");
+                          context.pop();
                         }
                       },
                       child: const Text("Ya")),

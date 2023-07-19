@@ -22,6 +22,19 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     }
   }
 
+  Future<void> getPotsByGardenId(String id) async {
+    try {
+      state = const AsyncValue.loading();
+      final pots = await potServices.getPotsFromDB();
+      state = AsyncValue.data(pots);
+      tempData.addAll(pots);
+      fullData.addAll(pots);
+      print("pots = $pots");
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
   Future<void> turnBackData() async {
     try {
       state = const AsyncValue.loading();
@@ -56,8 +69,7 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
 final potProvider = StateNotifierProviderFamily<PotNotifier,
         AsyncValue<List<PotModel>>, String>(
     (ref, arg) => PotNotifier(
-        potServices: PotServices.getInstance(
-            gardenRef: GardensServices.getGardenRef(arg)))
+        potServices: PotServices(gardenRef: GardensServices.getGardenRef(arg)))
       ..getPots());
 
 // final detailPotProvider = StateNotifierProviderFamily<PotNotifier,
@@ -70,5 +82,5 @@ final potProvider = StateNotifierProviderFamily<PotNotifier,
 final singlePotProvider = StateNotifierProviderFamily<PotNotifier,
         AsyncValue<List<PotModel>>, String>(
     (ref, arg) => PotNotifier(
-        potServices: PotServices.getInstance(
-            gardenRef: GardensServices.getGardenRef(arg))));
+        potServices:
+            PotServices(gardenRef: GardensServices.getGardenRef(arg))));

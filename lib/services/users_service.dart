@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:greenify/constants/level_list.dart';
 import 'package:greenify/model/garden_model.dart';
 import 'package:greenify/model/user_model.dart';
 import 'package:greenify/services/auth_service.dart';
@@ -72,15 +73,32 @@ class UsersServices {
     }
   }
 
-  Future<void> increaseExpUser(int exp) async {
+  Future<String> increaseExpUser(int exp) async {
     try {
-      getUserById();
-      await users.doc(user!.uid).update({
+      UserModel? userModel = await getUserById();
+      await users.doc(userModel.userId).update({
         "exp": FieldValue.increment(exp),
         "updated_at": DateTime.now(),
       });
+      if (isLevelUp(userModel.exp + exp, userModel.level)) {
+        return "level_up";
+      }
+      return "success";
     } catch (e) {
       throw Exception('Error occured!');
     }
+  }
+
+  bool isLevelUp(int exp, int level) {
+    levelList.map((e) {
+      if (e.level > level) {
+        if (e.exp <= exp) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+    return false;
   }
 }

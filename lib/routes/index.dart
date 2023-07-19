@@ -8,11 +8,11 @@ import 'package:greenify/ui/screen/book/book_create_screen.dart';
 import 'package:greenify/ui/screen/book/book_detail_screen.dart';
 import 'package:greenify/ui/screen/book/book_list_screen.dart';
 import 'package:greenify/ui/screen/book/book_screen.dart';
+import 'package:greenify/ui/screen/client/user_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_form_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_pot_detail_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_space_screen.dart';
 import 'package:greenify/ui/screen/garden/list_garden_space_screen.dart';
-import 'package:greenify/ui/screen/home/content/account_screen.dart';
 import 'package:greenify/ui/screen/home/sekelaton_screen.dart';
 import 'package:greenify/ui/screen/leaderboard/leaderboard_screen.dart';
 import 'package:greenify/ui/screen/starter/splash_screen.dart';
@@ -28,7 +28,7 @@ final _appRoutes =
   GoRoute(
       path: "/user/detail",
       builder: (context, state) {
-        return const AccountScreen();
+        return const UserClientScreen();
       }),
   GoRoute(path: "/book", builder: (context, state) => const BookScreen()),
   GoRoute(

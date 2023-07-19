@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:greenify/services/users.dart';
+import 'package:greenify/services/users_service.dart';
 
 class ExpNotifier extends StateNotifier<AsyncValue<String>> {
   UsersServices usersServices;

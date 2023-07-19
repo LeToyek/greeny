@@ -7,7 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/config/theme.dart';
 import 'package:greenify/routes/index.dart';
-import 'package:greenify/services/background.dart';
+import 'package:greenify/services/background_service.dart';
 import 'package:greenify/states/theme_mode.dart';
 import 'package:greenify/utils/notification_helper.dart';
 import 'package:hive/hive.dart';

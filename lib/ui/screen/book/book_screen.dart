@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:greenify/services/book.dart';
+import 'package:greenify/services/book_service.dart';
 import 'package:greenify/ui/widgets/card/info_card.dart';
 import 'package:ionicons/ionicons.dart';
 

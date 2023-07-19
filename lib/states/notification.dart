@@ -1,4 +1,4 @@
-import 'package:greenify/services/background.dart';
+import 'package:greenify/services/background_service.dart';
 import 'package:greenify/utils/notification_helper.dart';
 import 'package:riverpod/riverpod.dart';
 

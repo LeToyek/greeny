@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/model/book_model.dart';
-import 'package:greenify/services/book.dart';
+import 'package:greenify/services/book_service.dart';
 
 class BookNotifier extends StateNotifier<AsyncValue<List<BookModel>>> {
   final BookServices bookServices;

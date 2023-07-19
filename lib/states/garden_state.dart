@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/model/garden_model.dart';
-import 'package:greenify/services/garden.dart';
+import 'package:greenify/services/garden_service.dart';
 
 class GardenNotifier extends StateNotifier<AsyncValue<List<GardenModel>>> {
   GardenNotifier() : super(const AsyncValue.loading());

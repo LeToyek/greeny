@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/model/user_model.dart';
-import 'package:greenify/services/auth.dart';
-import 'package:greenify/services/users.dart';
+import 'package:greenify/services/auth_service.dart';
+import 'package:greenify/services/users_service.dart';
 
 class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   UsersServices usersServices;

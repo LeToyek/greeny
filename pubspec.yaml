@@ -67,6 +67,8 @@ dependencies:
   html_editor_enhanced: ^2.5.1
   flutter_html: ^0.11.1
   photo_view: ^0.14.0
+  tflite: ^1.1.2
+  camera: ^0.10.5+2
 
 dev_dependencies:
   flutter_test:

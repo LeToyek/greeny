@@ -1,4 +1,5 @@
 //make basic route with go router
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import 'package:greenify/ui/screen/book/book_detail_screen.dart';
 import 'package:greenify/ui/screen/book/book_list_screen.dart';
 import 'package:greenify/ui/screen/book/book_screen.dart';
 import 'package:greenify/ui/screen/client/user_screen.dart';
+import 'package:greenify/ui/screen/disease/disease_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_form_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_pot_detail_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_space_screen.dart';
@@ -69,6 +71,15 @@ final _appRoutes =
       builder: (context, state) {
         final id = state.pathParameters["id"]!;
         return GardenSpaceScreen(id: id);
+      }),
+  GoRoute(
+      path: "/disease",
+      builder: (context, state) {
+        Map<String, List<CameraDescription>?> args =
+            state.extra as Map<String, List<CameraDescription>?>;
+        return DiseaseScreen(
+          cameras: args['cameras'],
+        );
       }),
   GoRoute(
       path: "/leaderboard",

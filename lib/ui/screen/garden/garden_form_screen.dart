@@ -54,6 +54,7 @@ class GardenFormScreen extends ConsumerStatefulWidget {
 
 class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   late TextEditingController nameController;
+  late TextEditingController deskripsiController;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -65,6 +66,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
     // TODO: implement initState
     super.initState();
     nameController = TextEditingController();
+    deskripsiController = TextEditingController();
   }
 
   @override
@@ -72,6 +74,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
     // TODO: implement dispose
     super.dispose();
     nameController.dispose();
+    deskripsiController.dispose();
   }
 
   @override
@@ -121,7 +124,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
           realHour = "0$realHour";
         }
         String name = nameController.text;
-        String description = "sample Description";
+        String description = deskripsiController.text;
         String wateringSchedule = scheduleController.toString();
         String wateringTime = "$realHour:$realMinute";
         double height = 0;
@@ -185,7 +188,6 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
         body: potRef.when(
             data: (_) {
               return SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
                 child: Material(
                   color: Theme.of(context).colorScheme.background,
                   child: Card(
@@ -196,7 +198,11 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12))),
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.only(
+                          top: 16,
+                          left: 16,
+                          right: 16,
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: Form(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           key: _formKey,
@@ -220,8 +226,17 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                 ),
                                 plantChoose(pageController, context, ref,
                                     _characterImages),
-                                platFormField("Nama", "Masukkan nama tanaman",
-                                    context, nameController),
+                                platFormField(
+                                    label: "Nama",
+                                    hint: "Masukkan nama tanaman",
+                                    context: context,
+                                    nameController: nameController,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Nama tidak boleh kosong";
+                                      }
+                                      return null;
+                                    }),
                                 const SizedBox(height: 16),
                                 Text(
                                   "Jadwal Penyiraman",
@@ -248,14 +263,21 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                       .apply(fontWeightDelta: 2),
                                 ),
                                 const SizedBox(
-                                  height: 8,
-                                ),
-                                const SizedBox(
                                   height: 16,
                                 ),
                                 UploadImageContainer(
                                   fileNotifier: fileController,
                                 ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                platFormField(
+                                    label: "Deskripsi",
+                                    hint: "Masukkan deskripsi tanaman",
+                                    context: context,
+                                    nameController: deskripsiController,
+                                    maxLines: 4,
+                                    validator: (p0) => null),
                                 const SizedBox(
                                   height: 16,
                                 ),
@@ -285,6 +307,9 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                                   color: Colors.white),
                                         ),
                                       )),
+                                ),
+                                const SizedBox(
+                                  height: 16,
                                 )
                               ])),
                     ),

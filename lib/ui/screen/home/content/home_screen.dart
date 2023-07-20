@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -48,7 +49,12 @@ class HomeScreen extends ConsumerWidget {
                   onPressed: () => context.push("/garden"),
                 ),
                 TitledCard(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final cameras = await availableCameras();
+                    if (context.mounted) {
+                      context.push("/disease", extra: {"cameras": cameras});
+                    }
+                  },
                   title: 'Deteksi Penyakit',
                   icon: Ionicons.heart_outline,
                   position: "bottom_left",

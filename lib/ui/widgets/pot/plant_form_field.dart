@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 Widget platFormField(
-    String label, String hint, context, TextEditingController nameController) {
+    {required String label,
+    required String hint,
+    context,
+    required TextEditingController nameController,
+    required String? Function(String?) validator,
+    int? maxLines}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -12,12 +17,8 @@ Widget platFormField(
       const SizedBox(height: 8.0),
       TextFormField(
         controller: nameController,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter some text';
-          }
-          return null;
-        },
+        validator: validator,
+        maxLines: maxLines ?? 1,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: Theme.of(context).textTheme.bodyMedium!.apply(

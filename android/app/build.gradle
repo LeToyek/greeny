@@ -33,8 +33,9 @@ android {
     ndkVersion flutter.ndkVersion
     
     aaptOptions {
-    noCompress 'tflite'
-    noCompress 'lite'}
+        noCompress 'tflite'
+        noCompress 'lite'
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -75,6 +76,7 @@ flutter {
 }
 
 dependencies {
-
+    implementation 'org.tensorflow:tensorflow-lite:+'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:+'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

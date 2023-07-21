@@ -42,6 +42,7 @@ AlertDialog achievementDialog(BuildContext context,
         ElevatedButton(
             onPressed: () {
               expNotifier.turnStateToNull();
+              expNotifier.turnToClosed(achievementModel.id);
             },
             child: const Text("Tutup"))
       ],

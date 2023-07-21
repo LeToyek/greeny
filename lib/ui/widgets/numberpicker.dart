@@ -47,8 +47,10 @@ class _GreenNumberPickerState extends State<GreenNumberPicker> {
                 color: Theme.of(context).colorScheme.onBackground,
               ),
               onPressed: () => setState(() {
-                final newValue = _currentIntValue - 10;
-                _currentIntValue = newValue.clamp(0, 100);
+                if (_currentIntValue > 0) {
+                  final newValue = _currentIntValue - 1;
+                  _currentIntValue = newValue.clamp(0, 20);
+                }
               }),
             ),
             Text('$_currentIntValue hari sekali'),
@@ -58,8 +60,10 @@ class _GreenNumberPickerState extends State<GreenNumberPicker> {
                 color: Theme.of(context).colorScheme.onBackground,
               ),
               onPressed: () => setState(() {
-                final newValue = _currentIntValue + 20;
-                _currentIntValue = newValue.clamp(0, 100);
+                if (_currentIntValue <= 20) {
+                  final newValue = _currentIntValue + 1;
+                  _currentIntValue = newValue.clamp(0, 20);
+                }
               }),
             ),
           ],

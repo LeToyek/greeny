@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class DateHelper {
@@ -20,5 +21,47 @@ class DateHelper {
     var resultTomorrow = completeFormat.parseStrict(tomorrowDateAndTime);
 
     return now.isAfter(resultToday) ? resultTomorrow : resultToday;
+  }
+
+  static Timestamp parseTimestampString(String timestampStr) {
+    // Extract seconds and nanoseconds from the string
+
+    int seconds = int.parse(timestampStr.split(", ")[0].split("=")[1]);
+    int nanoseconds = int.parse(
+        timestampStr.split(", ")[1].split("=")[1].replaceAll(")", ""));
+
+    // Create and return the Timestamp object
+    return Timestamp(seconds, nanoseconds);
+  }
+
+  static String timestampToReadable(String rawTime) {
+    Timestamp timestamp = parseTimestampString(rawTime);
+    DateTime dt = DateTime.fromMillisecondsSinceEpoch(
+      timestamp.seconds * 1000 + timestamp.nanoseconds ~/ 1000000,
+      isUtc: true,
+    );
+
+    // Formatting the date as "21 Juni 2023"
+    String formattedDate = "${dt.day} ${_getMonthName(dt.month)} ${dt.year}";
+    return formattedDate;
+  }
+
+  static String _getMonthName(int month) {
+    List<String> monthNames = [
+      "", // Index 0 not used
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
+    ];
+    return monthNames[month];
   }
 }

@@ -53,6 +53,47 @@ List<String> diseases = [
   "tomato healthy",
 ];
 
+List<String> penyakit = [
+  "Penyakit busuk apel",
+  "Penyakit busuk hitam apel",
+  "Karat apel cedar",
+  "Apel sehat",
+  "Blueberry sehat",
+  "Kutu tepung pada ceri termasuk ceri asam",
+  "Ceri asam sehat",
+  "Bercak daun Cercospora dan bercak abu-abu pada jagung jagung",
+  "Karat umum pada jagung jagung",
+  "Hawar daun utara pada jagung jagung",
+  "Jagung sehat",
+  "Busuk hitam pada anggur",
+  "Esca hitam pada anggur",
+  "Bercak daun Isariopsis pada anggur",
+  "Anggur sehat",
+  "Kebun jeruk citrus greening",
+  "Bercak bakteri pada persik",
+  "Persik sehat",
+  "Bercak bakteri pada paprika bell",
+  "Paprika bell sehat",
+  "Hawar daun awal pada kentang",
+  "Hawar daun terlambat pada kentang",
+  "Kentang sehat",
+  "Raspberry sehat",
+  "Kedelai sehat",
+  "Kutu tepung pada labu",
+  "Strawberry layu daun",
+  "Strawberry sehat",
+  "Bercak bakteri pada tomat",
+  "Hawar daun awal pada tomat",
+  "Hawar daun terlambat pada tomat",
+  "Jamur pada daun tomat",
+  "Bercak daun Septoria pada tomat",
+  "Tungau laba-laba dua bintik pada tomat",
+  "Bercak target pada tomat",
+  "Kutil kuning daun pada tomat",
+  "Virus mosaic tomat pada tomat",
+  "Tomat sehat"
+];
+
 class InputOutput {
   final Object input;
   final Object output;
@@ -139,7 +180,7 @@ class TFLiteDiseaseDetectionService {
       }
     }
 
-    return diseases[bestInd];
+    return penyakit[bestInd];
   }
 
   Future<void> dispose() async {

@@ -9,6 +9,7 @@ class BookModel {
   final String category;
   final String content;
   String? userID;
+  UserModel? user;
   String? createdAt;
   String? updatedAt;
 
@@ -29,7 +30,8 @@ class BookModel {
         createdAt = data['created_at'].toString(),
         updatedAt = data['updated_at'].toString();
 
-  Future<UserModel> getUserModel() async {
-    return await UsersServices().getUserById(id: userID!);
+  Future<void> getUserModel() async {
+    print("timestamp $createdAt");
+    user = await UsersServices().getUserById(id: userID!);
   }
 }

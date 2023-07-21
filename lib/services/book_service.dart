@@ -51,9 +51,15 @@ class BookServices {
         FirebaseFirestore.instance.collection('books');
     List<BookModel> books = [];
     final res = await bookRef.get();
-    res.docs.where((element) => element['category'] == category).forEach((e) {
-      books.add(BookModel.fromQuery(e));
-    });
+
+    for (final doc in res.docs) {
+      if (doc['category'] == category) {
+        final book = BookModel.fromQuery(doc);
+        await book.getUserModel();
+        books.add(book);
+      }
+    }
+
     return books;
   }
 
@@ -61,9 +67,10 @@ class BookServices {
     CollectionReference bookRef =
         FirebaseFirestore.instance.collection('books');
     final res = await bookRef.doc(id).get();
-    print("res: $res");
-    print("id: $id");
-    return BookModel.fromQuery(res);
+    final book = BookModel.fromQuery(res);
+    await book.getUserModel();
+    print(book);
+    return book;
   }
 
   Future<BookModel> insertBookToDB(BookModel book) async {

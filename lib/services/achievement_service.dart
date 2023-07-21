@@ -29,12 +29,15 @@ class AchievementService {
       final res = await achievementRef.get();
       final emblem = await EmblemService.getEmblemByID(achievementId);
       AchievementModel achievementModel;
+      print("id : $achievementId");
+      print("id : ${res.exists}");
       if (!res.exists) {
         achievementModel = AchievementModel(
           id: achievementId,
           counter: 1,
           isExist: false,
-          isClaimed: false,
+          isClaimed: true,
+          isClosed: false,
         );
         achievementRef.set(achievementModel.toQuery());
         achievementModel.emblem = emblem;
@@ -44,18 +47,17 @@ class AchievementService {
       achievementModel = AchievementModel.fromQuery(res);
       achievementModel.emblem = emblem;
 
+      await achievementRef.update({'counter': FieldValue.increment(1)});
+
+      achievementModel.counter += 1;
+
+      print(
+          "counter : ${emblem.counter} counter : ${achievementModel.counter}");
       if (emblem.counter == achievementModel.counter) {
-        await achievementRef.update({'isExist': true, 'isClaimed': true});
+        await achievementRef.update({'isExist': true});
         achievementModel.isExist = true;
         return achievementModel;
       }
-
-      if (!achievementModel.isClaimed) {
-        await achievementRef.update({'isClaimed': true});
-        achievementModel.isClaimed = true;
-      }
-      await achievementRef.update({'counter': FieldValue.increment(1)});
-      achievementModel.counter += 1;
 
       return achievementModel;
     } catch (e) {

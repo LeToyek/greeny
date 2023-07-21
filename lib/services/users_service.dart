@@ -80,7 +80,10 @@ class UsersServices {
         "exp": FieldValue.increment(exp),
         "updated_at": DateTime.now(),
       });
-      if (isLevelUp(userModel.exp + exp, userModel.level)) {
+      print("ndasmu ${userModel.exp + exp}");
+      final levelUp = isLevelUp(userModel.exp + exp, userModel.level);
+      print(levelUp);
+      if (levelUp) {
         return "level_up";
       }
       return "success";
@@ -90,15 +93,16 @@ class UsersServices {
   }
 
   bool isLevelUp(int exp, int level) {
-    levelList.map((e) {
-      if (e.level > level) {
+    for (var e in levelList) {
+      if (e.level == level) {
         if (e.exp <= exp) {
+          increaseLevelUser();
           return true;
         } else {
           return false;
         }
       }
-    });
+    }
     return false;
   }
 }

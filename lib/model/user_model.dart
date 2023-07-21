@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:greenify/model/achievement_model.dart';
+import 'package:greenify/model/book_model.dart';
 import 'package:greenify/model/garden_model.dart';
-import 'package:greenify/services/users_service.dart';
 
 class UserModel {
   String userId;
@@ -11,6 +12,8 @@ class UserModel {
   int exp;
   String? photoFrame;
   List<GardenModel>? gardens;
+  List<AchievementModel>? achievements;
+  List<BookModel>? books;
 
   UserModel(
       {required this.email,
@@ -20,7 +23,7 @@ class UserModel {
       this.level = 1,
       this.exp = 0,
       this.photoFrame,
-      required this.gardens});
+      this.gardens});
 
   UserModel.fromQuery(DocumentSnapshot<Object?> element)
       : email = element['email'],

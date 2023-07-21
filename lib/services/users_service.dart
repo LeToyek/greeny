@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:greenify/constants/level_list.dart';
+import 'package:greenify/model/achievement_model.dart';
+import 'package:greenify/model/book_model.dart';
 import 'package:greenify/model/garden_model.dart';
 import 'package:greenify/model/user_model.dart';
 import 'package:greenify/services/auth_service.dart';
+import 'package:greenify/services/emblem_service.dart';
 import 'package:greenify/services/storage_service.dart';
 
 class UsersServices {
@@ -33,11 +36,43 @@ class UsersServices {
       id ??= user!.uid;
       DocumentSnapshot documentSnapshot = await users.doc(id).get();
       UserModel userMod = UserModel.fromQuery(documentSnapshot);
-      userMod.gardens = await UsersServices.getUserRef(id: documentSnapshot.id)
-          .collection(GardenModel.collectionPath)
-          .get()
-          .then((value) =>
-              value.docs.map((e) => GardenModel.fromQuery(e)).toList());
+      DocumentReference userDocument =
+          UsersServices.getUserRef(id: documentSnapshot.id);
+
+      final resGarden =
+          await userDocument.collection(GardenModel.collectionPath).get();
+      final resAchievement =
+          await userDocument.collection(AchievementModel.collectionPath).get();
+
+      List<AchievementModel> achievementList = [];
+      if (resGarden.docs.isNotEmpty) {
+        userMod.gardens = await userDocument
+            .collection(GardenModel.collectionPath)
+            .get()
+            .then((value) =>
+                value.docs.map((e) => GardenModel.fromQuery(e)).toList());
+      }
+      if (resAchievement.docs.isNotEmpty) {
+        await Future.forEach(resAchievement.docs, (element) async {
+          AchievementModel achievementModel =
+              AchievementModel.fromQuery(element);
+          achievementModel.emblem =
+              await EmblemService.getEmblemByID(element.id);
+          achievementList.add(achievementModel);
+        });
+      }
+      List<BookModel> books = [];
+      final resBook =
+          await FirebaseFirestore.instance.collection("books").get();
+
+      for (var element in resBook.docs) {
+        final book = BookModel.fromQuery(element);
+        if (book.userID == userMod.userId) {
+          books.add(book);
+        }
+      }
+      userMod.books = books;
+      userMod.achievements = achievementList;
 
       return userMod;
     } catch (e) {

@@ -20,6 +20,14 @@ class AchievementService {
     }
   }
 
+  Future<void> setClose(String achievementId) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    DocumentReference achievementRef = UsersServices.getUserRef(id: userId)
+        .collection(AchievementModel.collectionPath)
+        .doc(achievementId);
+    await achievementRef.update({"isClosed": true});
+  }
+
   Future<AchievementModel> increaseEmblemCounter(String achievementId) async {
     try {
       final userId = FirebaseAuth.instance.currentUser!.uid;

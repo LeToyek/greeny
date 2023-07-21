@@ -59,7 +59,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _expValue = 300;
-  final achievementId = "23UcfevnxkIp3J5sUSAz";
+  final achievementId = ["23UcfevnxkIp3J5sUSAz", "e39lg5J9nGZqfnUgi0zN"];
 
   @override
   void initState() {

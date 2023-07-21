@@ -6,6 +6,7 @@ class AchievementModel {
   int counter;
   EmblemModel? emblem;
   bool isClaimed;
+  bool isClosed;
   bool isExist;
   static const String collectionPath = 'achievements';
 
@@ -14,13 +15,15 @@ class AchievementModel {
     required this.counter,
     required this.isClaimed,
     required this.isExist,
+    required this.isClosed,
   });
 
   AchievementModel.fromQuery(DocumentSnapshot<Object?> query)
       : id = query['id'],
         counter = query['counter'],
         isClaimed = query['isClaimed'],
-        isExist = query['isExist'];
+        isExist = query['isExist'],
+        isClosed = query['isClosed'];
 
   Map<String, dynamic> toQuery() => {
         'id': id,

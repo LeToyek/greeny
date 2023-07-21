@@ -14,7 +14,7 @@ AlertDialog achievementDialog(BuildContext context,
         Text("Selamat! Anda mendapatkan pencapaian baru!",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium!.apply(
-                color: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.onBackground,
                 fontWeightDelta: 2,
                 fontSizeDelta: 4)),
         const SizedBox(
@@ -22,7 +22,16 @@ AlertDialog achievementDialog(BuildContext context,
         ),
         Image.network(achievementModel.emblem!.imageUrl, height: 100),
         const SizedBox(
-          height: 24,
+          height: 8,
+        ),
+        Text(achievementModel.emblem!.title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge!.apply(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeightDelta: 2,
+                fontSizeDelta: 8)),
+        const SizedBox(
+          height: 12,
         ),
         Text(achievementModel.emblem!.description,
             textAlign: TextAlign.center,

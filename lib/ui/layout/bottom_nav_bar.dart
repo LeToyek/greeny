@@ -34,18 +34,23 @@ class GrBottomNavBar extends ConsumerWidget {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Ionicons.home_outline),
+            activeIcon: Icon(Ionicons.home),
             label: "Home",
           ),
           BottomNavigationBarItem(
             icon: Icon(Ionicons.information_circle_outline),
+            activeIcon: Icon(Ionicons.information_circle),
             label: "About",
           ),
           BottomNavigationBarItem(
             icon: Icon(Ionicons.settings_outline),
+            activeIcon: Icon(Ionicons.settings),
             label: "Settings",
           ),
           BottomNavigationBarItem(
-              icon: Icon(Ionicons.person_outline), label: "Profile"),
+              icon: Icon(Ionicons.person_outline),
+              activeIcon: Icon(Ionicons.person),
+              label: "Profile"),
         ],
       ),
     );

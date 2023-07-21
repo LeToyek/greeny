@@ -104,8 +104,11 @@ class GardenSpaceScreen extends ConsumerWidget {
                   error: (e, s) => Center(child: Text(e.toString())))),
           expRef.when(
             data: (data) {
-              if (data != null && !data.isClaimed) {
-                return achievementDialog(context, data, expNotifier);
+              if (data.isNotEmpty &&
+                  data.last.isExist &&
+                  data.last.isClaimed &&
+                  data.last.isClosed) {
+                return achievementDialog(context, data.last, expNotifier);
               }
               return Container();
             },

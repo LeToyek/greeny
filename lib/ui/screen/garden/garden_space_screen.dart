@@ -104,11 +104,13 @@ class GardenSpaceScreen extends ConsumerWidget {
                   error: (e, s) => Center(child: Text(e.toString())))),
           expRef.when(
             data: (data) {
-              if (data.isNotEmpty &&
-                  data.last.isExist &&
-                  data.last.isClaimed &&
-                  data.last.isClosed) {
-                return achievementDialog(context, data.last, expNotifier);
+              if (data.isNotEmpty) {
+                for (var e in data) {
+                  print('e.isClosed ${e.isClosed}');
+                  if (!e.isClosed) {
+                    return achievementDialog(context, e, expNotifier);
+                  }
+                }
               }
               return Container();
             },

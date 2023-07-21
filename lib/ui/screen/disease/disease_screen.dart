@@ -19,6 +19,7 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late String imagePath;
+  bool isLoading = false;
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
     if (_controller == null) {
@@ -54,6 +55,7 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final colorTheme = Theme.of(context).colorScheme;
     final deviceRatio = size.width / size.height;
     return Scaffold(
       appBar: AppBar(
@@ -65,15 +67,36 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             // If the Future is complete, display the preview.
-            return CameraPreview(
-              _controller,
-              child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTapDown: (details) => onViewFinderTap(details, constraints),
-                );
-              }),
+            return Stack(
+              children: [
+                CameraPreview(
+                  _controller,
+                  child: LayoutBuilder(builder:
+                      (BuildContext context, BoxConstraints constraints) {
+                    return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTapDown: (details) =>
+                          onViewFinderTap(details, constraints),
+                    );
+                  }),
+                ),
+                isLoading
+                    ? Container(
+                        color: Colors.transparent,
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              CircularProgressIndicator(),
+                              SizedBox(height: 16),
+                              Text("Processing...",
+                                  style: TextStyle(color: Colors.white))
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container()
+              ],
             );
           } else {
             // Otherwise, display a loading indicator.
@@ -83,11 +106,16 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         // Provide an onPressed callback.
+        enableFeedback: true,
+
         onPressed: () async {
           // Take the Picture in a try / catch block. If anything goes wrong,
           // catch the error.
           try {
             // Ensure that the camera is initialized.
+            setState(() {
+              isLoading = true;
+            });
             await _initializeControllerFuture;
 
             // Attempt to take a picture and get the file `image`
@@ -106,9 +134,14 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
             print("imageRes: $imageRes");
             String res = await _diseaseDetectionService.detectDisease(imageRes);
             print("res: $res");
+            setState(() {
+              isLoading = false;
+            });
             showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
                 ),
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 context: context,
@@ -116,6 +149,9 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        const SizedBox(
+                          height: 8,
+                        ),
                         Text("Hasil Deteksi Greeny",
                             textAlign: TextAlign.center,
                             style: Theme.of(context)

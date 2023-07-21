@@ -4,8 +4,8 @@ import 'package:greenify/services/garden_service.dart';
 import 'package:greenify/services/pot_service.dart';
 
 class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
-  final List<PotModel> tempData = [];
-  final List<PotModel> fullData = [];
+  List<PotModel> tempData = [];
+  List<PotModel> fullData = [];
   final PotServices potServices;
   PotNotifier({required this.potServices}) : super(const AsyncValue.data([]));
 
@@ -14,8 +14,8 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
       state = const AsyncValue.loading();
       final pots = await potServices.getPotsFromDB();
       state = AsyncValue.data(pots);
-      tempData.addAll(pots);
-      fullData.addAll(pots);
+      tempData = pots;
+      fullData = pots;
       print('tempData = $tempData');
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
@@ -27,8 +27,8 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
       state = const AsyncValue.loading();
       final pots = await potServices.getPotsFromDB();
       state = AsyncValue.data(pots);
-      tempData.addAll(pots);
-      fullData.addAll(pots);
+      tempData = pots;
+      fullData = pots;
       print("pots = $pots");
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);

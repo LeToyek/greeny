@@ -23,6 +23,10 @@ class ExpNotifier extends StateNotifier<AsyncValue<List<AchievementModel>>> {
     }
   }
 
+  void turnToClosed(String achievementId) {
+    AchievementService().setClose(achievementId);
+  }
+
   void turnStateToNull() {
     state = const AsyncValue.data([]);
   }

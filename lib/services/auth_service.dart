@@ -130,7 +130,8 @@ class FireAuth {
       });
       await users.doc(user.uid).collection('gardens').doc(gardenId).set({
         "name": "My Garden",
-        "background_url": "saodkoas",
+        "background_url":
+            "https://akcdn.detik.net.id/visual/2015/03/05/08834c51-d4e2-418f-933d-73387f82444c_169.jpg?w=650",
         "created_at": DateTime.now(),
         "updated_at": DateTime.now(),
       });

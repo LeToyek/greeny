@@ -67,8 +67,10 @@ dependencies:
   html_editor_enhanced: ^2.5.1
   flutter_html: ^0.11.1
   photo_view: ^0.14.0
-  tflite: ^1.1.2
   camera: ^0.10.5+2
+  tflite_flutter: ^0.10.1
+  image: ^4.0.17
+  path_provider: ^2.0.15
 
 dev_dependencies:
   flutter_test:
@@ -98,6 +100,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - lib/assets/
+    - lib/assets/model.tflite
     - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,0 +1,148 @@
+import 'package:image/image.dart' as imglib;
+import 'package:tflite_flutter/tflite_flutter.dart';
+
+// enum Expression {
+//   unknown,
+//   anger,
+//   disgust,
+//   fear,
+//   happiness,
+//   neutral,
+//   sadness,
+//   surprise,
+// }
+
+List<String> diseases = [
+  "apple apple scab",
+  "apple black rot",
+  "apple cedar apple rust",
+  "apple healthy",
+  "blueberry healthy",
+  "cherry including sour powdery mildew",
+  "cherry including sour healthy",
+  "corn maize cercospora leaf spot gray leaf spot",
+  "corn maize common rust ",
+  "corn maize northern leaf blight",
+  "corn maize healthy",
+  "grape black rot",
+  "grape esca black measles ",
+  "grape leaf blight isariopsis leaf spot ",
+  "grape healthy",
+  "orange haunglongbing citrus greening ",
+  "peach bacterial spot",
+  "peach healthy",
+  "pepper bell bacterial spot",
+  "pepper bell healthy",
+  "potato early blight",
+  "potato late blight",
+  "potato healthy",
+  "raspberry healthy",
+  "soybean healthy",
+  "squash powdery mildew",
+  "strawberry leaf scorch",
+  "strawberry healthy",
+  "tomato bacterial spot",
+  "tomato early blight",
+  "tomato late blight",
+  "tomato leaf mold",
+  "tomato septoria leaf spot",
+  "tomato spider mites two spotted spider mite",
+  "tomato target spot",
+  "tomato tomato yellow leaf curl virus",
+  "tomato tomato mosaic virus",
+  "tomato healthy",
+];
+
+class InputOutput {
+  final Object input;
+  final Object output;
+
+  InputOutput(this.input, this.output);
+}
+
+class TFLiteDiseaseDetectionService {
+  Interpreter? _interpreterInstance;
+
+  // static List<String> emotions = [
+  //   "",
+  //   "Anger",
+  //   "Disgust",
+  //   "Fear",
+  //   "Happiness",
+  //   "Neutral",
+  //   "Sadness",
+  //   "Surprise"
+  // ];
+
+  Future<Interpreter> get _interpreter async =>
+      _interpreterInstance ??= await Interpreter.fromAsset(
+        'lib/assets/model.tflite',
+        options: InterpreterOptions()..threads = 4,
+      );
+
+  Future<String> detectDisease(imglib.Image img) async {
+    final imageInput = imglib.copyResize(
+      img,
+      // width: 64,
+      // height: 64,
+      width: 224,
+      height: 224,
+    );
+
+    final imageMatrix = List.generate(
+      imageInput.height,
+      (y) => List.generate(
+        imageInput.width,
+        (x) {
+          final pixel = imageInput.getPixel(x, y);
+          return [pixel.r, pixel.g, pixel.b];
+        },
+      ),
+    );
+
+    final output = await _runInference(imageMatrix);
+
+    print(output);
+
+    return _getDisease(output);
+  }
+
+  Future<List<num>> _runInference(
+    List<List<List<num>>> imageMatrix,
+  ) async {
+    final interpreter = await _interpreter;
+
+    final input = [imageMatrix];
+    final output = List.filled(1 * diseases.length, 0.0).reshape(
+      [1, diseases.length],
+    );
+    print('input: ${input[0].length}');
+    print('output: ${diseases.length}');
+
+    // Run inference
+    interpreter.run(input, output);
+
+    return output.first;
+  }
+
+  static String _getDisease(List<num>? emotionScores) {
+    int bestInd = 0;
+
+    if (emotionScores != null) {
+      num maxScore = 0;
+
+      for (int i = 0; i < emotionScores.length; ++i) {
+        if (maxScore < emotionScores[i]) {
+          maxScore = emotionScores[i];
+          bestInd = i;
+        }
+      }
+    }
+
+    return diseases[bestInd];
+  }
+
+  Future<void> dispose() async {
+    (_interpreterInstance)?.close();
+  }
+}

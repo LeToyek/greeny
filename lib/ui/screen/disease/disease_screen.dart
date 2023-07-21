@@ -1,188 +1,154 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tflite/tflite.dart';
+import 'package:greenify/services/disease_service.dart';
+import 'package:image/image.dart' as imglib;
 
-class DiseaseScreen extends ConsumerStatefulWidget {
+class DiseaseScreen extends StatefulWidget {
   final List<CameraDescription>? cameras;
   const DiseaseScreen({super.key, required this.cameras});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _DiseaseScreenState();
+  State<DiseaseScreen> createState() => _DiseaseScreenState();
 }
 
-class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
-  List? recognitionsList;
-  CameraImage? cameraImage;
-  Future initCamera(CameraDescription cameraDescription) async {
-    _cameraController =
-        CameraController(cameraDescription, ResolutionPreset.high);
-    try {
-      await _cameraController.initialize().then((value) => {
-            setState(() {
-              _cameraController.startImageStream((image) {
-                if (!mounted) {
-                  return;
-                }
-                cameraImage = image;
-                runModel();
-              });
-            })
-          });
-    } on CameraException catch (e) {
-      debugPrint("camera error $e");
-    }
-  }
+class _DiseaseScreenState extends State<DiseaseScreen> {
+  final TFLiteDiseaseDetectionService _diseaseDetectionService =
+      TFLiteDiseaseDetectionService();
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+  late String imagePath;
 
-  Future loadModel() async {
-    Tflite.close();
-    await Tflite.loadModel(
-        model: "lib/assets/model.tflite", labels: "lib/assets/labels.txt");
-  }
-
-  runModel() async {
-    recognitionsList = await Tflite.detectObjectOnFrame(
-        bytesList: cameraImage!.planes.map((plane) {
-          return plane.bytes;
-        }).toList(),
-        model: "model",
-        imageHeight: cameraImage!.height,
-        imageWidth: cameraImage!.width,
-        imageMean: 127.5,
-        imageStd: 127.5,
-        threshold: 0.4,
-        numResultsPerClass: 1,
-        asynch: true);
-
-    setState(() {});
-  }
-
-  Future takePicture() async {
-    if (!_cameraController.value.isInitialized) {
-      return null;
+  void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
+    if (_controller == null) {
+      return;
     }
-    if (_cameraController.value.isTakingPicture) {
-      return null;
-    }
-    try {
-      await _cameraController.setFlashMode(FlashMode.off);
-      XFile picture = await _cameraController.takePicture();
-      print(picture);
-    } on CameraException catch (e) {
-      debugPrint('Error occured while taking picture: $e');
-      return null;
-    }
+    final offset = Offset(
+      details.localPosition.dx / constraints.maxWidth,
+      details.localPosition.dy / constraints.maxHeight,
+    );
+    _controller.setExposurePoint(offset);
+    _controller.setFocusPoint(offset);
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadModel();
-    initCamera(widget.cameras![0]);
+    _controller = CameraController(
+      widget.cameras![0],
+      ResolutionPreset.medium,
+    );
+    _initializeControllerFuture = _controller.initialize();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _cameraController.dispose();
+    _controller.dispose();
+    _diseaseDetectionService.dispose();
   }
 
-  List<Widget> displayBoxesAroundRecognizedObjects(Size screen) {
-    if (recognitionsList == null) return [];
-
-    double factorX = screen.width;
-    double factorY = screen.height;
-
-    Color colorPick = Colors.pink;
-
-    return recognitionsList!.map((result) {
-      return Positioned(
-        left: result["rect"]["x"] * factorX,
-        top: result["rect"]["y"] * factorY,
-        width: result["rect"]["w"] * factorX,
-        height: result["rect"]["h"] * factorY,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-            border: Border.all(color: Colors.pink, width: 2.0),
-          ),
-          child: Text(
-            "${result['detectedClass']} ${(result['confidenceInClass'] * 100).toStringAsFixed(0)}%",
-            style: TextStyle(
-              background: Paint()..color = colorPick,
-              color: Colors.black,
-              fontSize: 18.0,
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  late CameraController _cameraController;
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    List<Widget> list = [];
-    list.add(
-      Positioned(
-        top: 0.0,
-        left: 0.0,
-        width: size.width,
-        height: size.height - 100,
-        child: SizedBox(
-          height: size.height - 100,
-          child: (!_cameraController.value.isInitialized)
-              ? Container()
-              : AspectRatio(
-                  aspectRatio: _cameraController.value.aspectRatio,
-                  child: CameraPreview(_cameraController),
-                ),
-        ),
-      ),
-    );
-
-    if (cameraImage != null) {
-      list.addAll(displayBoxesAroundRecognizedObjects(size));
-    }
+    final size = MediaQuery.of(context).size;
+    final deviceRatio = size.width / size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Deteksi Penyakit"),
+        title: const Text('TfLite Flutter Helper',
+            style: TextStyle(color: Colors.white)),
       ),
-      body: _cameraController.value.isInitialized
-          ? Stack(
-              children: [
-                AspectRatio(
-                  aspectRatio: _cameraController.value.aspectRatio,
-                  child: CameraPreview(_cameraController),
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            // If the Future is complete, display the preview.
+            return CameraPreview(
+              _controller,
+              child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown: (details) => onViewFinderTap(details, constraints),
+                );
+              }),
+            );
+          } else {
+            // Otherwise, display a loading indicator.
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        // Provide an onPressed callback.
+        onPressed: () async {
+          // Take the Picture in a try / catch block. If anything goes wrong,
+          // catch the error.
+          try {
+            // Ensure that the camera is initialized.
+            await _initializeControllerFuture;
+
+            // Attempt to take a picture and get the file `image`
+            // where it was saved.
+            final image = await _controller.takePicture();
+
+            if (!mounted) return;
+
+            // If the picture was taken, display it on a new screen.
+            setState(() {
+              imagePath = image.path;
+            });
+
+            final bytes = await File(image.path).readAsBytes();
+            final imglib.Image imageRes = imglib.decodeImage(bytes)!;
+            print("imageRes: $imageRes");
+            String res = await _diseaseDetectionService.detectDisease(imageRes);
+            print("res: $res");
+            showModalBottomSheet(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                Positioned(
-                  bottom: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 100,
-                    color: Colors.black.withOpacity(.5),
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "Deteksi",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                context: context,
+                builder: (context) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Hasil Deteksi Greeny",
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .apply(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontWeightDelta: 2,
+                                    fontSizeDelta: 4)),
+                        const SizedBox(
+                          height: 24,
                         ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
+                        Text(res,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyLarge!.apply(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                fontWeightDelta: 1,
+                                fontSizeDelta: 8)),
+                        const SizedBox(
+                          height: 24,
+                        ),
+                      ],
+                    ));
+          } catch (e) {
+            // If an error occurs, log the error to the console.
+            print(e);
+          }
+        },
+        child: const Icon(Icons.camera_alt),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

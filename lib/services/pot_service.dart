@@ -18,7 +18,7 @@ class PotServices {
   Future<List<PotModel>> getPotsFromDB() async {
     try {
       final docPots = await gardenRef.collection(collectionPath).get();
-      print(docPots);
+      print(docPots.docs);
       final pots = docPots.docs.map((e) => PotModel.fromQuery(e)).toList();
       return pots;
     } catch (e) {
@@ -39,9 +39,11 @@ class PotServices {
 
   Future<String> createPot(PotModel potModel) async {
     try {
-      await gardenRef.collection(collectionPath).add(potModel.toQuery());
+      final ref =
+          await gardenRef.collection(collectionPath).add(potModel.toQuery());
+      final res = await ref.get();
 
-      return "success";
+      return res.id;
     } catch (e) {
       throw Exception(e);
     }

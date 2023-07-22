@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,22 +26,6 @@ final List<Map<String, dynamic>> _characterImages = [
     "image":
         'https://friendlystock.com/wp-content/uploads/2020/12/3-kawaii-indoor-plant-cartoon-clipart.jpg',
     "name": "Bunga"
-  },
-  {
-    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-    "name": "Sayuran"
-  },
-  {
-    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-    "name": "Sayuran"
-  },
-  {
-    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-    "name": "Sayuran"
-  },
-  {
-    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-    "name": "Sayuran"
   },
 ];
 
@@ -145,21 +131,53 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                     TextButton(
                         onPressed: () async {
                           String image = await fileController.uploadFile();
-                          potController.createPot(PotModel(
-                              status: PotStatus.filled,
-                              positionIndex: 0,
-                              plant: PlantModel(
-                                  name: name,
-                                  description: description,
-                                  image: image,
-                                  wateringSchedule: wateringSchedule,
-                                  wateringTime: wateringTime,
-                                  height: height,
-                                  status: status,
-                                  category: category)));
+                          final randInt = Random().nextInt(100000);
+                          String potCreatedId = await potController.createPot(
+                              PotModel(
+                                  status: PotStatus.filled,
+                                  positionIndex: 0,
+                                  plant: PlantModel(
+                                      name: name,
+                                      description: description,
+                                      image: image,
+                                      wateringSchedule: wateringSchedule,
+                                      wateringTime: wateringTime,
+                                      height: height,
+                                      status: status,
+                                      category: category,
+                                      timeID: randInt)));
+                          DateTime now = DateTime.now();
+                          DateTime tomorrow = DateTime(
+                            now.year,
+                            now.month,
+                            now.day + 1,
+                            timeController.hour,
+                            timeController.minute,
+                          );
+                          // await AndroidAlarmManager.oneShotAt(tomorrow, randInt,
+                          //     () {
+                          //   showNotification(
+                          //       id: randInt,
+                          //       title: "Pengingat Menyiram",
+                          //       body:
+                          //           "$name butuh air, jangan lupa siram tanamanmu kawan",
+                          //       payload: "${widget.id}/$potCreatedId");
+                          // });
+                          // await AndroidAlarmManager.periodic(
+                          //   const Duration(seconds: 5),
+                          //   0,
+                          //   () => BackgroundServices.callback(
+                          //       title: "$name butuh air",
+                          //       body:
+                          //           "Tanamanmu sedang butuh air, siram sekarang agar tidak kekeringan"),
+                          //   startAt: DateTime.now(),
+                          //   exact: true,
+                          //   wakeup: true,
+                          // );
                           expController.increaseExp(_expValue, achievementId);
                           funcScheduleController.resetSchedule();
                           funcTimeController.resetTime();
+
                           if (context.mounted) {
                             potSpaceController.getPots();
                             context.pop();
@@ -283,14 +301,6 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () async {
-                                    // await AndroidAlarmManager.periodic(
-                                    //   const Duration(seconds: 30),
-                                    //   1,
-                                    //   BackgroundServices.callback,
-                                    //   startAt: DateTime.now(),
-                                    //   exact: true,
-                                    //   wakeup: true,
-                                    // );
                                     await _submitForm();
                                   },
                                   child: PlainCard(

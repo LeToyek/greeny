@@ -117,7 +117,7 @@ class UsersServices {
       });
       print("ndasmu ${userModel.exp + exp}");
       final levelUp = isLevelUp(userModel.exp + exp, userModel.level);
-      print(levelUp);
+
       if (levelUp) {
         return "level_up";
       }
@@ -129,9 +129,11 @@ class UsersServices {
 
   bool isLevelUp(int exp, int level) {
     for (var e in levelList) {
+      print("exp $exp}");
       if (e.level == level) {
+        print("exp ${e.level == level}}");
         if (e.exp <= exp) {
-          increaseLevelUser();
+          print("level up");
           return true;
         } else {
           return false;

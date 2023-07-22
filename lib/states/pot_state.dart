@@ -54,15 +54,18 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     }
   }
 
-  Future<void> createPot(PotModel potModel) async {
+  Future<String> createPot(PotModel potModel) async {
     try {
       state = const AsyncValue.loading();
-      await potServices.createPot(potModel);
+
+      potModel.id = await potServices.createPot(potModel);
       tempData.add(potModel);
       state = AsyncValue.data(tempData);
+      return potModel.id!;
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }
+    return "";
   }
 }
 

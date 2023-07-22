@@ -59,7 +59,7 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
     final deviceRatio = size.width / size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TfLite Flutter Helper',
+        title: const Text('Deteksi Penyakit',
             style: TextStyle(color: Colors.white)),
       ),
       body: FutureBuilder<void>(

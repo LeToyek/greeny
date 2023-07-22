@@ -34,9 +34,15 @@ class NotificationHelper {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
-
+      if (message.notification != null) {
+        print(
+            'Message also contained a notification: ${message.notification!.body}');
+      }
       showNotification(
-          title: message.data['title'], body: message.data['body']);
+          id: 1,
+          title: message.data['title'],
+          body: message.data['body'],
+          payload: "test");
     });
   }
 }
@@ -52,7 +58,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future<void> showNotification(
-    {required String title, required String body}) async {
+    {required id,
+    required String title,
+    required String body,
+    required String payload}) async {
   var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'channel id', 'channel name',
       importance: Importance.max,
@@ -62,7 +71,7 @@ Future<void> showNotification(
   var platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin
-      .show(0, title, body, platformChannelSpecifics, payload: "item x");
+      .show(0, title, body, platformChannelSpecifics, payload: payload);
 }
 
 void scheduleNotification() {

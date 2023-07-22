@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/states/bottom_nav_bar.dart';
+import 'package:greenify/states/home_state.dart';
 import 'package:ionicons/ionicons.dart';
 
 class GrBottomNavBar extends ConsumerWidget {
@@ -9,7 +10,7 @@ class GrBottomNavBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int bottomNavIndex = ref.watch(bottomNavProvider);
-
+    final potRef = ref.read(homeProvider.notifier);
     return Card(
       margin: const EdgeInsets.only(top: 1, right: 4, left: 4),
       elevation: 4,
@@ -24,6 +25,9 @@ class GrBottomNavBar extends ConsumerWidget {
       child: BottomNavigationBar(
         currentIndex: bottomNavIndex,
         onTap: (int index) {
+          if (index == 0) {
+            potRef.getPots();
+          }
           ref.read(bottomNavProvider.notifier).setValueToDB(index);
         },
         type: BottomNavigationBarType.fixed,

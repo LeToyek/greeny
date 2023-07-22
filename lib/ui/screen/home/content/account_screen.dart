@@ -9,7 +9,8 @@ import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/capitalizer.dart';
 import 'package:greenify/utils/date_helper.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart' as percent;
+import 'package:percent_indicator/circular_percent_indicator.dart'
+    as cirPercent;
 
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
@@ -26,6 +27,8 @@ class AccountScreen extends ConsumerWidget {
     return userRef.when(
       data: (data) {
         final user = data[0];
+        // final expPercent = percentizer(user.exp);
+        const expPercent = 0.8;
         return NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
                   SliverAppBar(
@@ -125,19 +128,21 @@ class AccountScreen extends ConsumerWidget {
                                             context: context,
                                             text: user.email,
                                             color: Colors.grey[600]),
-                                        const SizedBox(height: 4),
-                                        percent.LinearPercentIndicator(
-                                          padding: EdgeInsets.zero,
-                                          barRadius: const Radius.circular(12),
-                                          width: double.infinity,
-                                          lineHeight: 4.0,
-                                          percent: 0.5,
-                                          backgroundColor: Colors.grey,
-                                          progressColor: colorScheme.primary,
-                                        )
                                       ],
                                     ),
-                                  )
+                                  ),
+                                  cirPercent.CircularPercentIndicator(
+                                    radius: 36.0,
+                                    lineWidth: 4.0,
+                                    percent: expPercent,
+                                    center: Text(
+                                      "Lv. ${user.level}",
+                                      style: textTheme.bodyMedium!.apply(
+                                          fontWeightDelta: 2,
+                                          color: colorScheme.primary),
+                                    ),
+                                    progressColor: colorScheme.primary,
+                                  ),
                                 ],
                               ),
                             ),
@@ -292,64 +297,69 @@ class AccountScreen extends ConsumerWidget {
                                     itemBuilder: (context, index) {
                                       BookModel? book;
                                       book = user.books![index];
-                                      return PlainCard(
-                                          padding: EdgeInsets.zero,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                  height: 200,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        const BorderRadius
-                                                                .vertical(
-                                                            top:
-                                                                Radius.circular(
-                                                                    12)),
-                                                    child: Image.network(
-                                                      book.imageUrl,
-                                                      height: 200,
-                                                      width: double.infinity,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  )),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      capitalize(book.title),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .titleMedium!
-                                                          .apply(
-                                                              fontWeightDelta:
-                                                                  2),
-                                                    ),
-                                                    Text(
-                                                      DateHelper
-                                                          .timestampToReadable(
-                                                              book.createdAt!),
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyMedium!
-                                                          .apply(
-                                                              fontWeightDelta:
-                                                                  2,
-                                                              color: Colors
-                                                                  .grey[600]),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ));
+                                      return GestureDetector(
+                                        onTap: () => context
+                                            .push("/book/detail/${book!.id}"),
+                                        child: PlainCard(
+                                            padding: EdgeInsets.zero,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                    height: 200,
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                                  .vertical(
+                                                              top: Radius
+                                                                  .circular(
+                                                                      12)),
+                                                      child: Image.network(
+                                                        book.imageUrl,
+                                                        height: 200,
+                                                        width: double.infinity,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    )),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        capitalize(book.title),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .titleMedium!
+                                                            .apply(
+                                                                fontWeightDelta:
+                                                                    2),
+                                                      ),
+                                                      Text(
+                                                        DateHelper
+                                                            .timestampToReadable(
+                                                                book.createdAt!),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium!
+                                                            .apply(
+                                                                fontWeightDelta:
+                                                                    2,
+                                                                color: Colors
+                                                                    .grey[600]),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            )),
+                                      );
                                     })
                                 : Container(),
                             const SizedBox(height: 36),
@@ -374,7 +384,8 @@ class AccountScreen extends ConsumerWidget {
                                           color: Colors.white),
                                     ],
                                   )),
-                            )
+                            ),
+                            const SizedBox(height: 36),
                             // const SizedBox(height: 12),
                           ]),
                     ))));

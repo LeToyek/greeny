@@ -9,6 +9,7 @@ class PlantModel {
   double height;
   late PlantStatus status;
   String category;
+  int? timeID;
 
   PlantModel(
       {required this.name,
@@ -18,7 +19,8 @@ class PlantModel {
       required this.wateringTime,
       required this.height,
       required this.status,
-      required this.category});
+      required this.category,
+      required this.timeID});
 
   PlantModel.fromQuery(Map<String, dynamic> json)
       : name = json['name'],
@@ -27,7 +29,8 @@ class PlantModel {
         wateringSchedule = json['watering_schedule'],
         wateringTime = json['watering_time'],
         height = json['height'],
-        category = json['category'] {
+        category = json['category'],
+        timeID = json['timeID'] {
     status = reverseStatusParse(json['status']);
   }
 
@@ -67,6 +70,7 @@ class PlantModel {
       "height": height,
       "status": statusParse(status),
       "category": category,
+      "timeID": timeID
     };
   }
 }

@@ -1,30 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/model/plant_model.dart';
+import 'package:greenify/model/pot_model.dart';
 import 'package:greenify/ui/widgets/card/leaf_card.dart';
 
 class StemTimeline extends StatelessWidget {
-  const StemTimeline({super.key});
+  final List<PotModel> potModels;
+  const StemTimeline({super.key, required this.potModels});
 
   @override
   Widget build(BuildContext context) {
-    final List<String> timelineData = [
-      "asdas",
-      "dsad",
-      "dsad",
-      "dsad",
-      "dsad",
-      "dsad",
-      "dsad",
-      "dsad",
-      "dsad",
-      "dsad",
-    ];
     return ListView.builder(
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
-      itemCount: timelineData.length,
+      itemCount: potModels.length,
       itemBuilder: (context, index) {
         return TimelineItem(
-          event: timelineData[index],
+          event: potModels[index].plant,
           position: index % 2 == 0
               ? TimelineItemPosition.left
               : TimelineItemPosition.right,
@@ -39,23 +31,24 @@ enum TimelineItemPosition {
   right,
 }
 
-class TimelineItem extends StatelessWidget {
-  final String event;
+class TimelineItem extends ConsumerWidget {
+  final PlantModel event;
   final TimelineItemPosition position;
 
   const TimelineItem({super.key, required this.event, required this.position});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TimelineItemPosition.left == position
         ? Row(
             children: [
-              const Expanded(
+              Expanded(
                   flex: 32,
                   child: LeafCard(
-                      title: "Sawi Hijau ",
-                      content:
-                          "asdkoaskd okasod kaosk doaks odkaos kdosaokdoasodkaso saokdoaskdoaks asdasd",
+                      imageUrl: event.image,
+                      wateringTime: event.wateringTime,
+                      title: event.name,
+                      content: event.description,
                       isLeft: true)),
               Expanded(
                 flex: 1,
@@ -89,12 +82,13 @@ class TimelineItem extends StatelessWidget {
                   height: 160,
                 ),
               ),
-              const Expanded(
+              Expanded(
                 flex: 32,
                 child: LeafCard(
-                    title: "Sawi Hijau ",
-                    content:
-                        "asdkoaskd okasod kaosk doaks odkaos kdosaokdoasodkaso saokdoaskdoaks asdasd",
+                    imageUrl: event.image,
+                    wateringTime: event.wateringTime,
+                    title: event.name,
+                    content: event.description,
                     isLeft: false),
               ),
             ],

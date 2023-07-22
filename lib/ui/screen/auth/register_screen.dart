@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:greenify/states/home_state.dart';
 import 'package:greenify/states/users_state.dart';
 
 class RegisterScreen extends ConsumerWidget {
@@ -17,6 +18,7 @@ class RegisterScreen extends ConsumerWidget {
     final userAction = ref.watch(singleUserProvider);
     final funcUserAction = ref.read(singleUserProvider.notifier);
 
+    final refPots = ref.watch(homeProvider.notifier);
     void _submitForm() async {
       try {
         if (formKey.currentState!.validate()) {
@@ -27,6 +29,7 @@ class RegisterScreen extends ConsumerWidget {
 
           await funcUserAction.registerUser(
               email: email, password: password, name: name);
+          refPots.getPots();
           context.pushReplacement("/");
         }
       } catch (e) {
@@ -46,8 +49,10 @@ class RegisterScreen extends ConsumerWidget {
       }
     }
 
+    final colorTheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(title: const Text('Register')),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Stack(
         children: [
           userAction.when(
@@ -64,7 +69,10 @@ class RegisterScreen extends ConsumerWidget {
                   children: [
                     TextFormField(
                       controller: nameController,
-                      decoration: const InputDecoration(labelText: 'Name'),
+                      decoration: InputDecoration(
+                          labelText: 'Name',
+                          labelStyle:
+                              TextStyle(color: colorTheme.onBackground)),
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your name';
@@ -74,7 +82,10 @@ class RegisterScreen extends ConsumerWidget {
                     ),
                     TextFormField(
                       controller: emailController,
-                      decoration: const InputDecoration(labelText: 'Email'),
+                      decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle:
+                              TextStyle(color: colorTheme.onBackground)),
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
@@ -84,7 +95,10 @@ class RegisterScreen extends ConsumerWidget {
                     ),
                     TextFormField(
                       controller: passwordController,
-                      decoration: const InputDecoration(labelText: 'Password'),
+                      decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle:
+                              TextStyle(color: colorTheme.onBackground)),
                       obscureText: true,
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
@@ -96,7 +110,10 @@ class RegisterScreen extends ConsumerWidget {
                     const SizedBox(height: 16.0),
                     ElevatedButton(
                       onPressed: _submitForm,
-                      child: const Text('Register'),
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),

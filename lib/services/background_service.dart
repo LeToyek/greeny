@@ -20,13 +20,19 @@ class BackgroundServices {
     IsolateNameServer.registerPortWithName(port.sendPort, _isolatname);
   }
 
-  static Future<void> callback() async {
-    print("Alarm Fired!");
+  static Future<void> callback({String? title, String? body}) async {
+    if (title == null || body == null) {
+      title = "test";
+      body = "test description lorem ipsum dolor sit amet";
+    }
+    print("alarm fired");
     _uiSendPort ??= IsolateNameServer.lookupPortByName(_isolatname);
     _uiSendPort!.send(null);
+    showNotification(id: 1, title: title, body: body, payload: "test");
   }
 
   Future<void> someTask() async {
-    showNotification(title: "awikwok", body: "bisa bang");
+    showNotification(
+        id: 1, title: "awikwok", body: "bisa bang", payload: "test");
   }
 }

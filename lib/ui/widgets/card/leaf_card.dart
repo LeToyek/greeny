@@ -7,10 +7,14 @@ class LeafCard extends StatelessWidget {
       {super.key,
       required this.title,
       required this.content,
+      required this.wateringTime,
+      required this.imageUrl,
       required this.isLeft});
 
   final String title;
   final String content;
+  final String imageUrl;
+  final String wateringTime;
   final bool isLeft;
 
   @override
@@ -46,11 +50,10 @@ class LeafCard extends StatelessWidget {
                   child: SizedBox(
                     height: 80,
                     child: Wrap(
-                      children: const [
+                      children: [
                         Image(
                             width: double.infinity,
-                            image: NetworkImage(
-                                "https://cdn.britannica.com/26/152026-050-41D137DE/Sunshine-leaves-beech-tree.jpg"))
+                            image: NetworkImage(imageUrl))
                       ],
                     ),
                   ),
@@ -69,7 +72,7 @@ class LeafCard extends StatelessWidget {
                 Padding(
                   padding:
                       const EdgeInsets.only(left: 12, bottom: 12, right: 12),
-                  child: Pill(icon: Ionicons.water, title: "12:00 PM"),
+                  child: Pill(icon: Ionicons.water, title: wateringTime),
                 ),
               ],
             ),

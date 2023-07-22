@@ -144,6 +144,19 @@ class FireAuth {
           .set({
         "status": "empty",
         "position_index": 0,
+        "plant": {
+          "name": "default",
+          "image": "https://cdn-icons-png.flaticon.com/512/5225/5225392.png",
+          "category": "Sayuran",
+          "height": 0.0,
+          "status": "healthy",
+          "timeID": 1,
+          "watering_schedule": "1",
+          "watering_time": "01:00",
+          "description": "default",
+          "created_at": DateTime.now(),
+          "updated_at": DateTime.now(),
+        },
       });
     } catch (e) {
       throw Exception('Error occured!');

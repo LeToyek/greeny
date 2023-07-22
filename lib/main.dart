@@ -18,7 +18,7 @@ void main() async {
   final BackgroundServices service = BackgroundServices();
 
   service.initIsolate();
-  AndroidAlarmManager.initialize();
+  await AndroidAlarmManager.initialize();
 
   await Firebase.initializeApp();
   await NotificationHelper().initializeNotification();

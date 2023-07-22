@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:greenify/states/home_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:ionicons/ionicons.dart';
@@ -12,12 +13,14 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+    final textTheme = Theme.of(context).textTheme;
+    final colorTheme = Theme.of(context).colorScheme;
     final userAct = ref.watch(singleUserProvider);
     final funcUserAct = ref.read(singleUserProvider.notifier);
 
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
-
+    final refPots = ref.watch(homeProvider.notifier);
     void _submitForm() async {
       if (formKey.currentState!.validate()) {
         // Process data.
@@ -27,6 +30,7 @@ class LoginScreen extends ConsumerWidget {
 
           await funcUserAct.basicLogin(email: email, password: password);
           if (context.mounted) context.pushReplacement("/");
+          refPots.getPots();
         } catch (e) {
           showDialog(
               context: context,
@@ -44,6 +48,7 @@ class LoginScreen extends ConsumerWidget {
     }
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(title: const Text('Login')),
       body: Material(
         color: Theme.of(context).colorScheme.background,
@@ -59,10 +64,14 @@ class LoginScreen extends ConsumerWidget {
                 child: Form(
                   key: formKey,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextFormField(
                         controller: emailController,
-                        decoration: const InputDecoration(labelText: 'Email'),
+                        decoration: InputDecoration(
+                            labelText: 'Email',
+                            labelStyle:
+                                TextStyle(color: colorTheme.onBackground)),
                         validator: (String? value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email';
@@ -73,8 +82,10 @@ class LoginScreen extends ConsumerWidget {
                       TextFormField(
                         controller: passwordController,
                         obscureText: true,
-                        decoration:
-                            const InputDecoration(labelText: 'Password'),
+                        decoration: InputDecoration(
+                            labelText: 'Password',
+                            labelStyle:
+                                TextStyle(color: colorTheme.onBackground)),
                         validator: (String? value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
@@ -109,7 +120,9 @@ class LoginScreen extends ConsumerWidget {
                         onTap: () async {
                           try {
                             await funcUserAct.loginWithGoogle();
+
                             if (context.mounted) context.pushReplacement("/");
+                            refPots.getPots();
                           } catch (e) {
                             showDialog(
                                 context: context,

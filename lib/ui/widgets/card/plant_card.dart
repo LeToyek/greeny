@@ -52,7 +52,11 @@ class PlantCard extends ConsumerWidget {
       children: <Widget>[
         const Spacer(),
         imageURI != null
-            ? Image.asset(imageURI)
+            ? Image.asset(
+                imageURI,
+                height: 80,
+                width: double.infinity,
+              )
             : Icon(
                 icon,
                 color: state != ThemeMode.light

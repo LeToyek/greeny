@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/constants/plant_category_list.dart';
+import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/theme_mode.dart';
 import 'package:ionicons/ionicons.dart';
 
-Widget plantChoose(PageController pageController, BuildContext context,
-    WidgetRef ref, List characterImages) {
+Widget plantChoose(PageController pageController,
+    PlantAvatarNotifier pageNotifier, BuildContext context, WidgetRef ref) {
+  final characterImages = plantCategory;
   final theme = ref.watch(themeProvider);
   return Row(
     children: [
@@ -30,7 +33,6 @@ Widget plantChoose(PageController pageController, BuildContext context,
         child: SizedBox(
           height: 210,
           child: PageView.builder(
-            physics: const NeverScrollableScrollPhysics(),
             controller: pageController,
             itemCount: characterImages.length,
             itemBuilder: (context, index) {
@@ -54,7 +56,7 @@ Widget plantChoose(PageController pageController, BuildContext context,
                   children: [
                     SizedBox(
                       height: 130,
-                      child: Image.network(
+                      child: Image.asset(
                         characterImages[index]["image"],
                         fit: BoxFit.cover,
                       ),

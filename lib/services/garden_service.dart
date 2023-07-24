@@ -10,6 +10,28 @@ class GardensServices {
         .doc(docId);
   }
 
+  static DocumentReference getGardenRefByUserID(
+      {String? userId, required String docId}) {
+    return UsersServices.getUserRef(id: userId)
+        .collection(GardenModel.collectionPath)
+        .doc(docId);
+  }
+
+  static Future<void> createGarden(String name, String backgroundUrl) async {
+    try {
+      await UsersServices.getUserRef()
+          .collection(GardenModel.collectionPath)
+          .add({
+        "name": name,
+        "background_url": backgroundUrl,
+        "created_at": DateTime.now(),
+        'updated_at': DateTime.now(),
+      });
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   static Future<List<GardenModel>> getGardens() async {
     final gardenCollection =
         UsersServices.getUserRef().collection(GardenModel.collectionPath);

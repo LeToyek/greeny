@@ -6,6 +6,7 @@ import 'package:greenify/model/book_model.dart';
 import 'package:greenify/services/book_service.dart';
 import 'package:greenify/states/book_state.dart';
 import 'package:greenify/states/file_notifier.dart';
+import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/ui/widgets/upload_image_container.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
@@ -19,6 +20,7 @@ class BookCreateScreen extends ConsumerWidget {
     final funcBookRef = ref.read(bookProvider.notifier);
 
     final funcFileRef = ref.read(fileProvider.notifier);
+    final funcUserRef = ref.read(singleUserProvider.notifier);
 
     return Scaffold(
         appBar: AppBar(
@@ -30,7 +32,9 @@ class BookCreateScreen extends ConsumerWidget {
             color: Theme.of(context).colorScheme.background,
             child: bookRef.when(
                 data: (_) => TextEditor(
-                    bookNotifier: funcBookRef, fileNotifier: funcFileRef),
+                    bookNotifier: funcBookRef,
+                    fileNotifier: funcFileRef,
+                    usersNotifier: funcUserRef),
                 error: (e, s) => Center(
                       child: Text(e.toString()),
                     ),
@@ -43,9 +47,13 @@ class BookCreateScreen extends ConsumerWidget {
 class TextEditor extends StatefulWidget {
   final BookNotifier bookNotifier;
   final FileNotifier fileNotifier;
+  final UsersNotifier usersNotifier;
 
   const TextEditor(
-      {super.key, required this.bookNotifier, required this.fileNotifier});
+      {super.key,
+      required this.bookNotifier,
+      required this.fileNotifier,
+      required this.usersNotifier});
 
   @override
   State<TextEditor> createState() => _TextEditorState();
@@ -94,14 +102,19 @@ class _TextEditorState extends State<TextEditor> {
                 TextButton(
                     onPressed: () async {
                       final fullPath = await widget.fileNotifier.uploadFile();
-                      widget.bookNotifier.createBook(BookModel(
+                      BookModel createdBook = BookModel(
                         imageUrl: fullPath,
                         title: titleController.value.text,
                         category: selectedChips!,
                         content: result,
-                      ));
+                      );
+                      widget.bookNotifier
+                          .createBook(createdBook)
+                          .then((value) => widget.usersNotifier.getUser());
+
                       if (context.mounted) {
-                        context.push("/");
+                        context.pop();
+                        context.pop();
                       }
                     },
                     child: const Text("Ya")),

@@ -15,7 +15,7 @@ class BookScreen extends StatelessWidget {
           actions: const [],
           centerTitle: true,
           title: const Text(
-            "Book",
+            "Artikel",
           ),
         ),
         body: Material(

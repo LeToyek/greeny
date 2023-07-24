@@ -1,3 +1,4 @@
+import 'package:greenify/constants/disease_dataset.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -121,7 +122,7 @@ class TFLiteDiseaseDetectionService {
         options: InterpreterOptions()..threads = 4,
       );
 
-  Future<String> detectDisease(imglib.Image img) async {
+  Future<Map<String, dynamic>> detectDisease(imglib.Image img) async {
     final imageInput = imglib.copyResize(
       img,
       // width: 64,
@@ -166,7 +167,7 @@ class TFLiteDiseaseDetectionService {
     return output.first;
   }
 
-  static String _getDisease(List<num>? emotionScores) {
+  static Map<String, dynamic> _getDisease(List<num>? emotionScores) {
     int bestInd = 0;
 
     if (emotionScores != null) {
@@ -180,7 +181,7 @@ class TFLiteDiseaseDetectionService {
       }
     }
 
-    return penyakit[bestInd];
+    return diseaseDataset[bestInd];
   }
 
   Future<void> dispose() async {

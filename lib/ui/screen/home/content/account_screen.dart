@@ -1,34 +1,42 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:greenify/constants/level_list.dart';
 import 'package:greenify/model/book_model.dart';
-import 'package:greenify/model/emblem_model.dart';
 import 'package:greenify/model/garden_model.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/capitalizer.dart';
 import 'package:greenify/utils/date_helper.dart';
+import 'package:greenify/utils/formatter.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart'
     as cirPercent;
 
-class AccountScreen extends ConsumerWidget {
+class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends ConsumerState<AccountScreen> {
+  int achievementCount = 0;
+  int temp = 0;
+  @override
+  Widget build(BuildContext context) {
     final userRef = ref.watch(singleUserProvider);
     final funcUserRef = ref.read(singleUserProvider.notifier);
 
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     var size = MediaQuery.of(context).size;
+    final userClientController = ref.read(userClientProvider.notifier);
 
     return userRef.when(
       data: (data) {
         final user = data[0];
-        // final expPercent = percentizer(user.exp);
-        const expPercent = 0.8;
         return NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
                   SliverAppBar(
@@ -82,14 +90,47 @@ class AccountScreen extends ConsumerWidget {
                               child: Row(
                                 children: [
                                   GestureDetector(
-                                    onTap: () async {
+                                    onTap: () {
                                       try {
-                                        String photoUrl = "";
-                                        if (user.imageUrl != null) {
-                                          photoUrl = user.imageUrl!;
-                                        }
-                                        await funcUserRef
-                                            .updateProfilePhoto(photoUrl);
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            elevation: 4,
+                                            backgroundColor: Theme.of(context)
+                                                .colorScheme
+                                                .surface,
+                                            icon: const Icon(
+                                              Ionicons
+                                                  .information_circle_outline,
+                                              color: Colors.yellow,
+                                            ),
+                                            title: const Text(
+                                                "Anda Mengubah Foto Profile"),
+                                            content: const Text(
+                                                "Pastikan anda mengubah foto profile dengan benar, yakin ingin lanjut mengubah foto profil?"),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => context.pop(),
+                                                child: const Text("Batal"),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  String photoUrl = "";
+                                                  if (user.imageUrl != null) {
+                                                    photoUrl = user.imageUrl!;
+                                                  }
+                                                  await funcUserRef
+                                                      .updateProfilePhoto(
+                                                          photoUrl);
+                                                  if (context.mounted) {
+                                                    context.pop();
+                                                  }
+                                                },
+                                                child: const Text("Lanjut"),
+                                              ),
+                                            ],
+                                          ),
+                                        );
                                       } catch (e) {
                                         showDialog(
                                             context: context,
@@ -134,7 +175,9 @@ class AccountScreen extends ConsumerWidget {
                                   cirPercent.CircularPercentIndicator(
                                     radius: 36.0,
                                     lineWidth: 4.0,
-                                    percent: expPercent,
+                                    percent: user.level != 10
+                                        ? user.exp / levelList[user.level].exp
+                                        : 1,
                                     center: Text(
                                       "Lv. ${user.level}",
                                       style: textTheme.bodyMedium!.apply(
@@ -151,7 +194,8 @@ class AccountScreen extends ConsumerWidget {
                               "Medali",
                               style: textTheme.titleLarge,
                             ),
-                            user.achievements != null
+                            user.achievements != null &&
+                                    user.achievements!.isNotEmpty
                                 ? GridView.builder(
                                     padding: EdgeInsets.zero,
                                     shrinkWrap: true,
@@ -165,32 +209,55 @@ class AccountScreen extends ConsumerWidget {
                                             crossAxisSpacing: 4,
                                             mainAxisSpacing: 12),
                                     itemBuilder: (context, index) {
-                                      EmblemModel? emblem;
-                                      if (user.achievements![index].emblem !=
-                                          null) {
-                                        emblem =
-                                            user.achievements![index].emblem;
-                                      }
-
                                       return PlainCard(
-                                          child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Image.network(emblem!.imageUrl,
-                                              height: 100),
-                                          Text(
-                                            textAlign: TextAlign.center,
-                                            emblem.title,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall!
-                                                .apply(fontWeightDelta: 2),
-                                          )
-                                        ],
-                                      ));
+                                          child: user.achievements!.isEmpty
+                                              ? Container()
+                                              : Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Image.network(
+                                                        user
+                                                            .achievements![
+                                                                index]
+                                                            .emblem!
+                                                            .imageUrl,
+                                                        height: 100),
+                                                    Text(
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      user.achievements![index]
+                                                          .emblem!.title,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .titleSmall!
+                                                          .apply(
+                                                              fontWeightDelta:
+                                                                  2),
+                                                    )
+                                                  ],
+                                                ));
                                     })
-                                : Container(),
+                                : Container(
+                                    margin: const EdgeInsets.only(top: 8),
+                                    child: DottedBorder(
+                                      borderType: BorderType.RRect,
+                                      radius: const Radius.circular(8),
+                                      dashPattern: const [8, 8],
+                                      color: Colors.grey,
+                                      strokeWidth: 2,
+                                      child: SizedBox(
+                                        height: 150,
+                                        child: Center(
+                                          child: Text(
+                                            "Belum ada medali",
+                                            style: textTheme.bodyMedium!
+                                                .apply(fontWeightDelta: 2),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
 
                             const SizedBox(height: 16),
                             Text(
@@ -211,6 +278,8 @@ class AccountScreen extends ConsumerWidget {
                                   return garden != null
                                       ? GestureDetector(
                                           onTap: () {
+                                            userClientController.setVisitedUser(
+                                                id: user.userId);
                                             context.pushNamed("garden_detail",
                                                 pathParameters: {
                                                   "id": garden!.id
@@ -291,7 +360,7 @@ class AccountScreen extends ConsumerWidget {
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 2,
-                                            childAspectRatio: 7 / 10,
+                                            childAspectRatio: 7 / 12,
                                             crossAxisSpacing: 8,
                                             mainAxisSpacing: 12),
                                     itemBuilder: (context, index) {
@@ -331,7 +400,8 @@ class AccountScreen extends ConsumerWidget {
                                                             .start,
                                                     children: [
                                                       Text(
-                                                        capitalize(book.title),
+                                                        capitalize(trimmer(
+                                                            book.title)),
                                                         textAlign:
                                                             TextAlign.center,
                                                         style: Theme.of(context)
@@ -361,7 +431,26 @@ class AccountScreen extends ConsumerWidget {
                                             )),
                                       );
                                     })
-                                : Container(),
+                                : Container(
+                                    margin: const EdgeInsets.only(top: 8),
+                                    child: DottedBorder(
+                                      borderType: BorderType.RRect,
+                                      radius: const Radius.circular(8),
+                                      dashPattern: const [8, 8],
+                                      color: Colors.grey,
+                                      strokeWidth: 2,
+                                      child: SizedBox(
+                                        height: 150,
+                                        child: Center(
+                                          child: Text(
+                                            "Belum ada artikel",
+                                            style: textTheme.bodyMedium!
+                                                .apply(fontWeightDelta: 2),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                             const SizedBox(height: 36),
 
                             GestureDetector(

@@ -35,6 +35,7 @@ class UsersServices {
     try {
       id ??= user!.uid;
       DocumentSnapshot documentSnapshot = await users.doc(id).get();
+      print(documentSnapshot);
       UserModel userMod = UserModel.fromQuery(documentSnapshot);
       DocumentReference userDocument =
           UsersServices.getUserRef(id: documentSnapshot.id);
@@ -43,6 +44,10 @@ class UsersServices {
           await userDocument.collection(GardenModel.collectionPath).get();
       final resAchievement =
           await userDocument.collection(AchievementModel.collectionPath).get();
+
+      print('userMod $userMod');
+      print('resGarden $resGarden');
+      print('resAchievement $resAchievement');
 
       List<AchievementModel> achievementList = [];
       if (resGarden.docs.isNotEmpty) {
@@ -58,9 +63,12 @@ class UsersServices {
               AchievementModel.fromQuery(element);
           achievementModel.emblem =
               await EmblemService.getEmblemByID(element.id);
-          achievementList.add(achievementModel);
+          if (achievementModel.isExist) {
+            achievementList.add(achievementModel);
+          }
         });
       }
+      userMod.achievements = achievementList;
       List<BookModel> books = [];
       final resBook =
           await FirebaseFirestore.instance.collection("books").get();
@@ -72,7 +80,6 @@ class UsersServices {
         }
       }
       userMod.books = books;
-      userMod.achievements = achievementList;
 
       return userMod;
     } catch (e) {
@@ -93,7 +100,7 @@ class UsersServices {
 
       return fullPath;
     } catch (e) {
-      throw Exception('Error occured!');
+      throw Exception('Error occured! $e');
     }
   }
 
@@ -115,10 +122,11 @@ class UsersServices {
         "exp": FieldValue.increment(exp),
         "updated_at": DateTime.now(),
       });
-      print("ndasmu ${userModel.exp + exp}");
       final levelUp = isLevelUp(userModel.exp + exp, userModel.level);
 
-      if (levelUp) {
+      if (levelUp && userModel.level < 10) {
+        increaseLevelUser();
+        print("test");
         return "level_up";
       }
       return "success";

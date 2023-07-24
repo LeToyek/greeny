@@ -18,9 +18,20 @@ class PotServices {
   Future<List<PotModel>> getPotsFromDB() async {
     try {
       final docPots = await gardenRef.collection(collectionPath).get();
-      print(docPots.docs);
+
+      print('docPots.docs = ${docPots.docs}');
       final pots = docPots.docs.map((e) => PotModel.fromQuery(e)).toList();
       return pots;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> waterPlant(String id) async {
+    try {
+      await gardenRef.collection(collectionPath).doc(id).update({
+        "plant.status": "healthy",
+      });
     } catch (e) {
       throw Exception(e);
     }

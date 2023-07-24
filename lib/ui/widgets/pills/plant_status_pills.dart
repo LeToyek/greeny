@@ -12,7 +12,7 @@ Widget plantStatusPill(PlantStatus status) {
     case PlantStatus.dry:
       return Chip(
         label: const Text("Dry"),
-        backgroundColor: Colors.yellow.shade300,
+        backgroundColor: Colors.orange.shade300,
         labelStyle: const TextStyle(color: Colors.white),
       );
     case PlantStatus.dead:

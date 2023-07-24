@@ -2,7 +2,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:greenify/states/garden_state.dart';
 import 'package:greenify/states/home_state.dart';
+import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/layout/header.dart';
 import 'package:greenify/ui/widgets/branch/stem.dart';
 import 'package:greenify/ui/widgets/card/titled_card.dart';
@@ -14,6 +16,10 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final refPots = ref.watch(homeProvider);
+    final userRef = ref.read(usersProvider.notifier);
+    final gardenRef = ref.watch(gardenProvider.notifier);
+
+    final userClientController = ref.read(userClientProvider.notifier);
     return refPots.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, stack) => Center(child: Text(err.toString())),
@@ -54,7 +60,11 @@ class HomeScreen extends ConsumerWidget {
                       title: 'Garden Space',
                       icon: Ionicons.leaf_outline,
                       position: "top_right",
-                      onPressed: () => context.push("/garden"),
+                      onPressed: () {
+                        userClientController.setVisitedUser();
+                        gardenRef.getGardens();
+                        context.push("/garden");
+                      },
                     ),
                     TitledCard(
                       onPressed: () async {
@@ -69,7 +79,10 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     TitledCard(
                       title: 'Peringkat',
-                      onPressed: () => context.push("/leaderboard"),
+                      onPressed: () {
+                        userRef.getUsers();
+                        context.push("/leaderboard");
+                      },
                       icon: Ionicons.trophy_outline,
                       position: "bottom_right",
                     ),

@@ -2,18 +2,22 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/services/disease_service.dart';
+import 'package:greenify/states/exp_state.dart';
+import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/widgets/achievement_dialog.dart';
 import 'package:image/image.dart' as imglib;
 
-class DiseaseScreen extends StatefulWidget {
+class DiseaseScreen extends ConsumerStatefulWidget {
   final List<CameraDescription>? cameras;
   const DiseaseScreen({super.key, required this.cameras});
 
   @override
-  State<DiseaseScreen> createState() => _DiseaseScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _DiseaseScreenState();
 }
 
-class _DiseaseScreenState extends State<DiseaseScreen> {
+class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
   final TFLiteDiseaseDetectionService _diseaseDetectionService =
       TFLiteDiseaseDetectionService();
   late CameraController _controller;
@@ -54,14 +58,23 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final colorTheme = Theme.of(context).colorScheme;
-    final deviceRatio = size.width / size.height;
+    // TODO: implement build
+    final expRef = ref.watch(expProvider);
+    final expNotifier = ref.watch(expProvider.notifier);
+    final singleNotifier = ref.read(singleUserProvider.notifier);
+    // final userClientController = ref.read(userClientProvider.notifier);
+
+    int aiExp = 20;
+    List<String> achievementIDs = [
+      "00zvXoQO7ScRbcSpiiay",
+      "E7Y6oP3lzSBHzXRLcN9S"
+    ];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Deteksi Penyakit',
             style: TextStyle(color: Colors.white)),
       ),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
@@ -95,7 +108,22 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
                           ),
                         ),
                       )
-                    : Container()
+                    : expRef.when(
+                        data: (data) {
+                          if (data.isNotEmpty) {
+                            for (var e in data) {
+                              if (e.isExist && !e.isClosed) {
+                                return AchievementDialog(
+                                    achievementModel: e,
+                                    expNotifier: expNotifier);
+                              }
+                            }
+                          }
+                          return Container();
+                        },
+                        loading: () => Container(),
+                        error: (e, s) => Container(),
+                      ),
               ],
             );
           } else {
@@ -132,8 +160,10 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
             final bytes = await File(image.path).readAsBytes();
             final imglib.Image imageRes = imglib.decodeImage(bytes)!;
             print("imageRes: $imageRes");
-            String res = await _diseaseDetectionService.detectDisease(imageRes);
-            print("res: $res");
+            Map<String, dynamic> res =
+                await _diseaseDetectionService.detectDisease(imageRes);
+
+            await expNotifier.increaseExp(aiExp, achievementIDs);
             setState(() {
               isLoading = false;
             });
@@ -145,37 +175,96 @@ class _DiseaseScreenState extends State<DiseaseScreen> {
                 ),
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 context: context,
-                builder: (context) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Text("Hasil Deteksi Greeny",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .apply(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontWeightDelta: 2,
-                                    fontSizeDelta: 4)),
-                        const SizedBox(
-                          height: 24,
-                        ),
-                        Text(res,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyLarge!.apply(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
-                                fontWeightDelta: 1,
-                                fontSizeDelta: 8)),
-                        const SizedBox(
-                          height: 24,
-                        ),
-                      ],
+                builder: (context) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Hasil Deteksi Greeny",
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .apply(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onBackground,
+                                          fontWeightDelta: 2,
+                                          fontSizeDelta: 4)),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          Text(res["nama"],
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .apply(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontWeightDelta: 2,
+                                      fontSizeDelta: 8)),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Text("Penanganan",
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .apply(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                      fontWeightDelta: 2,
+                                      fontSizeDelta: 4)),
+                          Text(res["penanganan"],
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .apply(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                      fontWeightDelta: 1,
+                                      fontSizeDelta: 2)),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Text("Obat",
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .apply(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                      fontWeightDelta: 2,
+                                      fontSizeDelta: 4)),
+                          Text(res["obat"],
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .apply(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                      fontWeightDelta: 1,
+                                      fontSizeDelta: 2)),
+                        ],
+                      ),
                     ));
           } catch (e) {
             // If an error occurs, log the error to the console.

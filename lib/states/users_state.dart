@@ -31,11 +31,15 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
       state = AsyncValue.data([user]);
     } catch (e) {
       state = AsyncError(e, StackTrace.current);
-      throw Exception(e);
+      print(StackTrace.current);
+      throw Exception(
+        e,
+      );
     }
   }
 
-  void setVisitedUser(String id) {
+  void setVisitedUser({String? id}) {
+    id ??= FireAuth.getCurrentUser()!.uid;
     visitedUser = id;
   }
 
@@ -51,7 +55,7 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
     try {
       state = const AsyncValue.loading();
       final user = await usersServices.getUserById(id: id);
-
+      visitedUser = id;
       state = AsyncValue.data([user]);
     } catch (e) {
       state = AsyncError(e, StackTrace.current);

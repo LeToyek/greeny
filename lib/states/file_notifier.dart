@@ -25,6 +25,7 @@ class FileNotifier extends StateNotifier<File?> {
     }
     await storageService.uploadFileWithFile(file!, fileName!);
     final fullPath = await storageService.getLinkDownloadFile(fileName!);
+    file = null;
     return fullPath!;
   }
 }

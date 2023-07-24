@@ -21,7 +21,7 @@ class BookDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(title: const Text('Book Detail')),
+      appBar: AppBar(title: const Text('Artikel')),
       body: SingleChildScrollView(
         child: Material(
             color: Theme.of(context).colorScheme.background,
@@ -51,8 +51,11 @@ class BookDetailScreen extends ConsumerWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          bookData.user!.imageUrl!),
+                                      backgroundImage: NetworkImage(bookData
+                                                  .user!.imageUrl ==
+                                              null
+                                          ? 'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png'
+                                          : bookData.user!.imageUrl!),
                                     ),
                                     const SizedBox(
                                       width: 8,

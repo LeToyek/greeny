@@ -18,31 +18,39 @@ class BookListScreen extends ConsumerWidget {
           child: Material(
               color: Theme.of(context).colorScheme.background,
               child: bookRef.when(
-                  data: (data) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: data.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  tileColor:
-                                      Theme.of(context).colorScheme.surface,
-                                  title: Text(data[index].title),
-                                  subtitle: Text(
-                                      "Penulis: ${data[index].user!.name}"),
-                                  leading: Image.network(data[index].imageUrl),
-                                  onTap: () {
-                                    context
-                                        .push("/book/detail/${data[index].id}");
-                                  },
-                                ),
-                                const SizedBox(height: 10),
-                              ],
-                            );
-                          })),
+                  data: (data) => ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: data.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              tileColor: Theme.of(context).colorScheme.surface,
+                              title: Text(data[index].title),
+                              subtitle:
+                                  Text("Penulis: ${data[index].user!.name}"),
+                              leading: SizedBox(
+                                height: 75,
+                                width: 75,
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      data[index].imageUrl,
+                                      fit: BoxFit.cover,
+                                    )),
+                              ),
+                              onTap: () {
+                                context.push("/book/detail/${data[index].id}");
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        );
+                      }),
                   error: (error, stack) => Center(
                         child: Text(error.toString()),
                       ),

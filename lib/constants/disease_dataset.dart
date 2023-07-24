@@ -1,4 +1,4 @@
-List<Map<String, dynamic>> dataset = [
+List<Map<String, dynamic>> diseaseDataset = [
   {
     "nama": "Apple Scab (Karat Apel)",
     "penanganan":
@@ -6,7 +6,7 @@ List<Map<String, dynamic>> dataset = [
     "obat": "ungisida seperti Triadimefon, Mancozeb, atau Fungisida tembaga"
   },
   {
-    "nama": " Apple Black Rot",
+    "nama": "Apple Black Rot",
     "penanganan":
         "Pemangkasan: Lakukan pemangkasan pada cabang-cabang dan ranting-ranting yang terinfeksi secara menyeluruh. Potong bagian yang terkena penyakit hingga sehat, lalu pastikan untuk membuang potongan yang terinfeksi dari area pohon apel. ",
     "obat":
@@ -27,7 +27,7 @@ List<Map<String, dynamic>> dataset = [
         "Triadimefon: Fungisida ini efektif dalam mengontrol pertumbuhan jamur penyebab mildew pada tanaman buah, termasuk ceri asam. "
   },
   {
-    "nama": " Gray Leaf Spot atau Cercospora Leaf Spot",
+    "nama": "Gray Leaf Spot atau Cercospora Leaf Spot",
     "penanganan":
         " Penjadwalan Penyemprotan Fungisida: Jika serangan penyakit terjadi pada tingkat yang mengkhawatirkan, penggunaan fungisida dengan bahan aktif seperti azoxystrobin, pyraclostrobin, atau trifloxystrobin dapat membantu mengendalikan penyebaran jamur penyebab Gray Leaf Spot. ",
     "obat":
@@ -41,42 +41,42 @@ List<Map<String, dynamic>> dataset = [
         " Triazoles (seperti propiconazole): Fungisida ini efektif dalam mengendalikan Rust Umum pada jagung. "
   },
   {
-    "nama": " Northern Leaf Blight (Bercak Daun Utara pada Jagung)",
+    "nama": "Northern Leaf Blight (Bercak Daun Utara pada Jagung)",
     "penanganan":
         " Rotasi Tanaman: Praktikkan rotasi tanaman dengan tanaman non-jagung untuk mengurangi jumlah patogen di tanah dan mencegah penyebaran penyakit pada musim berikutnya. ",
     "obat":
         " Strobilurins (seperti azoxystrobin): Fungisida dengan bahan aktif strobilurins juga dapat digunakan untuk mengatasi penyakit ini. "
   },
   {
-    "nama": " Grape Black Rot (Busuk Hitam pada Anggur) ",
+    "nama": "Grape Black Rot (Busuk Hitam pada Anggur) ",
     "penanganan":
         " Penyemprotan Fungisida: Penggunaan fungisida dengan bahan aktif seperti azoxystrobin, pyraclostrobin, atau mancozeb dapat membantu mengendalikan pertumbuhan jamur penyebab Grape Black Rot. ",
     "obat":
         " Azoxystrobin: Fungisida ini efektif dalam mengendalikan jamur Guignardia bidwellii penyebab Grape Black Rot. "
   },
   {
-    "nama": " Grape Esca (Black Measles) ",
+    "nama": "Grape Esca (Black Measles) ",
     "penanganan":
         " Penggunaan Biofungisida: Beberapa petani menggunakan agen hayati atau biofungisida yang mengandung mikroorganisme antagonis untuk membantu melawan jamur penyebab penyakit ini. ",
     "obat":
         " Fosetyl-Aluminum: Fungisida ini efektif dalam mengendalikan beberapa spesies jamur yang terlibat dalam kompleks penyebab Grape Esca. "
   },
   {
-    "nama": " Grape Leaf Blight (Bercak Daun Pada Anggur) ",
+    "nama": "Grape Leaf Blight (Bercak Daun Pada Anggur) ",
     "penanganan":
         " Penggunaan Cuka Sari Apel: Campurkan cuka sari apel dengan air dan semprotkan ke tanaman anggur. Cuka sari apel diketahui memiliki sifat antimikroba yang dapat membantu mengurangi infeksi jamur ",
     "obat":
         " Boscalid: Fungisida ini efektif dalam mengendalikan jamur Phomopsis viticola penyebab Grape Leaf Blight"
   },
   {
-    "nama": " Huanglongbing (Citrus Greening) pada Jeruk ",
+    "nama": "Huanglongbing (Citrus Greening) pada Jeruk ",
     "penanganan":
         " Penyemprotan Insektisida: Gunakan insektisida untuk mengendalikan populasi serangga vektor, seperti kelabang jeruk. Perhatikan keamanan dan ketepatan pemakaian insektisida. ",
     "obat":
         " Antibiotik seperti Streptomycin dan Oxytetracycline telah digunakan dalam beberapa kasus sebagai upaya untuk mengendalikan HLB, tetapi penggunaannya memerlukan perhatian khusus dan dapat berdampak pada mikroba lainnya dan lingkungan. "
   },
   {
-    "nama": " Peach Bacterial Spot (Bercak Bakteri pada Buah Persik) ",
+    "nama": "Peach Bacterial Spot (Bercak Bakteri pada Buah Persik) ",
     "penanganan":
         " Penggunaan Agens Hayati: Penggunaan agens hayati seperti bakteri antagonis atau bakteriofag telah diteliti sebagai cara potensial untuk mengendalikan bakteri penyebab penyakit. ",
     "obat":
@@ -104,14 +104,14 @@ List<Map<String, dynamic>> dataset = [
         " Fosetyl-Aluminium: Fungisida ini efektif dalam mengendalikan jamur Phytophthora infestans penyebab late blight pada kentang. "
   },
   {
-    "nama": " Squash Powdery Mildew (Powdery Mildew pada Labu)",
+    "nama": "Squash Powdery Mildew (Powdery Mildew pada Labu)",
     "penanganan":
         " Pengaturan Irigasi: Hindari penyiraman daun labu di malam hari atau di bawah daun, karena kelembaban yang berlebihan dapat menyebabkan perkembangan powdery mildew. ",
     "obat":
         " Potasium Bikarbonat: Bahan alami ini dapat digunakan sebagai alternatif fungisida kimia untuk mengendalikan penyakit. "
   },
   {
-    "nama": " Strawberry Leaf Scorch (Pengeringan Daun pada Stroberi) ",
+    "nama": "Strawberry Leaf Scorch (Pengeringan Daun pada Stroberi) ",
     "penanganan":
         "Penanaman Varietas Tahan: Pilih varietas stroberi yang memiliki ketahanan terhadap Strawberry Leaf Scorch untuk mengurangi risiko infeksi. ",
     "obat":

@@ -147,7 +147,7 @@ class FireAuth {
         "plant": {
           "name": "default",
           "image": "https://cdn-icons-png.flaticon.com/512/5225/5225392.png",
-          "category": "Sayuran",
+          "category": "Sayur",
           "height": 0.0,
           "status": "healthy",
           "timeID": 1,

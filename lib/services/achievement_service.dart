@@ -43,8 +43,8 @@ class AchievementService {
         achievementModel = AchievementModel(
           id: achievementId,
           counter: 1,
-          isExist: false,
           isClaimed: true,
+          isExist: false,
           isClosed: false,
         );
         achievementRef.set(achievementModel.toQuery());
@@ -57,7 +57,7 @@ class AchievementService {
 
       await achievementRef.update({'counter': FieldValue.increment(1)});
 
-      achievementModel.counter += 1;
+      achievementModel.counter++;
 
       print(
           "counter : ${emblem.counter} counter : ${achievementModel.counter}");

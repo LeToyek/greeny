@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:greenify/constants/plant_category_list.dart';
 import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
 import 'package:greenify/states/scheduler/time_picker_state.dart';
 import 'package:greenify/ui/widgets/pills/plant_status_pills.dart';
 import 'package:greenify/ui/widgets/pot/watering_schedule.dart';
-
-final List<Map<String, dynamic>> _characterImages = [
-  {
-    "image": 'https://img.freepik.com/free-vector/plant-emoji_78370-262.jpg',
-    "name": "Sayuran"
-  },
-  {
-    "image":
-        'https://friendlystock.com/wp-content/uploads/2020/12/3-kawaii-indoor-plant-cartoon-clipart.jpg',
-    "name": "Bunga"
-  },
-];
 
 class GardenPotDetailScreen extends ConsumerStatefulWidget {
   final String gardenID;
@@ -60,6 +49,8 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
 
     final potController = ref.read(potProvider(widget.gardenID).notifier);
     final potRef = ref.watch(potProvider(widget.gardenID));
+
+    final color = Theme.of(context).colorScheme;
 
     Future<void> _submitForm() async {
       // String name = nameController.text;
@@ -172,13 +163,16 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                             height: 16,
                           ),
                           CircleAvatar(
-                            radius: 45,
+                            radius: 50,
+                            backgroundColor: color.primary,
                             child: CircleAvatar(
-                                radius: 40,
-                                backgroundImage: NetworkImage(
-                                  _characterImages.firstWhere((element) =>
+                                radius: 45,
+                                backgroundColor: color.background,
+                                child: Image.asset(
+                                  plantCategory.firstWhere((element) =>
                                       element['name'] ==
                                       pot.plant.category)['image'],
+                                  height: 80,
                                 )),
                           ),
                           Padding(
@@ -227,18 +221,22 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                         SliverPadding(
                           padding: const EdgeInsets.all(8.0),
                           sliver: SliverGrid.builder(
-                            itemCount: 2,
+                            itemCount: 3,
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 9 / 16,
+                              crossAxisCount: 3,
+                              childAspectRatio: 1,
                               crossAxisSpacing: 8,
                               mainAxisSpacing: 8,
                             ),
                             itemBuilder: (context, index) => Container(
-                              color: Colors.red.shade100,
+                              color: Colors.green.shade100,
                               width: 100,
                               height: 100,
+                              child: Image.network(
+                                pot.plant.image,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         )

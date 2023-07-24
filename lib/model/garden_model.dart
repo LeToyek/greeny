@@ -15,11 +15,11 @@ class GardenModel {
       : id = element.id,
         name = element['name'],
         backgroundUrl = element['background_url'];
-}
 
-Map<Object, Object?> toQuery(GardenModel gardenModel) {
-  return {
-    "name": gardenModel.name,
-    "background_url": gardenModel.backgroundUrl,
-  };
+  Map<String, dynamic> toQuery() {
+    return {
+      "name": name,
+      "background_url": backgroundUrl,
+    };
+  }
 }

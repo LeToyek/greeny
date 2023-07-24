@@ -9,13 +9,50 @@ class AboutScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       color: Theme.of(context).colorScheme.background,
-      child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          physics: const BouncingScrollPhysics(),
-          children: const <Widget>[
-            Header(text: 'About Screen'),
-            SizedBox(height: 36),
-          ]),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                const Header(text: 'About'),
+                const SizedBox(height: 36),
+                Image.network(
+                  "https://firebasestorage.googleapis.com/v0/b/greenify-f07ad.appspot.com/o/uploads%2Fgreeny%20png.png?alt=media&token=57178ec2-6cb3-4322-b89d-e3c0863193b4",
+                  height: 300,
+                ),
+                const SizedBox(height: 36),
+                const Text(
+                  'Greenify adalah aplikasi mobile berbasis platform Android yang inovatif, didedikasikan untuk memudahkan dan menyenangkan pengalaman berkebun di lingkungan perkotaan. Dengan mengintegrasikan konsep gamifikasi dan edukasi lingkungan, Greenify menciptakan pengalaman berkebun yang interaktif dan menginspirasi Anda untuk menjadi lebih sadar akan pentingnya pertanian perkotaan dan kelestarian lingkungan.',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                const Text(
+                  'Visi kami adalah menciptakan kota-kota yang lebih hijau dan berkelanjutan, di mana setiap orang dapat terlibat dalam kegiatan pertanian perkotaan. Melalui Greenify, kami berkomitmen untuk menyebarkan kesadaran tentang pentingnya berkebun di kota, mempromosikan gaya hidup yang lebih ramah lingkungan, dan mengajak orang untuk berkontribusi dalam menjaga keanekaragaman hayati.',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                const Text(
+                  'Melalui Greenify, Anda akan memperoleh pengetahuan yang mendalam tentang penanaman dan perawatan tanaman di perkotaan. Greenify memberikan informasi tentang berbagai jenis tanaman yang cocok ditanam di lingkungan perkotaan, tips perawatan, serta pengelolaan air dan nutrisi yang efisien. Greenify juga dapat mendeteksi penyakit pada tanaman dengan menggunakan konsep machine learning. Selain itu, Greenify menerapkan konsep gamification, yaitu penggunaan elemen-elemen permainan seperti penghargaan, pencapaian, dan kompetisi berupa sistem ranking untuk memotivasi Anda dalam menjaga dan merawat tanaman mereka.',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                const Text(
+                  'Dengan Greenify, Anda dapat menikmati berkebun tanpa batas ruang dan waktu. Bersiaplah untuk mengasah kemampuan berkebun Anda, mendapatkan wawasan baru tentang pertanian perkotaan, dan merasakan kebahagiaan melihat tanaman Anda tumbuh dan berkembang. Greenify memudahkan Anda untuk terhubung dengan alam dan menjadi agen perubahan untuk masa depan yang lebih berkelanjutan. Mulailah petualangan berkebun Anda sekarang dengan Greenify, aplikasi yang membawa alam lebih dekat ke dalam kehidupan Anda.',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+              ]),
+        ),
+      ),
     );
   }
 }

@@ -11,6 +11,7 @@ import 'package:greenify/ui/screen/book/book_list_screen.dart';
 import 'package:greenify/ui/screen/book/book_screen.dart';
 import 'package:greenify/ui/screen/client/user_screen.dart';
 import 'package:greenify/ui/screen/disease/disease_screen.dart';
+import 'package:greenify/ui/screen/garden/create_garden_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_form_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_pot_detail_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_space_screen.dart';
@@ -52,6 +53,10 @@ final _appRoutes =
   GoRoute(
       path: "/garden",
       builder: (context, state) => const ListGardenSpaceScreen()),
+  GoRoute(
+      name: "garden_create",
+      path: "/garden/create",
+      builder: (context, state) => const CreateGardenScree()),
   GoRoute(
       path: "/garden/form/:id",
       builder: (context, state) {

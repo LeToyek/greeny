@@ -62,7 +62,11 @@ class LeaderboardScreen extends ConsumerWidget {
                               child: PlainCard(
                                   child: Row(
                                 children: [
-                                  Text(index.toString()),
+                                  Text("${index + 1}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .apply(fontWeightDelta: 2)),
                                   const SizedBox(width: 16),
                                   CircleAvatar(
                                     backgroundImage: NetworkImage(data[index]

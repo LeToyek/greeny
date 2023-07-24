@@ -1,4 +1,3 @@
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/states/theme_mode.dart';
@@ -18,7 +17,7 @@ class SettingScreen extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           physics: const BouncingScrollPhysics(),
           children: <Widget>[
-            const Header(text: 'Setting Screen'),
+            const Header(text: 'Setting'),
             const SizedBox(height: 36),
             PlainCard(
                 child: Row(
@@ -33,15 +32,15 @@ class SettingScreen extends ConsumerWidget {
                 )
               ],
             )),
-            GestureDetector(
-              onTap: () async => AndroidAlarmManager.cancel(1),
-              child: PlainCard(
-                  child: Row(
-                children: const [
-                  Expanded(child: Text('Disable Notification')),
-                ],
-              )),
-            )
+            // GestureDetector(
+            //   onTap: () async => AndroidAlarmManager.cancel(1),
+            //   child: PlainCard(
+            //       child: Row(
+            //     children: const [
+            //       Expanded(child: Text('Disable Notification')),
+            //     ],
+            //   )),
+            // )
           ]),
     );
   }

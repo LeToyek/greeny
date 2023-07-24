@@ -30,5 +30,6 @@ class AchievementModel {
         'counter': counter,
         'isClaimed': isClaimed,
         'isExist': isExist,
+        'isClosed': isClosed,
       };
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/model/plant_model.dart';
 import 'package:greenify/model/pot_model.dart';
 import 'package:greenify/services/garden_service.dart';
 import 'package:greenify/services/pot_service.dart';
@@ -12,6 +13,7 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
   Future<void> getPots() async {
     try {
       state = const AsyncValue.loading();
+      print('potServices = ${potServices.gardenRef.id}');
       final pots = await potServices.getPotsFromDB();
       state = AsyncValue.data(pots);
       tempData = pots;
@@ -22,10 +24,16 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     }
   }
 
-  Future<void> getPotsByGardenId(String id) async {
+  Future<void> getPotsByGardenId(
+      {String? userId, required String docId}) async {
     try {
       state = const AsyncValue.loading();
-      final pots = await potServices.getPotsFromDB();
+      final pots = await PotServices(
+              gardenRef: GardensServices.getGardenRefByUserID(
+                  userId: userId, docId: docId))
+          .getPotsFromDB();
+      print("${potServices.gardenRef.id} and id $docId");
+      print('pots = $pots');
       state = AsyncValue.data(pots);
       tempData = pots;
       fullData = pots;
@@ -38,6 +46,17 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
   Future<void> turnBackData() async {
     try {
       state = const AsyncValue.loading();
+      state = AsyncValue.data(fullData);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
+  Future<void> waterPlant(int index) async {
+    try {
+      state = const AsyncValue.loading();
+      fullData[index].plant.status = PlantStatus.healthy;
+      await potServices.waterPlant(fullData[index].id!);
       state = AsyncValue.data(fullData);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);

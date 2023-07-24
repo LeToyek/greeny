@@ -31,6 +31,15 @@ class GardenNotifier extends StateNotifier<AsyncValue<List<GardenModel>>> {
       state = AsyncValue.error(e, StackTrace.current);
     }
   }
+
+  Future<void> createGarden(String name, String backgroundUrl) async {
+    try {
+      await GardensServices.createGarden(name, backgroundUrl);
+      getGardens();
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
 }
 
 final gardenProvider =

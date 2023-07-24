@@ -31,7 +31,8 @@ class BookNotifier extends StateNotifier<AsyncValue<List<BookModel>>> {
     try {
       state = const AsyncValue.loading();
       final createdBook = await bookServices.insertBookToDB(book);
-      state = AsyncValue.data(tempBooks);
+
+      state = AsyncValue.data([...tempBooks, createdBook]);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
       throw Exception(e);

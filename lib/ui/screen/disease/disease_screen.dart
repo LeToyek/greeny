@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/services/disease_service.dart';
 import 'package:greenify/states/exp_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/layout/app_bar.dart';
+import 'package:greenify/ui/layout/drawer.dart';
 import 'package:greenify/ui/widgets/achievement_dialog.dart';
 import 'package:image/image.dart' as imglib;
 
@@ -74,10 +76,8 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
       "E7Y6oP3lzSBHzXRLcN9S"
     ];
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Deteksi Penyakit',
-            style: TextStyle(color: Colors.white)),
-      ),
+      appBar: const NewAppbar(title: "Greenify"),
+      endDrawer: const GrDrawerr(),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: isLoading
           ? const Center(
@@ -142,6 +142,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
             ),
       floatingActionButton: FloatingActionButton(
         // Provide an onPressed callback.
+        heroTag: 'fab_disease',
         enableFeedback: true,
 
         onPressed: () async {

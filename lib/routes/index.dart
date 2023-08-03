@@ -15,6 +15,7 @@ import 'package:greenify/ui/screen/garden/garden_form_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_pot_detail_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_space_screen.dart';
 import 'package:greenify/ui/screen/garden/list_garden_space_screen.dart';
+import 'package:greenify/ui/screen/home/content/about_screen.dart';
 import 'package:greenify/ui/screen/home/sekelaton_screen.dart';
 import 'package:greenify/ui/screen/leaderboard/leaderboard_screen.dart';
 import 'package:greenify/ui/screen/starter/splash_screen.dart';
@@ -23,6 +24,11 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 final _appRoutes =
     GoRouter(initialLocation: "/splash", navigatorKey: navigatorKey, routes: [
+  GoRoute(
+      path: "/about",
+      builder: (context, state) {
+        return const AboutScreen();
+      }),
   GoRoute(
     path: "/",
     builder: (context, state) => const SekelatonScreen(),

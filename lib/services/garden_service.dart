@@ -33,8 +33,9 @@ class GardensServices {
   }
 
   static Future<List<GardenModel>> getGardens() async {
-    final gardenCollection =
-        UsersServices.getUserRef().collection(GardenModel.collectionPath);
+    final gardenCollection = UsersServices.getUserRef()
+        .collection(GardenModel.collectionPath)
+        .orderBy('created_at', descending: false);
 
     final rawGardens = await gardenCollection.get();
     final gardens =

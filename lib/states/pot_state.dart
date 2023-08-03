@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/model/height_model.dart';
 import 'package:greenify/model/plant_model.dart';
 import 'package:greenify/model/pot_model.dart';
 import 'package:greenify/services/garden_service.dart';
@@ -52,11 +53,14 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     }
   }
 
-  Future<void> waterPlant(int index) async {
+  Future<void> waterPlant(int index, double height) async {
     try {
       state = const AsyncValue.loading();
       fullData[index].plant.status = PlantStatus.healthy;
-      await potServices.waterPlant(fullData[index].id!);
+      final lastHeight =
+          HeightModel(height: height, date: DateTime.now().toString());
+      fullData[index].plant.heightStat!.last = lastHeight;
+      await potServices.waterPlant(fullData[index].id!, lastHeight);
       state = AsyncValue.data(fullData);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
@@ -76,7 +80,8 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
   Future<String> createPot(PotModel potModel) async {
     try {
       state = const AsyncValue.loading();
-
+      potModel.createdAt = DateTime.now().toString();
+      potModel.updatedAt = DateTime.now().toString();
       potModel.id = await potServices.createPot(potModel);
       tempData.add(potModel);
       state = AsyncValue.data(tempData);

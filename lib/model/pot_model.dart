@@ -5,6 +5,8 @@ class PotModel {
   String? id;
   late PotStatus status;
   final int positionIndex;
+  String? createdAt;
+  String? updatedAt;
   final PlantModel plant;
   static const String collectionPath = 'pots';
 
@@ -14,7 +16,9 @@ class PotModel {
   PotModel.fromQuery(DocumentSnapshot<Object?> element)
       : id = element.id,
         positionIndex = element['position_index'],
-        plant = PlantModel.fromQuery(element['plant']) {
+        plant = PlantModel.fromQuery(element['plant']),
+        createdAt = element['created_at'].toString(),
+        updatedAt = element['updated_at'].toString() {
     status = reverseStatusParse(element['status']);
   }
 
@@ -49,6 +53,8 @@ class PotModel {
       "status": statusParse(status),
       "position_index": positionIndex,
       "plant": plant.toQuery(),
+      "created_at": createdAt,
+      "updated_at": updatedAt,
     };
   }
 }

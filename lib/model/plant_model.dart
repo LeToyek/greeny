@@ -1,3 +1,5 @@
+import 'package:greenify/model/height_model.dart';
+
 enum PlantStatus { healthy, dry, dead }
 
 class PlantModel {
@@ -6,7 +8,7 @@ class PlantModel {
   String image;
   String wateringSchedule;
   String wateringTime;
-  double height;
+  List<HeightModel>? heightStat;
   late PlantStatus status;
   String category;
   int? timeID;
@@ -17,7 +19,7 @@ class PlantModel {
       required this.image,
       required this.wateringSchedule,
       required this.wateringTime,
-      required this.height,
+      required this.heightStat,
       required this.status,
       required this.category,
       required this.timeID});
@@ -28,7 +30,9 @@ class PlantModel {
         image = json['image'],
         wateringSchedule = json['watering_schedule'],
         wateringTime = json['watering_time'],
-        height = json['height'],
+        heightStat = json['height_stat']
+            .map<HeightModel>((e) => HeightModel.fromQuery(e))
+            .toList(),
         category = json['category'],
         timeID = json['timeID'] {
     status = reverseStatusParse(json['status']);
@@ -67,7 +71,7 @@ class PlantModel {
       "image": image,
       "watering_schedule": wateringSchedule,
       "watering_time": wateringTime,
-      "height": height,
+      "height_stat": heightStat!.map((e) => e.toQuery()).toList(),
       "status": statusParse(status),
       "category": category,
       "timeID": timeID

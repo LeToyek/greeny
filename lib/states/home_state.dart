@@ -11,12 +11,10 @@ class HomeNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     try {
       state = const AsyncValue.loading();
       List<GardenModel> garden = await GardensServices.getGardens();
-      print("garden: ${garden[0].id}");
       final pots = await PotServices(
               gardenRef: GardensServices.getGardenRef(garden[0].id))
           .getPotsFromDB();
 
-      print('pots: $pots');
       state = AsyncValue.data(pots);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
@@ -26,5 +24,5 @@ class HomeNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
 
 final homeProvider =
     StateNotifierProvider<HomeNotifier, AsyncValue<List<PotModel>>>((ref) {
-  return HomeNotifier();
+  return HomeNotifier()..getPots();
 });

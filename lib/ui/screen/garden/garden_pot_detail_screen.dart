@@ -6,6 +6,7 @@ import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
 import 'package:greenify/states/scheduler/time_picker_state.dart';
+import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/pills/plant_status_pills.dart';
 import 'package:greenify/ui/widgets/pot/watering_schedule.dart';
 
@@ -51,6 +52,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
     final potRef = ref.watch(potProvider(widget.gardenID));
 
     final color = Theme.of(context).colorScheme;
+    final userClientController = ref.read(userClientProvider.notifier);
 
     Future<void> _submitForm() async {
       // String name = nameController.text;
@@ -190,7 +192,8 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      plantHeightPill(pot.plant.height),
+                                      plantHeightPill(
+                                          pot.plant.heightStat!.last.height),
                                       const SizedBox(width: 8),
                                       plantStatusPill(pot.plant.status),
                                     ],
@@ -207,16 +210,18 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                           const SizedBox(
                             height: 4,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: wateringSchedule(
-                                context,
-                                int.parse(pot.plant.wateringSchedule),
-                                funcScheduleController,
-                                TimeOfDay.fromDateTime(DateTime.parse(
-                                    "2021-10-10 ${pot.plant.wateringTime}")),
-                                funcTimeController),
-                          ),
+                          !userClientController.isSelf()
+                              ? Container()
+                              : Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: wateringSchedule(
+                                      context,
+                                      int.parse(pot.plant.wateringSchedule),
+                                      funcScheduleController,
+                                      TimeOfDay.fromDateTime(DateTime.parse(
+                                          "2021-10-10 ${pot.plant.wateringTime}")),
+                                      funcTimeController),
+                                ),
                         ])),
                         SliverPadding(
                           padding: const EdgeInsets.all(8.0),

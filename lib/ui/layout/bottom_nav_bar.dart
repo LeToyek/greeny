@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/states/bottom_nav_bar.dart';
 import 'package:greenify/states/home_state.dart';
+import 'package:greenify/states/users_state.dart';
 import 'package:ionicons/ionicons.dart';
 
 class GrBottomNavBar extends ConsumerWidget {
@@ -11,6 +13,7 @@ class GrBottomNavBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final int bottomNavIndex = ref.watch(bottomNavProvider);
     final potRef = ref.read(homeProvider.notifier);
+    final userClientController = ref.read(userClientProvider.notifier);
     return Card(
       margin: const EdgeInsets.only(top: 1, right: 4, left: 4),
       elevation: 4,
@@ -28,6 +31,9 @@ class GrBottomNavBar extends ConsumerWidget {
           if (index == 0) {
             potRef.getPots();
           }
+          if (index == 1) {
+            userClientController.setVisitedUser();
+          }
           ref.read(bottomNavProvider.notifier).setValueToDB(index);
         },
         type: BottomNavigationBarType.fixed,
@@ -35,12 +41,7 @@ class GrBottomNavBar extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Theme.of(context).textTheme.bodySmall!.color,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Ionicons.home_outline),
-            activeIcon: Icon(Ionicons.home),
-            label: "Home",
-          ),
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Ionicons.book_outline),
             activeIcon: Icon(Ionicons.book),
@@ -52,6 +53,9 @@ class GrBottomNavBar extends ConsumerWidget {
             label: "Garden",
           ),
           BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.wind, color: Colors.transparent),
+              label: ""),
+          BottomNavigationBarItem(
             icon: Icon(Ionicons.heart_outline),
             activeIcon: Icon(Ionicons.heart),
             label: "Detector",
@@ -61,10 +65,6 @@ class GrBottomNavBar extends ConsumerWidget {
             activeIcon: Icon(Ionicons.stats_chart),
             label: "Rank",
           ),
-          BottomNavigationBarItem(
-              icon: Icon(Ionicons.person_outline),
-              activeIcon: Icon(Ionicons.person),
-              label: "Profile"),
         ],
       ),
     );

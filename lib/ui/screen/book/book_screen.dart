@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/services/book_service.dart';
+import 'package:greenify/ui/layout/app_bar.dart';
+import 'package:greenify/ui/layout/drawer.dart';
 import 'package:greenify/ui/widgets/card/info_card.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -11,13 +13,8 @@ class BookScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final listItem = BookServices.bookCategoryList;
     return Scaffold(
-        appBar: AppBar(
-          actions: const [],
-          centerTitle: true,
-          title: const Text(
-            "Artikel",
-          ),
-        ),
+        appBar: const NewAppbar(title: "Artikel"),
+        endDrawer: const GrDrawerr(),
         body: Material(
           color: Theme.of(context).colorScheme.background,
           child: ListView(
@@ -66,6 +63,7 @@ class BookScreen extends StatelessWidget {
               ]),
         ),
         floatingActionButton: FloatingActionButton(
+          heroTag: 'fab_book',
           onPressed: () => context.pushReplacement("/book/create"),
           child: const Icon(Ionicons.add_outline),
         ));

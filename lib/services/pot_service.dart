@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:greenify/model/height_model.dart';
 import 'package:greenify/model/pot_model.dart';
 
 class PotServices {
@@ -27,10 +28,11 @@ class PotServices {
     }
   }
 
-  Future<void> waterPlant(String id) async {
+  Future<void> waterPlant(String id, HeightModel value) async {
     try {
       await gardenRef.collection(collectionPath).doc(id).update({
         "plant.status": "healthy",
+        "plant.height": FieldValue.arrayUnion([value.toQuery()])
       });
     } catch (e) {
       throw Exception(e);

@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/plant_category_list.dart';
+import 'package:greenify/model/height_model.dart';
 import 'package:greenify/model/plant_model.dart';
 import 'package:greenify/model/pot_model.dart';
 import 'package:greenify/states/exp_state.dart';
@@ -17,6 +19,7 @@ import 'package:greenify/ui/widgets/pot/plant_choose.dart';
 import 'package:greenify/ui/widgets/pot/plant_form_field.dart';
 import 'package:greenify/ui/widgets/pot/watering_schedule.dart';
 import 'package:greenify/ui/widgets/upload_image_container.dart';
+import 'package:ionicons/ionicons.dart';
 
 class GardenFormScreen extends ConsumerStatefulWidget {
   final String id;
@@ -30,12 +33,15 @@ class GardenFormScreen extends ConsumerStatefulWidget {
 class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   late TextEditingController nameController;
   late TextEditingController deskripsiController;
+  late TextEditingController plantHeightController;
+  late FocusNode _focusNode;
 
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
   final _expValue = 300;
   final achievementId = ["23UcfevnxkIp3J5sUSAz", "e39lg5J9nGZqfnUgi0zN"];
+  int plantHeight = 0;
 
   @override
   void initState() {
@@ -43,6 +49,8 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
     super.initState();
     nameController = TextEditingController();
     deskripsiController = TextEditingController();
+    plantHeightController = TextEditingController(text: plantHeight.toString());
+    _focusNode = FocusNode();
   }
 
   @override
@@ -51,6 +59,8 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
     super.dispose();
     nameController.dispose();
     deskripsiController.dispose();
+    plantHeightController.dispose();
+    _focusNode.dispose();
   }
 
   @override
@@ -103,87 +113,100 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
         String description = deskripsiController.text;
         String wateringSchedule = scheduleController.toString();
         String wateringTime = "$realHour:$realMinute";
-        double height = 0;
+        double height = plantHeight.toDouble();
         PlantStatus status = PlantStatus.dry;
         String category = plantCategory[pageController.page!.toInt()]["name"];
 
         showDialog(
             context: context,
-            builder: (context) => isLoading
-                ? const CircularProgressIndicator()
-                : AlertDialog(
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    title: const Text("Konfirmasi"),
-                    content: const Text(
-                        "Apakah anda yakin ingin menambah tanaman ini?"),
-                    actions: [
-                      TextButton(
-                          onPressed: () => context.pop(),
-                          child: const Text("Batal")),
-                      TextButton(
-                          onPressed: () async {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            String image = await fileController.uploadFile();
-                            final randInt = Random().nextInt(100000);
-                            String potCreatedId = await potController.createPot(
-                                PotModel(
-                                    status: PotStatus.filled,
-                                    positionIndex: 0,
-                                    plant: PlantModel(
-                                        name: name,
-                                        description: description,
-                                        image: image,
-                                        wateringSchedule: wateringSchedule,
-                                        wateringTime: wateringTime,
-                                        height: height,
-                                        status: status,
-                                        category: category,
-                                        timeID: randInt)));
-                            DateTime now = DateTime.now();
-                            DateTime tomorrow = DateTime(
-                              now.year,
-                              now.month,
-                              now.day + 1,
-                              timeController.hour,
-                              timeController.minute,
-                            );
-                            // await AndroidAlarmManager.oneShotAt(tomorrow, randInt,
-                            //     () {
-                            //   showNotification(
-                            //       id: randInt,
-                            //       title: "Pengingat Menyiram",
-                            //       body:
-                            //           "$name butuh air, jangan lupa siram tanamanmu kawan",
-                            //       payload: "${widget.id}/$potCreatedId");
-                            // });
-                            // await AndroidAlarmManager.periodic(
-                            //   const Duration(seconds: 5),
-                            //   0,
-                            //   () => BackgroundServices.callback(
-                            //       title: "$name butuh air",
-                            //       body:
-                            //           "Tanamanmu sedang butuh air, siram sekarang agar tidak kekeringan"),
-                            //   startAt: DateTime.now(),
-                            //   exact: true,
-                            //   wakeup: true,
-                            // );
-                            expController.increaseExp(_expValue, achievementId);
-                            funcScheduleController.resetSchedule();
-                            funcTimeController.resetTime();
-                            setState(() {
-                              isLoading = false;
-                            });
-                            if (context.mounted) {
-                              potSpaceController.getPots();
-                              context.pop();
-                              context.pop();
-                            }
-                          },
-                          child: const Text("Ya")),
-                    ],
-                  ));
+            builder: (context) => StatefulBuilder(builder: (context, setState) {
+                  return isLoading
+                      ? Container()
+                      : AlertDialog(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.background,
+                          title: const Text("Konfirmasi"),
+                          content: const Text(
+                              "Apakah anda yakin ingin menambah tanaman ini?"),
+                          actions: [
+                            TextButton(
+                                onPressed: () => context.pop(),
+                                child: const Text("Batal")),
+                            TextButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  print('loading alert $isLoading');
+
+                                  String image =
+                                      await fileController.uploadFile();
+                                  final randInt = Random().nextInt(100000);
+                                  String potCreatedId =
+                                      await potController.createPot(PotModel(
+                                          status: PotStatus.filled,
+                                          positionIndex: 0,
+                                          plant: PlantModel(
+                                              name: name,
+                                              description: description,
+                                              image: image,
+                                              wateringSchedule:
+                                                  wateringSchedule,
+                                              wateringTime: wateringTime,
+                                              heightStat: [
+                                                HeightModel(
+                                                    height: height,
+                                                    date: DateTime.now()
+                                                        .toString())
+                                              ],
+                                              status: status,
+                                              category: category,
+                                              timeID: randInt)));
+                                  DateTime now = DateTime.now();
+                                  DateTime tomorrow = DateTime(
+                                    now.year,
+                                    now.month,
+                                    now.day + 1,
+                                    timeController.hour,
+                                    timeController.minute,
+                                  );
+                                  // await AndroidAlarmManager.oneShotAt(tomorrow, randInt,
+                                  //     () {
+                                  //   showNotification(
+                                  //       id: randInt,
+                                  //       title: "Pengingat Menyiram",
+                                  //       body:
+                                  //           "$name butuh air, jangan lupa siram tanamanmu kawan",
+                                  //       payload: "${widget.id}/$potCreatedId");
+                                  // });
+                                  // await AndroidAlarmManager.periodic(
+                                  //   const Duration(seconds: 5),
+                                  //   0,
+                                  //   () => BackgroundServices.callback(
+                                  //       title: "$name butuh air",
+                                  //       body:
+                                  //           "Tanamanmu sedang butuh air, siram sekarang agar tidak kekeringan"),
+                                  //   startAt: DateTime.now(),
+                                  //   exact: true,
+                                  //   wakeup: true,
+                                  // );
+                                  expController.increaseExp(
+                                      _expValue, achievementId);
+                                  funcScheduleController.resetSchedule();
+                                  funcTimeController.resetTime();
+                                  if (context.mounted) {
+                                    potSpaceController.getPots();
+                                    context.pop();
+                                    context.pop();
+                                  }
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                },
+                                child: const Text("Ya")),
+                          ],
+                        );
+                }));
       }
     }
 
@@ -286,6 +309,114 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                 ),
                                 UploadImageContainer(
                                   fileNotifier: fileController,
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Text(
+                                  "Tinggi Tanaman",
+                                  style: textTheme.titleMedium!
+                                      .apply(fontWeightDelta: 2),
+                                  textAlign: TextAlign.start,
+                                ),
+                                Text(
+                                  "Masukkan tinggi tanaman dalam satuan cm",
+                                  style: textTheme.bodyMedium!
+                                      .apply(color: Colors.grey),
+                                  textAlign: TextAlign.start,
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 60),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                      child: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              if (plantHeight > 0) {
+                                                plantHeight--;
+                                              }
+                                            });
+                                            plantHeightController.text =
+                                                plantHeight.toString();
+                                            _focusNode.requestFocus();
+                                            plantHeightController.selection =
+                                                TextSelection.collapsed(
+                                                    offset:
+                                                        plantHeightController
+                                                            .text.length);
+                                          },
+                                          icon: Icon(
+                                            Ionicons.remove,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
+                                          )),
+                                    ),
+                                    Expanded(
+                                      child: TextField(
+                                        textAlign: TextAlign.center,
+                                        controller: plantHeightController,
+                                        keyboardType: TextInputType.number,
+                                        focusNode: _focusNode,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
+                                        onChanged: (value) {
+                                          if (value.isNotEmpty) {
+                                            setState(() {
+                                              plantHeight = int.parse(value);
+                                            });
+                                          } else {
+                                            setState(() {
+                                              plantHeight = 0;
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                        margin: const EdgeInsets.only(left: 60),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                        child: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                if (plantHeight < 10000) {
+                                                  plantHeight++;
+                                                }
+                                                plantHeightController.text =
+                                                    plantHeight.toString();
+                                                _focusNode.requestFocus();
+                                                plantHeightController
+                                                        .selection =
+                                                    TextSelection.collapsed(
+                                                        offset:
+                                                            plantHeightController
+                                                                .text.length);
+                                              });
+                                            },
+                                            icon: Icon(
+                                              Ionicons.add,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary,
+                                            ))),
+                                  ],
                                 ),
                                 const SizedBox(
                                   height: 16,

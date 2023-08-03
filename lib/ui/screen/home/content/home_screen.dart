@@ -5,9 +5,10 @@ import 'package:greenify/states/garden_state.dart';
 import 'package:greenify/states/home_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/layout/header.dart';
-import 'package:greenify/ui/widgets/branch/stem.dart';
+import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/ui/widgets/card/titled_card.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -23,6 +24,8 @@ class HomeScreen extends ConsumerWidget {
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, stack) => Center(child: Text(err.toString())),
       data: (data) {
+        print(
+            'data[0].plant.heightStat!.length ${data[1].plant.heightStat![0].height}');
         return Material(
           color: Theme.of(context).colorScheme.background,
           child: ListView(
@@ -87,9 +90,32 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
-                StemTimeline(
-                  potModels: data,
-                )
+                const Header(text: 'Grafik Pertumbuhan'),
+                const SizedBox(height: 8),
+                PlainCard(
+                    child: SfSparkLineChart.custom(
+                  dataCount: data[1].plant.heightStat!.length,
+                  xValueMapper: (index) =>
+                      data[1].plant.heightStat![index].date,
+                  yValueMapper: (index) =>
+                      data[1].plant.heightStat![index].height,
+                  color: Theme.of(context).colorScheme.primary,
+                  axisLineColor: Theme.of(context).colorScheme.onPrimary,
+                  axisLineWidth: 2,
+                  axisLineDashArray: const [5, 5],
+                )),
+                PlainCard(
+                    child: SfSparkLineChart(
+                  data:
+                      data.map((e) => e.plant.heightStat!.last.height).toList(),
+                  color: Theme.of(context).colorScheme.primary,
+                  axisLineColor: Theme.of(context).colorScheme.onPrimary,
+                  axisLineWidth: 2,
+                  axisLineDashArray: const [5, 5],
+                ))
+                // StemTimeline(
+                //   potModels: data,
+                // )
               ]),
         );
       },

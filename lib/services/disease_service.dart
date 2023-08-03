@@ -167,15 +167,15 @@ class TFLiteDiseaseDetectionService {
     return output.first;
   }
 
-  static Map<String, dynamic> _getDisease(List<num>? emotionScores) {
+  static Map<String, dynamic> _getDisease(List<num>? diagnoseScores) {
     int bestInd = 0;
 
-    if (emotionScores != null) {
+    if (diagnoseScores != null) {
       num maxScore = 0;
 
-      for (int i = 0; i < emotionScores.length; ++i) {
-        if (maxScore < emotionScores[i]) {
-          maxScore = emotionScores[i];
+      for (int i = 0; i < diagnoseScores.length; ++i) {
+        if (maxScore < diagnoseScores[i]) {
+          maxScore = diagnoseScores[i];
           bestInd = i;
         }
       }

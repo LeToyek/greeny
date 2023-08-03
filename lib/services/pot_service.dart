@@ -32,7 +32,7 @@ class PotServices {
     try {
       await gardenRef.collection(collectionPath).doc(id).update({
         "plant.status": "healthy",
-        "plant.height": FieldValue.arrayUnion([value.toQuery()])
+        "plant.height_stat": FieldValue.arrayUnion([value.toQuery()])
       });
     } catch (e) {
       throw Exception(e);

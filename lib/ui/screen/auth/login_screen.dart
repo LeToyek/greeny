@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:greenify/states/home_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
+import 'package:greenify/utils/validator.dart';
 import 'package:ionicons/ionicons.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -75,6 +76,8 @@ class LoginScreen extends ConsumerWidget {
                         validator: (String? value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email';
+                          } else if (!isValidEmail(value)) {
+                            return 'Please enter a valid email';
                           }
                           return null;
                         },
@@ -161,7 +164,7 @@ class LoginScreen extends ConsumerWidget {
                         onPressed: () {
                           context.push('/register');
                         },
-                        child: const Text('Register'),
+                        child: const Text('Belum punya akun? Daftar disini'),
                       ),
                     ],
                   ),

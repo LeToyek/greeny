@@ -10,8 +10,7 @@ import 'package:greenify/ui/widgets/achievement_dialog.dart';
 import 'package:image/image.dart' as imglib;
 
 class DiseaseScreen extends ConsumerStatefulWidget {
-  final List<CameraDescription>? cameras;
-  const DiseaseScreen({super.key, required this.cameras});
+  const DiseaseScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _DiseaseScreenState();
@@ -23,7 +22,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late String imagePath;
-  bool isLoading = false;
+  bool isLoading = true;
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
     if (_controller == null) {
@@ -41,11 +40,16 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controller = CameraController(
-      widget.cameras![0],
-      ResolutionPreset.medium,
-    );
-    _initializeControllerFuture = _controller.initialize();
+    Future.microtask(() async {
+      final cameras = await availableCameras();
+      _controller = CameraController(
+        cameras[0],
+        ResolutionPreset.medium,
+      );
+      _initializeControllerFuture = _controller.initialize();
+    }).then((value) => setState(() {
+          isLoading = false;
+        }));
   }
 
   @override
@@ -75,63 +79,67 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
             style: TextStyle(color: Colors.white)),
       ),
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return Stack(
-              children: [
-                CameraPreview(
-                  _controller,
-                  child: LayoutBuilder(builder:
-                      (BuildContext context, BoxConstraints constraints) {
-                    return GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTapDown: (details) =>
-                          onViewFinderTap(details, constraints),
-                    );
-                  }),
-                ),
-                isLoading
-                    ? Container(
-                        color: Colors.transparent,
-                        child: Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              CircularProgressIndicator(),
-                              SizedBox(height: 16),
-                              Text("Processing...",
-                                  style: TextStyle(color: Colors.white))
-                            ],
-                          ),
-                        ),
-                      )
-                    : expRef.when(
-                        data: (data) {
-                          if (data.isNotEmpty) {
-                            for (var e in data) {
-                              if (e.isExist && !e.isClosed) {
-                                return AchievementDialog(
-                                    achievementModel: e,
-                                    expNotifier: expNotifier);
-                              }
-                            }
-                          }
-                          return Container();
-                        },
-                        loading: () => Container(),
-                        error: (e, s) => Container(),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : FutureBuilder<void>(
+              future: _initializeControllerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // If the Future is complete, display the preview.
+                  return Stack(
+                    children: [
+                      CameraPreview(
+                        _controller,
+                        child: LayoutBuilder(builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                          return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTapDown: (details) =>
+                                onViewFinderTap(details, constraints),
+                          );
+                        }),
                       ),
-              ],
-            );
-          } else {
-            // Otherwise, display a loading indicator.
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+                      isLoading
+                          ? Container(
+                              color: Colors.transparent,
+                              child: Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    CircularProgressIndicator(),
+                                    SizedBox(height: 16),
+                                    Text("Processing...",
+                                        style: TextStyle(color: Colors.white))
+                                  ],
+                                ),
+                              ),
+                            )
+                          : expRef.when(
+                              data: (data) {
+                                if (data.isNotEmpty) {
+                                  for (var e in data) {
+                                    if (e.isExist && !e.isClosed) {
+                                      return AchievementDialog(
+                                          achievementModel: e,
+                                          expNotifier: expNotifier);
+                                    }
+                                  }
+                                }
+                                return Container();
+                              },
+                              loading: () => Container(),
+                              error: (e, s) => Container(),
+                            ),
+                    ],
+                  );
+                } else {
+                  // Otherwise, display a loading indicator.
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         // Provide an onPressed callback.
         enableFeedback: true,

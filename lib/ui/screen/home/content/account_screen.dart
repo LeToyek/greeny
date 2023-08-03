@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/level_list.dart';
 import 'package:greenify/model/book_model.dart';
 import 'package:greenify/model/garden_model.dart';
+import 'package:greenify/states/theme_mode.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/capitalizer.dart';
@@ -32,6 +33,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     var size = MediaQuery.of(context).size;
+    final displayMode = ref.watch(themeProvider);
+    final funcDisplayMode = ref.read(themeProvider.notifier);
     final userClientController = ref.read(userClientProvider.notifier);
 
     return userRef.when(
@@ -189,6 +192,21 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                                 ],
                               ),
                             ),
+                            const SizedBox(height: 16),
+                            PlainCard(
+                                child: Row(
+                              children: [
+                                const Expanded(child: Text('Dark Mode')),
+                                Switch(
+                                  value: displayMode == ThemeMode.dark,
+                                  onChanged: (value) {
+                                    funcDisplayMode.setThemeMode(value
+                                        ? ThemeMode.dark
+                                        : ThemeMode.light);
+                                  },
+                                )
+                              ],
+                            )),
                             const SizedBox(height: 16),
                             Text(
                               "Medali",

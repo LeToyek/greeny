@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/states/bottom_nav_bar.dart';
+import 'package:greenify/states/home_state.dart';
 import 'package:greenify/states/notification.dart';
 import 'package:greenify/ui/layout/bottom_nav_bar.dart';
 import 'package:greenify/ui/screen/home/content/index.dart';
@@ -22,6 +23,7 @@ class SekelatonScreen extends ConsumerWidget {
         floatingActionButton: FloatingActionButton(
             heroTag: "fab_main",
             onPressed: () {
+              ref.read(homeProvider.notifier).getPots();
               ref.read(bottomNavProvider.notifier).setValueToDB(2);
             },
             child: const Icon(Ionicons.home_outline)),

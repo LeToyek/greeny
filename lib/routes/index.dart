@@ -1,5 +1,4 @@
 //make basic route with go router
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -80,11 +79,7 @@ final _appRoutes =
   GoRoute(
       path: "/disease",
       builder: (context, state) {
-        Map<String, List<CameraDescription>?> args =
-            state.extra as Map<String, List<CameraDescription>?>;
-        return DiseaseScreen(
-          cameras: args['cameras'],
-        );
+        return const DiseaseScreen();
       }),
   GoRoute(
       path: "/leaderboard",

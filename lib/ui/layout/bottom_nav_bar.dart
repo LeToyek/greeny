@@ -42,14 +42,24 @@ class GrBottomNavBar extends ConsumerWidget {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Ionicons.information_circle_outline),
-            activeIcon: Icon(Ionicons.information_circle),
-            label: "About",
+            icon: Icon(Ionicons.book_outline),
+            activeIcon: Icon(Ionicons.book),
+            label: "Articles",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Ionicons.settings_outline),
-            activeIcon: Icon(Ionicons.settings),
-            label: "Settings",
+            icon: Icon(Ionicons.leaf_outline),
+            activeIcon: Icon(Ionicons.leaf),
+            label: "Garden",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Ionicons.heart_outline),
+            activeIcon: Icon(Ionicons.heart),
+            label: "Detector",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Ionicons.stats_chart_outline),
+            activeIcon: Icon(Ionicons.stats_chart),
+            label: "Rank",
           ),
           BottomNavigationBarItem(
               icon: Icon(Ionicons.person_outline),

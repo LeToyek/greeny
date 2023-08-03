@@ -9,7 +9,7 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   late ThemeMode themeMode;
   ThemeModeNotifier() : super(ThemeMode.light) {
     final String mode = Hive.box('prefs')
-        .get("themeMode", defaultValue: ThemeMode.system.toString()) as String;
+        .get("themeMode", defaultValue: ThemeMode.light.toString()) as String;
     switch (mode) {
       case "ThemeMode.system":
         themeMode = ThemeMode.system;

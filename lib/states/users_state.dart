@@ -95,10 +95,17 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
       state = const AsyncValue.loading();
       final authUser = await FireAuth.signInWithEmailPassword(
           email: email, password: password);
-      final userMod = await usersServices.getUserById(id: authUser!.uid);
+      print("auth user: $authUser");
+      if (authUser == null) {
+        print("User not found");
+        state = AsyncValue.error("User not found", StackTrace.current);
+        throw Exception("User not found");
+      }
+      final userMod = await usersServices.getUserById(id: authUser.uid);
       state = AsyncValue.data([userMod]);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
+      throw Exception("User tidak ditemukan");
     }
   }
 

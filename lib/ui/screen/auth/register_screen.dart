@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/home_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/utils/validator.dart';
 
 class RegisterScreen extends ConsumerWidget {
   const RegisterScreen({super.key});
@@ -89,6 +90,8 @@ class RegisterScreen extends ConsumerWidget {
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
+                        } else if (!isValidEmail(value)) {
+                          return 'Please enter a valid email';
                         }
                         return null;
                       },
@@ -103,6 +106,8 @@ class RegisterScreen extends ConsumerWidget {
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
+                        } else if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
                         }
                         return null;
                       },

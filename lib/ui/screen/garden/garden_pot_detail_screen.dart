@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/plant_category_list.dart';
+import 'package:greenify/states/exp_state.dart';
 import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
@@ -9,6 +10,8 @@ import 'package:greenify/states/scheduler/time_picker_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/pills/plant_status_pills.dart';
 import 'package:greenify/ui/widgets/pot/watering_schedule.dart';
+import 'package:greenify/ui/widgets/watering_dialog.dart';
+import 'package:ionicons/ionicons.dart';
 
 class GardenPotDetailScreen extends ConsumerStatefulWidget {
   final String gardenID;
@@ -53,6 +56,8 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
 
     final color = Theme.of(context).colorScheme;
     final userClientController = ref.read(userClientProvider.notifier);
+
+    final expNotifier = ref.read(expProvider.notifier);
 
     Future<void> _submitForm() async {
       // String name = nameController.text;
@@ -99,11 +104,19 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
     }
 
     final textTheme = Theme.of(context).textTheme;
+
+    int waterExp = 20;
+    List<String> achievementIDs = [
+      "cWmOltw7SolOmbm1akM5",
+      "RL7wKvRiysNsPhUEjG2z"
+    ];
+
     return potRef.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text(error.toString())),
         data: (data) {
           final pot = data.first;
+          double counterHeight = pot.plant.heightStat!.last.height;
           return WillPopScope(
             onWillPop: () async {
               potController.turnBackData();
@@ -117,6 +130,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                       expandedHeight: 200,
                       pinned: true,
                       flexibleSpace: FlexibleSpaceBar(
+                        centerTitle: true,
                         title: Text(
                           pot.plant.name,
                           style: textTheme.titleLarge!
@@ -164,18 +178,59 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                           const SizedBox(
                             height: 16,
                           ),
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor: color.primary,
-                            child: CircleAvatar(
-                                radius: 45,
-                                backgroundColor: color.background,
-                                child: Image.asset(
-                                  plantCategory.firstWhere((element) =>
-                                      element['name'] ==
-                                      pot.plant.category)['image'],
-                                  height: 80,
-                                )),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: const BoxDecoration(
+                                        color: Colors.transparent,
+                                        shape: BoxShape.circle),
+                                    child: const Icon(
+                                      Ionicons.water_outline,
+                                      color: Colors.transparent,
+                                    )),
+                                CircleAvatar(
+                                  radius: 50,
+                                  backgroundColor: color.primary,
+                                  child: CircleAvatar(
+                                      radius: 45,
+                                      backgroundColor: color.background,
+                                      child: Image.asset(
+                                        plantCategory.firstWhere((element) =>
+                                            element['name'] ==
+                                            pot.plant.category)['image'],
+                                        height: 80,
+                                      )),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showWateringDialog(
+                                        context: context,
+                                        textTheme: textTheme,
+                                        counterHeight: counterHeight,
+                                        potsNotifier: potController,
+                                        isDetail: true,
+                                        id: pot.id,
+                                        expNotifier: expNotifier,
+                                        waterExp: waterExp,
+                                        achievementIDs: achievementIDs);
+                                  },
+                                  child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                          color: Colors.blue.shade200,
+                                          shape: BoxShape.circle),
+                                      child: Icon(
+                                        Ionicons.water_outline,
+                                        color: color.background,
+                                      )),
+                                ),
+                              ],
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(16.0),

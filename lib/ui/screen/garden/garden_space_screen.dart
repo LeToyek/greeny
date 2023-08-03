@@ -9,8 +9,8 @@ import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/achievement_dialog.dart';
 import 'package:greenify/ui/widgets/card/plant_card.dart';
+import 'package:greenify/ui/widgets/watering_dialog.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:lottie/lottie.dart';
 
 class GardenSpaceScreen extends ConsumerWidget {
   final String id;
@@ -96,182 +96,27 @@ class GardenSpaceScreen extends ConsumerWidget {
                                   ? data[index].plant.heightStat!.last.height
                                   : 0;
                           return GestureDetector(
-                            onTap:
-                                data[index].plant.status == PlantStatus.dry &&
-                                        userClientController.isSelf()
-                                    ? () {
-                                        print(counterHeight);
-                                        print(
-                                            'data[index].plant.heightStat: ${data[index].plant.heightStat}');
-                                        showDialog(
-                                            context: context,
-                                            builder:
-                                                (context) => StatefulBuilder(
-                                                      builder:
-                                                          (context, setState) {
-                                                        return AlertDialog(
-                                                          backgroundColor:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .surface,
-                                                          content: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              Text(
-                                                                "Ukur ketinggian tanamanmu",
-                                                                style: textTheme.titleLarge!.apply(
-                                                                    fontWeightDelta:
-                                                                        2,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .onSurface),
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 16,
-                                                              ),
-                                                              Lottie.network(
-                                                                  "https://lottie.host/35acbdf6-a272-4ca5-b5bc-a3d6aae25c04/mI4jAwJBdz.json",
-                                                                  height: 72),
-                                                              const SizedBox(
-                                                                height: 16,
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                children: [
-                                                                  Container(
-                                                                    decoration: BoxDecoration(
-                                                                        shape: BoxShape
-                                                                            .circle,
-                                                                        color: Theme.of(context)
-                                                                            .colorScheme
-                                                                            .primary),
-                                                                    child: IconButton(
-                                                                        onPressed: () {
-                                                                          setState(
-                                                                              () {
-                                                                            if (counterHeight >
-                                                                                0) {
-                                                                              counterHeight--;
-                                                                            }
-                                                                          });
-                                                                        },
-                                                                        icon: Icon(
-                                                                          Ionicons
-                                                                              .remove,
-                                                                          color: Theme.of(context)
-                                                                              .colorScheme
-                                                                              .onPrimary,
-                                                                        )),
-                                                                  ),
-                                                                  Text(
-                                                                    "$counterHeight cm",
-                                                                    style: textTheme.titleLarge!.apply(
-                                                                        fontWeightDelta:
-                                                                            2,
-                                                                        color: Theme.of(context)
-                                                                            .colorScheme
-                                                                            .onSurface),
-                                                                  ),
-                                                                  Container(
-                                                                      decoration: BoxDecoration(
-                                                                          shape: BoxShape
-                                                                              .circle,
-                                                                          color: Theme.of(context)
-                                                                              .colorScheme
-                                                                              .primary),
-                                                                      child: IconButton(
-                                                                          onPressed: () {
-                                                                            setState(() {
-                                                                              if (counterHeight < 10000) {
-                                                                                counterHeight++;
-                                                                              }
-                                                                            });
-                                                                          },
-                                                                          icon: Icon(
-                                                                            Ionicons.add,
-                                                                            color:
-                                                                                Theme.of(context).colorScheme.onPrimary,
-                                                                          ))),
-                                                                ],
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 16,
-                                                              ),
-                                                              Text(
-                                                                "Jangan lupa untuk mengukur ketinggian tanamanmu ya setiap menyiramnya!",
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: textTheme
-                                                                    .bodyMedium!
-                                                                    .apply(
-                                                                        color: Theme.of(context)
-                                                                            .colorScheme
-                                                                            .onSurface),
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 16,
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                children: [
-                                                                  ElevatedButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        context
-                                                                            .pop();
-                                                                      },
-                                                                      child: const Text(
-                                                                          "Batal")),
-                                                                  StatefulBuilder(
-                                                                      builder:
-                                                                          (context,
-                                                                              setState) {
-                                                                    return ElevatedButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          setState(
-                                                                            () {
-                                                                              isWatering = true;
-                                                                            },
-                                                                          );
-                                                                          expNotifier.increaseExp(
-                                                                              waterExp,
-                                                                              achievementIDs);
-                                                                          potsNotifier.waterPlant(
-                                                                              index,
-                                                                              counterHeight);
-                                                                          context
-                                                                              .pop();
-                                                                        },
-                                                                        child: const Text(
-                                                                            "Siram"));
-                                                                  }),
-                                                                ],
-                                                              )
-                                                            ],
-                                                          ),
-                                                        );
-                                                      },
-                                                    ));
-                                      }
-                                    : () {
-                                        context.push(
-                                            "/garden/$id/detail/${data[index].id}");
-                                        potsNotifier
-                                            .getPotById(data[index].id!);
-                                        return;
-                                      },
+                            onTap: data[index].plant.status ==
+                                        PlantStatus.dry &&
+                                    userClientController.isSelf()
+                                ? () {
+                                    showWateringDialog(
+                                        context: context,
+                                        textTheme: textTheme,
+                                        counterHeight: counterHeight,
+                                        isDetail: false,
+                                        potsNotifier: potsNotifier,
+                                        index: index,
+                                        expNotifier: expNotifier,
+                                        waterExp: waterExp,
+                                        achievementIDs: achievementIDs);
+                                  }
+                                : () {
+                                    context.push(
+                                        "/garden/$id/detail/${data[index].id}");
+                                    potsNotifier.getPotById(data[index].id!);
+                                    return;
+                                  },
                             child: Stack(
                               children: [
                                 PlantCard(
@@ -310,18 +155,13 @@ class GardenSpaceScreen extends ConsumerWidget {
                       ),
                     ]);
               }, error: ((error, stackTrace) {
-                print(error);
                 return Center(
                   child: Text(error.toString()),
                 );
               }), loading: () {
-                return isWatering
-                    ? Center(
-                        child: LottieBuilder.network(
-                            "https://lottie.host/4bf3a194-fe78-4c88-a433-0d025161afd8/nr0ZJBhjEI.json"))
-                    : const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               })),
           expRef.when(
             data: (data) {

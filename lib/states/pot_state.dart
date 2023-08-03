@@ -53,6 +53,23 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     }
   }
 
+  Future<void> selfWaterPlant(double height, String id) async {
+    try {
+      state = const AsyncValue.loading();
+      final lastHeight =
+          HeightModel(height: height, date: DateTime.now().toString());
+      await potServices.waterPlant(id, lastHeight);
+      fullData
+          .firstWhere((element) => element.id == id)
+          .plant
+          .heightStat!
+          .last = lastHeight;
+      state = AsyncValue.data(fullData);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
   Future<void> waterPlant(int index, double height) async {
     try {
       state = const AsyncValue.loading();

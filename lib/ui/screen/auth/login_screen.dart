@@ -107,7 +107,7 @@ class LoginScreen extends ConsumerWidget {
                                     color: Colors.white),
                                 const SizedBox(width: 12),
                                 Text(
-                                  'Login',
+                                  'Masuk',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!

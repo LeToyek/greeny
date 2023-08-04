@@ -25,7 +25,7 @@ class _GreenNumberPickerState extends State<GreenNumberPicker> {
         Text('Jadwal Penyiraman',
             style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 8),
-        Text("Tentukan berapa kali sehari tanaman anda disiram",
+        Text("Tentukan berapa hari sekali tanaman anda disiram",
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center),
         const SizedBox(height: 8),

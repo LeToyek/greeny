@@ -137,8 +137,6 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  print('loading alert $isLoading');
-
                                   String image =
                                       await fileController.uploadFile();
                                   final randInt = Random().nextInt(100000);

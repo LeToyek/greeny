@@ -29,7 +29,7 @@ class _CreateGardenScreeState extends ConsumerState<CreateGardenScree> {
     return Scaffold(
       backgroundColor: colorScheme.background,
       appBar: AppBar(
-        title: const Text("Create Garden"),
+        title: const Text("Tambahkan Garden"),
       ),
       body: SingleChildScrollView(
         child: Stack(
@@ -127,7 +127,7 @@ class _CreateGardenScreeState extends ConsumerState<CreateGardenScree> {
                                 }
                               }
                             },
-                            child: const Text("Create"),
+                            child: const Text("Tambahkan"),
                           ),
                         )
                       ],

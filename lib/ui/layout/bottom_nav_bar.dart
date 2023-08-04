@@ -45,7 +45,7 @@ class GrBottomNavBar extends ConsumerWidget {
           BottomNavigationBarItem(
             icon: Icon(Ionicons.book_outline),
             activeIcon: Icon(Ionicons.book),
-            label: "Articles",
+            label: "Artikel",
           ),
           BottomNavigationBarItem(
             icon: Icon(Ionicons.leaf_outline),
@@ -58,12 +58,12 @@ class GrBottomNavBar extends ConsumerWidget {
           BottomNavigationBarItem(
             icon: Icon(Ionicons.heart_outline),
             activeIcon: Icon(Ionicons.heart),
-            label: "Detector",
+            label: "Detektor",
           ),
           BottomNavigationBarItem(
             icon: Icon(Ionicons.stats_chart_outline),
             activeIcon: Icon(Ionicons.stats_chart),
-            label: "Rank",
+            label: "Peringkat",
           ),
         ],
       ),

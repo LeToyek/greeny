@@ -71,7 +71,7 @@ class GrDrawerr extends ConsumerWidget {
                 grDrawerItem(
                     context: context,
                     icon: const Icon(Ionicons.log_out_outline),
-                    text: 'Logout',
+                    text: 'Keluar',
                     ref: ref,
                     route: '/login',
                     colorText: Theme.of(context).colorScheme.error),

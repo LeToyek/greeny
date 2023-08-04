@@ -38,8 +38,8 @@ class PlantCard extends ConsumerWidget {
       case PlantBoxStatus.filled:
         return PlantBox(textTheme, title, null, imgUrl, ref, context);
       case PlantBoxStatus.locked:
-        return PlantBox(textTheme, "Locked", Ionicons.lock_closed_outline, null,
-            ref, context);
+        return PlantBox(textTheme, "Terkunci", Ionicons.lock_closed_outline,
+            null, ref, context);
     }
   }
 

@@ -76,7 +76,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
       "E7Y6oP3lzSBHzXRLcN9S"
     ];
     return Scaffold(
-      appBar: const NewAppbar(title: "Greenify"),
+      appBar: const NewAppbar(title: "Deteksi Penyakit"),
       endDrawer: const GrDrawerr(),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: isLoading

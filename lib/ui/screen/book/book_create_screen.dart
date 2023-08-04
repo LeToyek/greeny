@@ -25,7 +25,7 @@ class BookCreateScreen extends ConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           actions: const [],
-          title: const Text("Create Book"),
+          title: const Text("Buat Artikel"),
           centerTitle: true,
         ),
         body: Material(
@@ -222,7 +222,7 @@ class _TextEditorState extends State<TextEditor> {
                 child: HtmlEditor(
                   controller: controller,
                   htmlEditorOptions: const HtmlEditorOptions(
-                    hint: 'Your text here...',
+                    hint: 'Apa yang ingin anda tulis?',
                     shouldEnsureVisible: true,
                     adjustHeightForKeyboard: true,
                     autoAdjustHeight: true,

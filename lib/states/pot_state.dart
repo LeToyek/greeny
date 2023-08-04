@@ -53,7 +53,7 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     }
   }
 
-  Future<void> selfWaterPlant(double height, String id) async {
+  Future<void> selfWaterPlant(int height, String id) async {
     try {
       state = const AsyncValue.loading();
       final lastHeight =
@@ -70,7 +70,7 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     }
   }
 
-  Future<void> waterPlant(int index, double height) async {
+  Future<void> waterPlant(int index, int height) async {
     try {
       state = const AsyncValue.loading();
       fullData[index].plant.status = PlantStatus.healthy;

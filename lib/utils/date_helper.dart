@@ -2,6 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class DateHelper {
+  static String getDayFormat(String dateTime) {
+    DateTime date = DateTime.parse(dateTime);
+    return DateFormat('dd').format(date);
+  }
+
   static DateTime format() {
     // Date and Time Format
     final now = DateTime.now();

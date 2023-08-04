@@ -11,6 +11,7 @@ import 'package:greenify/services/background_service.dart';
 import 'package:greenify/states/theme_mode.dart';
 import 'package:greenify/utils/notification_helper.dart';
 import 'package:hive/hive.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
@@ -44,6 +45,9 @@ class MyApp extends ConsumerWidget {
       color: themeUsed == ThemeMode.light
           ? lightTheme.colorScheme.background
           : darkTheme.colorScheme.background,
+      localizationsDelegates: const [
+        MonthYearPickerLocalizations.delegate,
+      ],
       title: "Greenify",
       routerConfig: router,
       themeMode: themeUsed,

@@ -13,7 +13,7 @@ class Header extends StatelessWidget {
         textAlign: TextAlign.start,
         style: Theme.of(context)
             .textTheme
-            .headlineMedium!
+            .headlineSmall!
             .apply(fontWeightDelta: 2),
       ),
     );

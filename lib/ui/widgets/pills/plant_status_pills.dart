@@ -30,7 +30,7 @@ Widget plantStatusPill(PlantStatus status) {
   }
 }
 
-Widget plantHeightPill(double height) {
+Widget plantHeightPill(int height) {
   if (height > 100) {
     return Chip(
       label: Text("$height cm"),

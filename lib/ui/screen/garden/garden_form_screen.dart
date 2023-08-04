@@ -113,7 +113,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
         String description = deskripsiController.text;
         String wateringSchedule = scheduleController.toString();
         String wateringTime = "$realHour:$realMinute";
-        double height = plantHeight.toDouble();
+        int height = plantHeight;
         PlantStatus status = PlantStatus.dry;
         String category = plantCategory[pageController.page!.toInt()]["name"];
 

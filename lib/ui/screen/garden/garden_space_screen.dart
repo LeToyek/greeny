@@ -91,7 +91,7 @@ class GardenSpaceScreen extends ConsumerWidget {
                             );
                           }
 
-                          double counterHeight =
+                          int counterHeight =
                               data[index].plant.heightStat != null
                                   ? data[index].plant.heightStat!.last.height
                                   : 0;

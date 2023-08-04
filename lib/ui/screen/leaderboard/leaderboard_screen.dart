@@ -15,7 +15,7 @@ class LeaderboardScreen extends ConsumerWidget {
 
     final userClientController = ref.read(userClientProvider.notifier);
     return Scaffold(
-      appBar: const NewAppbar(title: "Greenify"),
+      appBar: const NewAppbar(title: "Peringkat"),
       endDrawer: const GrDrawerr(),
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [],

@@ -10,7 +10,7 @@ class AboutScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: const NewAppbar(title: "Greenify"),
+      appBar: const NewAppbar(title: "Tentang Kami"),
       endDrawer: const GrDrawerr(),
       body: Material(
         color: Theme.of(context).colorScheme.background,
@@ -21,7 +21,7 @@ class AboutScreen extends ConsumerWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  const Header(text: 'About'),
+                  const Header(text: 'Greenify'),
                   const SizedBox(height: 36),
                   Image.network(
                     "https://firebasestorage.googleapis.com/v0/b/greenify-f07ad.appspot.com/o/uploads%2Fgreeny%20png.png?alt=media&token=57178ec2-6cb3-4322-b89d-e3c0863193b4",

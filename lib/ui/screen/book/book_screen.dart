@@ -64,7 +64,7 @@ class BookScreen extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           heroTag: 'fab_book',
-          onPressed: () => context.pushReplacement("/book/create"),
+          onPressed: () => context.push("/book/create"),
           child: const Icon(Ionicons.add_outline),
         ));
   }

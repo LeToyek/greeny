@@ -52,7 +52,7 @@ class RegisterScreen extends ConsumerWidget {
 
     final colorTheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
+      appBar: AppBar(title: const Text('Daftar')),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Stack(
         children: [
@@ -71,12 +71,12 @@ class RegisterScreen extends ConsumerWidget {
                     TextFormField(
                       controller: nameController,
                       decoration: InputDecoration(
-                          labelText: 'Name',
+                          labelText: 'Nama',
                           labelStyle:
                               TextStyle(color: colorTheme.onBackground)),
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
+                          return 'Masukkan nama anda';
                         }
                         return null;
                       },
@@ -89,9 +89,9 @@ class RegisterScreen extends ConsumerWidget {
                               TextStyle(color: colorTheme.onBackground)),
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return 'Masukkan email anda';
                         } else if (!isValidEmail(value)) {
-                          return 'Please enter a valid email';
+                          return 'Masukkan email yang valid';
                         }
                         return null;
                       },
@@ -105,9 +105,9 @@ class RegisterScreen extends ConsumerWidget {
                       obscureText: true,
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return 'Masukkan password anda';
                         } else if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
+                          return 'Password minimal 6 karakter';
                         }
                         return null;
                       },
@@ -116,7 +116,7 @@ class RegisterScreen extends ConsumerWidget {
                     ElevatedButton(
                       onPressed: _submitForm,
                       child: const Text(
-                        'Register',
+                        'Daftar',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

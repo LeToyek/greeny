@@ -116,7 +116,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
         error: (error, stackTrace) => Center(child: Text(error.toString())),
         data: (data) {
           final pot = data.first;
-          double counterHeight = pot.plant.heightStat!.last.height;
+          int counterHeight = pot.plant.heightStat!.last.height;
           return WillPopScope(
             onWillPop: () async {
               potController.turnBackData();

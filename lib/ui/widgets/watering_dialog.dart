@@ -8,7 +8,7 @@ import 'package:lottie/lottie.dart';
 void showWateringDialog({
   required BuildContext context,
   required TextTheme textTheme,
-  required double counterHeight,
+  required int counterHeight,
   required PotNotifier potsNotifier,
   required bool isDetail,
   int? index,

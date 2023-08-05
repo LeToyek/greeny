@@ -9,8 +9,8 @@ class BottomNavNotifier extends StateNotifier<int> {
 
   set value(int index) => state = index;
 
-  BottomNavNotifier() : super(0) {
-    value = Hive.box('prefs').get('navIndex', defaultValue: state) as int;
+  BottomNavNotifier() : super(2) {
+    value = Hive.box('prefs').get('navIndex', defaultValue: 2) as int;
   }
   void setValueToDB(int index) {
     value = index;

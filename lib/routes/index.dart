@@ -16,6 +16,7 @@ import 'package:greenify/ui/screen/garden/garden_pot_detail_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_space_screen.dart';
 import 'package:greenify/ui/screen/garden/list_garden_space_screen.dart';
 import 'package:greenify/ui/screen/home/content/about_screen.dart';
+import 'package:greenify/ui/screen/home/content/account_screen.dart';
 import 'package:greenify/ui/screen/home/sekelaton_screen.dart';
 import 'package:greenify/ui/screen/leaderboard/leaderboard_screen.dart';
 import 'package:greenify/ui/screen/starter/splash_screen.dart';
@@ -33,6 +34,11 @@ final _appRoutes =
     path: "/",
     builder: (context, state) => const SekelatonScreen(),
   ),
+  GoRoute(
+      path: "/account",
+      builder: (context, state) {
+        return const AccountScreen();
+      }),
   GoRoute(
       path: "/user/detail",
       builder: (context, state) {

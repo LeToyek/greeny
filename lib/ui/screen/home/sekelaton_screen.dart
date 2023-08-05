@@ -20,13 +20,15 @@ class SekelatonScreen extends ConsumerWidget {
           child: contents.elementAt(index),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-            heroTag: "fab_main",
-            onPressed: () {
-              ref.read(homeProvider.notifier).getPots();
-              ref.read(bottomNavProvider.notifier).setValueToDB(2);
-            },
-            child: const Icon(Ionicons.home_outline)),
+        floatingActionButton: index == 3
+            ? null
+            : FloatingActionButton(
+                heroTag: "fab_main",
+                onPressed: () {
+                  ref.read(homeProvider.notifier).getPots();
+                  ref.read(bottomNavProvider.notifier).setValueToDB(2);
+                },
+                child: const Icon(Ionicons.home_outline)),
         bottomNavigationBar: const GrBottomNavBar(),
         backgroundColor: Theme.of(context).colorScheme.background);
   }

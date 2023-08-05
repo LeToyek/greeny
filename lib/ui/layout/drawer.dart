@@ -47,6 +47,12 @@ class GrDrawerr extends ConsumerWidget {
                 ),
                 grDrawerItem(
                     context: context,
+                    icon: const Icon(Ionicons.person_circle_outline),
+                    text: 'Akun Saya',
+                    ref: ref,
+                    route: '/account'),
+                grDrawerItem(
+                    context: context,
                     icon: const Icon(Ionicons.moon_outline),
                     text: 'Dark Mode',
                     ref: ref,

@@ -25,6 +25,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
   late Future<void> _initializeControllerFuture;
   late String imagePath;
   bool isLoading = true;
+  bool isProcessing = false;
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
     if (_controller == null) {
@@ -101,7 +102,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                           );
                         }),
                       ),
-                      isLoading
+                      isProcessing
                           ? Container(
                               color: Colors.transparent,
                               child: Center(
@@ -151,7 +152,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
           try {
             // Ensure that the camera is initialized.
             setState(() {
-              isLoading = true;
+              isProcessing = true;
             });
             await _initializeControllerFuture;
 
@@ -174,7 +175,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
 
             await expNotifier.increaseExp(aiExp, achievementIDs);
             setState(() {
-              isLoading = false;
+              isProcessing = false;
             });
             showModalBottomSheet(
                 shape: const RoundedRectangleBorder(
@@ -184,95 +185,151 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                 ),
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 context: context,
-                builder: (context) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Hasil Deteksi Greeny",
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .apply(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onBackground,
-                                          fontWeightDelta: 2,
-                                          fontSizeDelta: 4)),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          Text(res["nama"],
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .apply(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontWeightDelta: 2,
-                                      fontSizeDelta: 8)),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Text("Penanganan",
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .apply(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onBackground,
-                                      fontWeightDelta: 2,
-                                      fontSizeDelta: 4)),
-                          Text(res["penanganan"],
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .apply(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onBackground,
-                                      fontWeightDelta: 1,
-                                      fontSizeDelta: 2)),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Text("Obat",
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .apply(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onBackground,
-                                      fontWeightDelta: 2,
-                                      fontSizeDelta: 4)),
-                          Text(res["obat"],
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .apply(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onBackground,
-                                      fontWeightDelta: 1,
-                                      fontSizeDelta: 2)),
-                        ],
+                builder: (context) => SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Hasil Deteksi Greeny",
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .apply(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onBackground,
+                                            fontWeightDelta: 2,
+                                            fontSizeDelta: 4)),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            Text(res["nama"],
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .apply(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontWeightDelta: 2,
+                                        fontSizeDelta: 8)),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Text("Penanganan",
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .apply(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                        fontWeightDelta: 2,
+                                        fontSizeDelta: 4)),
+                            Text(res["penanganan"],
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .apply(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                        fontWeightDelta: 1,
+                                        fontSizeDelta: 2)),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Text("Obat",
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .apply(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                        fontWeightDelta: 2,
+                                        fontSizeDelta: 4)),
+                            Text(res["obat"],
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .apply(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                        fontWeightDelta: 1,
+                                        fontSizeDelta: 2)),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Text("Gambar Tanaman",
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .apply(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                        fontWeightDelta: 2,
+                                        fontSizeDelta: 4)),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 10),
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(res['images'][0]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(res['images'][1]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 10),
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(res['images'][2]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ));
           } catch (e) {

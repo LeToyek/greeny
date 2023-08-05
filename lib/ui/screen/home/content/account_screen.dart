@@ -456,29 +456,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                                     ),
                                   ),
                             const SizedBox(height: 36),
-
-                            GestureDetector(
-                              onTap: () {
-                                funcUserRef.logOut();
-                                context.go("/login");
-                              },
-                              child: PlainCard(
-                                  color: Theme.of(context).colorScheme.error,
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Ionicons.log_out_outline,
-                                        color: Colors.white,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      _textAccount(
-                                          context: context,
-                                          text: 'Logout',
-                                          color: Colors.white),
-                                    ],
-                                  )),
-                            ),
-                            const SizedBox(height: 36),
                             // const SizedBox(height: 12),
                           ]),
                     ))));

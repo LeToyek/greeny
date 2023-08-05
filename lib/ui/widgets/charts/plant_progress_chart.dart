@@ -184,8 +184,12 @@ class _PlantProgressChartState extends ConsumerState<PlantProgressChart> {
 
   List<LineSeries> getSeries(List<PotModel> pots) {
     List<LineSeries> series = [];
-    print('series $series');
+
     for (var pot in pots) {
+      pot.plant.heightStat!.sort((a, b) {
+        return DateTime.parse(a.date).compareTo(DateTime.parse(b.date));
+      });
+
       series.add(LineSeries<HeightModel, String>(
         name: pot.plant.name,
         dataSource: pot.plant.heightStat!

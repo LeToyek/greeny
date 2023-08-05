@@ -67,8 +67,8 @@ class GrBottomNavBar extends ConsumerWidget {
             label: "Detektor",
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Ionicons.stats_chart_outline),
-            activeIcon: Icon(Ionicons.stats_chart),
+            icon: Icon(Ionicons.trophy_outline),
+            activeIcon: Icon(Ionicons.trophy),
             label: "Peringkat",
           ),
         ],

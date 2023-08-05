@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/home_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/validator.dart';
+import 'package:ionicons/ionicons.dart';
 
 class RegisterScreen extends ConsumerWidget {
   const RegisterScreen({super.key});
@@ -113,12 +115,26 @@ class RegisterScreen extends ConsumerWidget {
                       },
                     ),
                     const SizedBox(height: 16.0),
-                    ElevatedButton(
-                      onPressed: _submitForm,
-                      child: const Text(
-                        'Daftar',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    GestureDetector(
+                      onTap: () => _submitForm(),
+                      child: PlainCard(
+                          color: Theme.of(context).colorScheme.primary,
+                          child: Row(
+                            children: [
+                              const Icon(Ionicons.person_add,
+                                  color: Colors.white),
+                              const SizedBox(width: 12),
+                              Text(
+                                'Daftar',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .apply(
+                                        fontWeightDelta: 2,
+                                        color: Colors.white),
+                              ),
+                            ],
+                          )),
                     ),
                   ],
                 ),

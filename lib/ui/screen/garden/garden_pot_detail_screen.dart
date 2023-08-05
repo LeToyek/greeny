@@ -9,6 +9,7 @@ import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
 import 'package:greenify/states/scheduler/time_picker_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/widgets/charts/detail_plant_progress_chart.dart';
 import 'package:greenify/ui/widgets/pills/plant_status_pills.dart';
 import 'package:greenify/ui/widgets/pot/watering_schedule.dart';
 import 'package:greenify/ui/widgets/watering_dialog.dart';
@@ -325,6 +326,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                           "2021-10-10 ${pot.plant.wateringTime}")),
                                       funcTimeController),
                                 ),
+                          const DetailPlantProgressChart(),
                         ])),
                         SliverPadding(
                           padding: const EdgeInsets.all(8.0),

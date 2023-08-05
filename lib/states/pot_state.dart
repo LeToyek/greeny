@@ -89,13 +89,8 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
       potHeight.last = lastHeight;
       print(
           "lastHeight = ${lastHeight.height} vs lastPlantHeight ${plant.heightStat!.last.height}");
-      fullData = fullData.map((e) {
-        if (e.id == id) {
-          return selectedPot;
-        }
-        return e;
-      }).toList();
-      state = AsyncValue.data(fullData);
+
+      state = AsyncValue.data([selectedPot]);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }

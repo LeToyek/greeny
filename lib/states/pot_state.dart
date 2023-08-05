@@ -1,7 +1,9 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/model/height_model.dart';
 import 'package:greenify/model/plant_model.dart';
 import 'package:greenify/model/pot_model.dart';
+import 'package:greenify/services/background_service.dart';
 import 'package:greenify/services/garden_service.dart';
 import 'package:greenify/services/pot_service.dart';
 
@@ -33,9 +35,22 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
               gardenRef: GardensServices.getGardenRefByUserID(
                   userId: userId, docId: docId))
           .getPotsFromDB();
-      print("${potServices.gardenRef.id} and id $docId");
-      print('pots = $pots');
-      state = AsyncValue.data(pots);
+      List<PotModel> cleanedPots = pots.map<PotModel>((e) {
+        final lastWatering = DateTime.parse(e.plant.heightStat!.last.date);
+        final tempTime = DateTime(
+            lastWatering.year,
+            lastWatering.month,
+            lastWatering.day + int.parse(e.plant.wateringSchedule),
+            lastWatering.hour);
+        if (tempTime.isBefore(DateTime.now())) {
+          if (e.plant.status != PlantStatus.dry) {
+            potServices.updatePlantStatus(e.id!);
+          }
+          e.plant.status = PlantStatus.dry;
+        }
+        return e;
+      }).toList();
+      state = AsyncValue.data(cleanedPots);
       tempData = pots;
       fullData = pots;
       print("pots = $pots");
@@ -56,14 +71,12 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
   Future<void> selfWaterPlant(int height, String id) async {
     try {
       state = const AsyncValue.loading();
+      final potHeight =
+          fullData.firstWhere((element) => element.id == id).plant.heightStat!;
       final lastHeight =
           HeightModel(height: height, date: DateTime.now().toString());
       await potServices.waterPlant(id, lastHeight);
-      fullData
-          .firstWhere((element) => element.id == id)
-          .plant
-          .heightStat!
-          .last = lastHeight;
+      potHeight.last = lastHeight;
       state = AsyncValue.data(fullData);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
@@ -73,11 +86,33 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
   Future<void> waterPlant(int index, int height) async {
     try {
       state = const AsyncValue.loading();
-      fullData[index].plant.status = PlantStatus.healthy;
+      final selectedPlant = fullData[index].plant;
+      selectedPlant.status = PlantStatus.healthy;
+      await AndroidAlarmManager.cancel(selectedPlant.timeID!);
+
       final lastHeight =
           HeightModel(height: height, date: DateTime.now().toString());
-      fullData[index].plant.heightStat!.last = lastHeight;
+      selectedPlant.heightStat!.last = lastHeight;
       await potServices.waterPlant(fullData[index].id!, lastHeight);
+
+      List<String> timeParts = selectedPlant.wateringTime.split(':');
+      int hours = int.parse(
+          timeParts[0].startsWith('0') ? timeParts[0][1] : timeParts[0]);
+      int minutes = int.parse(
+          timeParts[1].startsWith('0') ? timeParts[1][1] : timeParts[1]);
+
+      DateTime now = DateTime.now();
+      DateTime tomorrow = DateTime(
+        now.year,
+        now.month,
+        now.day + int.parse(selectedPlant.wateringSchedule),
+        hours,
+        minutes,
+      );
+      final alarm = await AndroidAlarmManager.oneShotAt(
+          tomorrow, selectedPlant.timeID!, BackgroundServices.callback);
+      print('alarm on state $alarm');
+
       state = AsyncValue.data(fullData);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);

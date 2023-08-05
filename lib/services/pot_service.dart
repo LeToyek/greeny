@@ -28,6 +28,16 @@ class PotServices {
     }
   }
 
+  Future<void> updatePlantStatus(String id) async {
+    try {
+      await gardenRef.collection(collectionPath).doc(id).update({
+        "plant.status": "dry",
+      });
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   Future<void> waterPlant(String id, HeightModel value) async {
     try {
       await gardenRef.collection(collectionPath).doc(id).update({

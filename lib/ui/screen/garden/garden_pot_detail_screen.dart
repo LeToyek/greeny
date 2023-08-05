@@ -1,3 +1,4 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -129,6 +130,53 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                     SliverAppBar(
                       expandedHeight: 200,
                       pinned: true,
+                      actions: [
+                        !userClientController.isSelf()
+                            ? Container()
+                            : PopupMenuButton(
+                                itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                          onTap: () {
+                                            Future.delayed(
+                                                const Duration(seconds: 0),
+                                                () => showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        backgroundColor:
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .background,
+                                                        title: const Text(
+                                                            "Matikan Notifikasi"),
+                                                        content: const Text(
+                                                            "Notifikasi akan dimatikan untuk tanaman ini. Apakah anda yakin?"),
+                                                        actions: [
+                                                          TextButton(
+                                                              onPressed: () =>
+                                                                  context.pop(),
+                                                              child: const Text(
+                                                                  "Batal")),
+                                                          TextButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                AndroidAlarmManager
+                                                                    .cancel(pot
+                                                                        .plant
+                                                                        .timeID!);
+                                                                context.pop();
+                                                              },
+                                                              child: const Text(
+                                                                  "Ya"))
+                                                        ],
+                                                      );
+                                                    }));
+                                          },
+                                          value: 0,
+                                          child:
+                                              const Text("Matikan Notifikasi")),
+                                    ])
+                      ],
                       flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
                         title: Text(
@@ -293,9 +341,32 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                               color: Colors.green.shade100,
                               width: 100,
                               height: 100,
-                              child: Image.network(
-                                pot.plant.image,
-                                fit: BoxFit.cover,
+                              child: GestureDetector(
+                                onTap: () => showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      titlePadding: EdgeInsets.zero,
+                                      backgroundColor: Colors.transparent,
+                                      iconPadding: EdgeInsets.zero,
+                                      insetPadding: EdgeInsets.zero,
+                                      buttonPadding: EdgeInsets.zero,
+                                      actionsPadding: EdgeInsets.zero,
+                                      contentPadding: EdgeInsets.zero,
+                                      content: SizedBox(
+                                          width: double.infinity,
+                                          height: 300,
+                                          child: Image.network(
+                                            pot.plant.image,
+                                            fit: BoxFit.fitWidth,
+                                          )),
+                                    );
+                                  },
+                                ),
+                                child: Image.network(
+                                  pot.plant.image,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),

@@ -71,7 +71,7 @@ Future<void> showNotification(
   var platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin
-      .show(0, title, body, platformChannelSpecifics, payload: payload);
+      .show(id, title, body, platformChannelSpecifics, payload: payload);
 }
 
 void scheduleNotification() {

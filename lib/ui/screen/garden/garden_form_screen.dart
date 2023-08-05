@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:greenify/constants/plant_category_list.dart';
 import 'package:greenify/model/height_model.dart';
 import 'package:greenify/model/plant_model.dart';
 import 'package:greenify/model/pot_model.dart';
+import 'package:greenify/services/background_service.dart';
 import 'package:greenify/states/exp_state.dart';
 import 'package:greenify/states/file_notifier.dart';
 import 'package:greenify/states/plant_avatar_state.dart';
@@ -83,6 +85,10 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
 
     final expController = ref.read(expProvider.notifier);
 
+    void task() {
+      print("something alarm");
+    }
+
     Future<void> _submitForm() async {
       if (!_formKey.currentState!.validate()) {
         ScaffoldMessenger.of(context)
@@ -139,7 +145,8 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                   });
                                   String image =
                                       await fileController.uploadFile();
-                                  final randInt = Random().nextInt(100000);
+                                  final randInt =
+                                      Random().nextInt(pow(2, 31).toInt());
                                   String potCreatedId =
                                       await potController.createPot(PotModel(
                                           status: PotStatus.filled,
@@ -164,30 +171,18 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                   DateTime tomorrow = DateTime(
                                     now.year,
                                     now.month,
-                                    now.day + 1,
+                                    now.day + scheduleController,
                                     timeController.hour,
                                     timeController.minute,
                                   );
-                                  // await AndroidAlarmManager.oneShotAt(tomorrow, randInt,
-                                  //     () {
-                                  //   showNotification(
-                                  //       id: randInt,
-                                  //       title: "Pengingat Menyiram",
-                                  //       body:
-                                  //           "$name butuh air, jangan lupa siram tanamanmu kawan",
-                                  //       payload: "${widget.id}/$potCreatedId");
-                                  // });
-                                  // await AndroidAlarmManager.periodic(
-                                  //   const Duration(seconds: 5),
-                                  //   0,
-                                  //   () => BackgroundServices.callback(
-                                  //       title: "$name butuh air",
-                                  //       body:
-                                  //           "Tanamanmu sedang butuh air, siram sekarang agar tidak kekeringan"),
-                                  //   startAt: DateTime.now(),
-                                  //   exact: true,
-                                  //   wakeup: true,
-                                  // );
+                                  final resAlarm =
+                                      await AndroidAlarmManager.oneShotAt(
+                                    tomorrow,
+                                    randInt,
+                                    BackgroundServices.callback,
+                                  );
+                                  print('resAlarm $resAlarm');
+
                                   expController.increaseExp(
                                       _expValue, achievementId);
                                   funcScheduleController.resetSchedule();

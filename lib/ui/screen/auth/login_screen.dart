@@ -50,7 +50,7 @@ class LoginScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(title: const Text('Masuk')),
       body: Material(
         color: Theme.of(context).colorScheme.background,
         child: Stack(
@@ -148,7 +148,7 @@ class LoginScreen extends ConsumerWidget {
                                     color: Colors.white),
                                 const SizedBox(width: 12),
                                 Text(
-                                  'Login with Google',
+                                  'Masuk Dengan Google',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!

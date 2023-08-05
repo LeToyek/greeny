@@ -30,6 +30,7 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
   Future<void> getPotsByGardenId(
       {String? userId, required String docId}) async {
     try {
+      final isSelf = userId == null;
       state = const AsyncValue.loading();
       final pots = await PotServices(
               gardenRef: GardensServices.getGardenRefByUserID(
@@ -42,7 +43,9 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
             lastWatering.month,
             lastWatering.day + int.parse(e.plant.wateringSchedule),
             lastWatering.hour);
-        if (tempTime.isBefore(DateTime.now())) {
+        print("is Self = $isSelf");
+        if (isSelf && tempTime.isBefore(DateTime.now())) {
+          print("get");
           if (e.plant.status != PlantStatus.dry) {
             potServices.updatePlantStatus(e.id!);
           }
@@ -71,12 +74,27 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
   Future<void> selfWaterPlant(int height, String id) async {
     try {
       state = const AsyncValue.loading();
-      final potHeight =
-          fullData.firstWhere((element) => element.id == id).plant.heightStat!;
-      final lastHeight =
-          HeightModel(height: height, date: DateTime.now().toString());
+      final selectedPot = fullData.firstWhere((element) => element.id == id);
+      final plant = selectedPot.plant;
+      final potHeight = plant.heightStat!;
+      final lastDate = DateTime.parse(potHeight.last.date);
+      final lastHeight = HeightModel(
+          height: height,
+          date: DateTime(
+            lastDate.year,
+            lastDate.month,
+            lastDate.day + 1,
+          ).toString());
       await potServices.waterPlant(id, lastHeight);
       potHeight.last = lastHeight;
+      print(
+          "lastHeight = ${lastHeight.height} vs lastPlantHeight ${plant.heightStat!.last.height}");
+      fullData = fullData.map((e) {
+        if (e.id == id) {
+          return selectedPot;
+        }
+        return e;
+      }).toList();
       state = AsyncValue.data(fullData);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);

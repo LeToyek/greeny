@@ -51,7 +51,7 @@ class _PlantProgressChartState extends ConsumerState<PlantProgressChart> {
                         lastDate: DateTime.now());
                     if (res != null) {
                       setState(() {
-                        month = DateFormat("MM-yyyy").format(res);
+                        month = DateFormat("MMMM,yyyy").format(res);
                       });
                     }
                   },
@@ -184,11 +184,13 @@ class _PlantProgressChartState extends ConsumerState<PlantProgressChart> {
 
   List<LineSeries> getSeries(List<PotModel> pots) {
     List<LineSeries> series = [];
+    print('series $series');
     for (var pot in pots) {
       series.add(LineSeries<HeightModel, String>(
         name: pot.plant.name,
         dataSource: pot.plant.heightStat!
-            .map((e) => HeightModel(date: e.date, height: e.height))
+            .where((e) =>
+                DateFormat("MMMM,yyyy").format(DateTime.parse(e.date)) == month)
             .toList(),
         xValueMapper: (HeightModel height, _) =>
             DateHelper.getDayFormat(height.date),

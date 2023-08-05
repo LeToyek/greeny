@@ -192,21 +192,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            PlainCard(
-                                child: Row(
-                              children: [
-                                const Expanded(child: Text('Dark Mode')),
-                                Switch(
-                                  value: displayMode == ThemeMode.dark,
-                                  onChanged: (value) {
-                                    funcDisplayMode.setThemeMode(value
-                                        ? ThemeMode.dark
-                                        : ThemeMode.light);
-                                  },
-                                )
-                              ],
-                            )),
+
                             const SizedBox(height: 16),
                             Text(
                               "Medali",

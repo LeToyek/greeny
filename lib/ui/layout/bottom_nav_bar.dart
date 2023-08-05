@@ -41,26 +41,32 @@ class GrBottomNavBar extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Theme.of(context).textTheme.bodySmall!.color,
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             icon: Icon(Ionicons.book_outline),
             activeIcon: Icon(Ionicons.book),
             label: "Artikel",
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Ionicons.leaf_outline),
             activeIcon: Icon(Ionicons.leaf),
             label: "Garden",
           ),
-          BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.wind, color: Colors.transparent),
-              label: ""),
-          BottomNavigationBarItem(
+          bottomNavIndex == 3
+              ? const BottomNavigationBarItem(
+                  icon: Icon(
+                    Ionicons.home_outline,
+                  ),
+                  label: "home")
+              : const BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.wind, color: Colors.transparent),
+                  label: ""),
+          const BottomNavigationBarItem(
             icon: Icon(Ionicons.heart_outline),
             activeIcon: Icon(Ionicons.heart),
             label: "Detektor",
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Ionicons.stats_chart_outline),
             activeIcon: Icon(Ionicons.stats_chart),
             label: "Peringkat",

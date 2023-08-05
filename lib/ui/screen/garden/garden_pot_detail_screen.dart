@@ -9,6 +9,7 @@ import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
 import 'package:greenify/states/scheduler/time_picker_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/widgets/charts/detail_plant_progress_chart.dart';
 import 'package:greenify/ui/widgets/pills/plant_status_pills.dart';
 import 'package:greenify/ui/widgets/pot/watering_schedule.dart';
 import 'package:greenify/ui/widgets/watering_dialog.dart';
@@ -60,50 +61,6 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
 
     final expNotifier = ref.read(expProvider.notifier);
 
-    Future<void> _submitForm() async {
-      // String name = nameController.text;
-      // String description = "sample Description";
-      // String wateringSchedule = scheduleController.toString();
-      // String wateringTime = timeController.toString();
-      // double height = 0;
-      // PlantStatus status = PlantStatus.healthy;
-      // String category = _characterImages[pageNotifier.getPage()]["name"];
-
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                backgroundColor: Theme.of(context).colorScheme.background,
-                title: const Text("Konfirmasi"),
-                content:
-                    const Text("Apakah anda yakin ingin membuat artikel ini?"),
-                actions: [
-                  TextButton(
-                      onPressed: () => context.pop(),
-                      child: const Text("Batal")),
-                  TextButton(
-                      onPressed: () async {
-                        // String image = await fileController.uploadFile();
-                        // potController.createPot(PotModel(
-                        //     status: PotStatus.filled,
-                        //     positionIndex: 0,
-                        //     plant: PlantModel(
-                        //         name: name,
-                        //         description: description,
-                        //         image: image,
-                        //         wateringSchedule: wateringSchedule,
-                        //         wateringTime: wateringTime,
-                        //         height: height,
-                        //         status: status,
-                        //         category: category)));
-                        // if (context.mounted) {
-                        //   context.push("/");
-                        // }
-                      },
-                      child: const Text("Ya")),
-                ],
-              ));
-    }
-
     final textTheme = Theme.of(context).textTheme;
 
     int waterExp = 20;
@@ -111,6 +68,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
       "cWmOltw7SolOmbm1akM5",
       "RL7wKvRiysNsPhUEjG2z"
     ];
+    var appBarHeight = AppBar().preferredSize.height;
 
     return potRef.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -134,47 +92,46 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                         !userClientController.isSelf()
                             ? Container()
                             : PopupMenuButton(
+                                offset: Offset(0.0, appBarHeight),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(8.0),
+                                    bottomRight: Radius.circular(8.0),
+                                    topLeft: Radius.circular(8.0),
+                                    topRight: Radius.circular(8.0),
+                                  ),
+                                ),
+                                color: color.surface,
                                 itemBuilder: (context) => [
-                                      PopupMenuItem(
-                                          onTap: () {
-                                            Future.delayed(
-                                                const Duration(seconds: 0),
-                                                () => showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertDialog(
-                                                        backgroundColor:
-                                                            Theme.of(context)
-                                                                .colorScheme
-                                                                .background,
-                                                        title: const Text(
-                                                            "Matikan Notifikasi"),
-                                                        content: const Text(
-                                                            "Notifikasi akan dimatikan untuk tanaman ini. Apakah anda yakin?"),
-                                                        actions: [
-                                                          TextButton(
-                                                              onPressed: () =>
-                                                                  context.pop(),
-                                                              child: const Text(
-                                                                  "Batal")),
-                                                          TextButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                AndroidAlarmManager
-                                                                    .cancel(pot
-                                                                        .plant
-                                                                        .timeID!);
-                                                                context.pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Ya"))
-                                                        ],
-                                                      );
-                                                    }));
-                                          },
-                                          value: 0,
-                                          child:
-                                              const Text("Matikan Notifikasi")),
+                                      _buildPopupMenuItem(
+                                          text: "Matikan Notifikasi",
+                                          icon:
+                                              Ionicons.notifications_off_circle,
+                                          content:
+                                              "Anda tidak akan mendapat notifikasi penyiraman tanaman ini lagi",
+                                          position: 0,
+                                          additionalActions: [
+                                            TextButton(
+                                                onPressed: () async {
+                                                  await AndroidAlarmManager
+                                                      .cancel(
+                                                          pot.plant.timeID!);
+                                                },
+                                                child: const Text("Matikan"))
+                                          ]),
+                                      _buildPopupMenuItem(
+                                          text: "Edit Tanaman",
+                                          icon: Ionicons.pencil_outline,
+                                          content:
+                                              "Ubah detail informasi tanaman ini",
+                                          position: 1),
+                                      _buildPopupMenuItem(
+                                          text: "Hapus Tanaman",
+                                          icon: Ionicons.trash_bin_outline,
+                                          content:
+                                              "Tanaman anda akan dihapus secara permanen",
+                                          position: 2,
+                                          isDelete: true),
                                     ])
                       ],
                       flexibleSpace: FlexibleSpaceBar(
@@ -325,6 +282,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                           "2021-10-10 ${pot.plant.wateringTime}")),
                                       funcTimeController),
                                 ),
+                          const DetailPlantProgressChart(),
                         ])),
                         SliverPadding(
                           padding: const EdgeInsets.all(8.0),
@@ -375,5 +333,59 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                     ))),
           );
         });
+  }
+
+  PopupMenuItem _buildPopupMenuItem(
+      {required String text,
+      required IconData icon,
+      required String content,
+      required int position,
+      bool isDelete = false,
+      List<Widget>? additionalActions}) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return PopupMenuItem(
+        onTap: () {
+          Future.delayed(
+              const Duration(seconds: 0),
+              () => showDialog(
+                    context: context,
+                    builder: (context) => _buildAlertMessage(
+                        title: text,
+                        content: content,
+                        additionalActions: additionalActions),
+                  ));
+        },
+        value: position,
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isDelete ? colorScheme.error : colorScheme.onSurface,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Text(
+              text,
+              style: TextStyle(
+                  color: isDelete ? colorScheme.error : colorScheme.onSurface),
+            ),
+          ],
+        ));
+  }
+
+  AlertDialog _buildAlertMessage(
+      {required String title,
+      required String content,
+      List<Widget>? additionalActions}) {
+    return AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        TextButton(onPressed: () => context.pop(), child: const Text("Batal")),
+        ...additionalActions ?? [],
+      ],
+    );
   }
 }

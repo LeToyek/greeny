@@ -24,17 +24,17 @@ class HomeNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     }
   }
 
-  Future<void> getNewPots({GardenModel? garden}) async {
+  Future<void> getNewPots({GardenModel? garden, String? date}) async {
     try {
       state = const AsyncValue.loading();
       final newPots = await PotServices(
               gardenRef: GardensServices.getGardenRef(
                   garden != null ? garden.id : gardens[lastIndex].id))
           .getPotsFromDB();
+      state = AsyncValue.data(newPots);
       if (garden != null) {
         lastIndex = gardens.indexOf(garden);
       }
-      state = AsyncValue.data(newPots);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }

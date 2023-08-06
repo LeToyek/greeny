@@ -4,16 +4,17 @@ import 'package:greenify/services/users_service.dart';
 
 class BookModel {
   String? id;
-  final String imageUrl;
-  final String title;
-  final String category;
-  final String content;
+  String imageUrl;
+  String title;
+  String category;
+  String content;
   String? userID;
   UserModel? user;
   String? createdAt;
   String? updatedAt;
 
   BookModel({
+    this.id,
     required this.imageUrl,
     required this.title,
     required this.category,

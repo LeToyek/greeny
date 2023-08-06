@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PlantAvatarNotifier extends StateNotifier<PageController> {
   int pageIndex = 0;
-  PlantAvatarNotifier() : super(PageController(initialPage: 0));
+
+  PlantAvatarNotifier({int? index}) : super(PageController(initialPage: 0));
 
   void setPage(int index) {
     state.animateToPage(index,

@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/plant_category_list.dart';
 import 'package:greenify/states/exp_state.dart';
+import 'package:greenify/states/file_notifier.dart';
+import 'package:greenify/states/home_state.dart';
 import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
@@ -46,6 +48,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final pageNotifier = ref.watch(plantAvatarProvider.notifier);
+    final fileController = ref.read(fileEditProvider.notifier);
 
     final scheduleController = ref.watch(schedulePickerProvider);
     final funcScheduleController = ref.read(schedulePickerProvider.notifier);
@@ -62,6 +65,8 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
     final expNotifier = ref.read(expProvider.notifier);
 
     final textTheme = Theme.of(context).textTheme;
+
+    final homeNotifier = ref.read(homeProvider.notifier);
 
     int waterExp = 20;
     List<String> achievementIDs = [
@@ -124,13 +129,40 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                           icon: Ionicons.pencil_outline,
                                           content:
                                               "Ubah detail informasi tanaman ini",
-                                          position: 1),
+                                          position: 1,
+                                          additionalActions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  fileController.imageUrl =
+                                                      pot.plant.image;
+                                                  context.pop();
+                                                  context.push(
+                                                      '/garden/${widget.gardenID}/plant/edit',
+                                                      extra: {
+                                                        "pot": pot,
+                                                        "pageNotifier":
+                                                            pageNotifier,
+                                                      });
+                                                },
+                                                child: const Text("Ubah"))
+                                          ]),
                                       _buildPopupMenuItem(
                                           text: "Hapus Tanaman",
                                           icon: Ionicons.trash_bin_outline,
                                           content:
                                               "Tanaman anda akan dihapus secara permanen",
                                           position: 2,
+                                          additionalActions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  potController
+                                                      .deletePot(widget.potID);
+                                                  homeNotifier.getPots();
+                                                  context.pop();
+                                                  context.pop();
+                                                },
+                                                child: const Text("Hapus")),
+                                          ],
                                           isDelete: true),
                                     ])
                       ],
@@ -189,15 +221,17 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: const BoxDecoration(
-                                        color: Colors.transparent,
-                                        shape: BoxShape.circle),
-                                    child: const Icon(
-                                      Ionicons.water_outline,
-                                      color: Colors.transparent,
-                                    )),
+                                !userClientController.isSelf()
+                                    ? Container()
+                                    : Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: const BoxDecoration(
+                                            color: Colors.transparent,
+                                            shape: BoxShape.circle),
+                                        child: const Icon(
+                                          Ionicons.water_outline,
+                                          color: Colors.transparent,
+                                        )),
                                 CircleAvatar(
                                   radius: 50,
                                   backgroundColor: color.primary,
@@ -211,29 +245,31 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                         height: 80,
                                       )),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    showWateringDialog(
-                                        context: context,
-                                        textTheme: textTheme,
-                                        counterHeight: counterHeight,
-                                        potsNotifier: potController,
-                                        isDetail: true,
-                                        id: pot.id,
-                                        expNotifier: expNotifier,
-                                        waterExp: waterExp,
-                                        achievementIDs: achievementIDs);
-                                  },
-                                  child: Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                          color: Colors.blue.shade200,
-                                          shape: BoxShape.circle),
-                                      child: Icon(
-                                        Ionicons.water_outline,
-                                        color: color.background,
-                                      )),
-                                ),
+                                !userClientController.isSelf()
+                                    ? Container()
+                                    : GestureDetector(
+                                        onTap: () {
+                                          showWateringDialog(
+                                              context: context,
+                                              textTheme: textTheme,
+                                              counterHeight: counterHeight,
+                                              potsNotifier: potController,
+                                              isDetail: true,
+                                              id: pot.id,
+                                              expNotifier: expNotifier,
+                                              waterExp: waterExp,
+                                              achievementIDs: achievementIDs);
+                                        },
+                                        child: Container(
+                                            padding: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                                color: Colors.blue.shade200,
+                                                shape: BoxShape.circle),
+                                            child: Icon(
+                                              Ionicons.water_outline,
+                                              color: color.background,
+                                            )),
+                                      ),
                               ],
                             ),
                           ),
@@ -282,7 +318,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                           "2021-10-10 ${pot.plant.wateringTime}")),
                                       funcTimeController),
                                 ),
-                          const DetailPlantProgressChart(),
+                          DetailPlantProgressChart(pot: pot),
                         ])),
                         SliverPadding(
                           padding: const EdgeInsets.all(8.0),

@@ -15,6 +15,18 @@ class UploadImageContainer extends StatefulWidget {
 
 class _UploadImageContainerState extends State<UploadImageContainer> {
   File? imageFile;
+  String? imageUrl;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    widget.fileNotifier.imageUrl != null
+        ? imageUrl = widget.fileNotifier.imageUrl
+        : imageUrl = null;
+
+    print('image URl = $imageUrl');
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -42,32 +54,44 @@ class _UploadImageContainerState extends State<UploadImageContainer> {
                     fit: BoxFit.cover,
                   )),
             )
-          : DottedBorder(
-              borderType: BorderType.RRect,
-              radius: const Radius.circular(8),
-              dashPattern: const [8, 8],
-              color: Colors.grey,
-              strokeWidth: 2,
-              child: SizedBox(
-                height: 180,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.image,
-                        color: Colors.grey,
+          : imageUrl != null
+              ? Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.grey[200]),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        imageUrl!,
+                        fit: BoxFit.cover,
+                      )),
+                )
+              : DottedBorder(
+                  borderType: BorderType.RRect,
+                  radius: const Radius.circular(8),
+                  dashPattern: const [8, 8],
+                  color: Colors.grey,
+                  strokeWidth: 2,
+                  child: SizedBox(
+                    height: 180,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.image,
+                            color: Colors.grey,
+                          ),
+                          Text(
+                            "Tambahkan Gambar",
+                            style: textTheme.bodySmall!
+                                .apply(fontWeightDelta: 2, color: Colors.grey),
+                          )
+                        ],
                       ),
-                      Text(
-                        "Tambahkan Gambar",
-                        style: textTheme.bodySmall!
-                            .apply(fontWeightDelta: 2, color: Colors.grey),
-                      )
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
     );
   }
 }

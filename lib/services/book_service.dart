@@ -91,4 +91,31 @@ class BookServices {
       throw Exception(e);
     }
   }
+
+  Future<BookModel> updateBookToDB(BookModel book) async {
+    CollectionReference bookRef =
+        FirebaseFirestore.instance.collection('books');
+    try {
+      await bookRef.doc(book.id).update({
+        "image_url": book.imageUrl,
+        "title": book.title,
+        "category": book.category,
+        "content": book.content,
+        "updated_at": DateTime.now(),
+      });
+      return book;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> deleteBookFromDB(String id) async {
+    CollectionReference bookRef =
+        FirebaseFirestore.instance.collection('books');
+    try {
+      await bookRef.doc(id).delete();
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

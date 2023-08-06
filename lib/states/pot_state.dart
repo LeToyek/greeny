@@ -87,9 +87,6 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
           ).toString());
       await potServices.waterPlant(id, lastHeight);
       potHeight.last = lastHeight;
-      print(
-          "lastHeight = ${lastHeight.height} vs lastPlantHeight ${plant.heightStat!.last.height}");
-
       state = AsyncValue.data([selectedPot]);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
@@ -149,12 +146,39 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
       potModel.updatedAt = DateTime.now().toString();
       potModel.id = await potServices.createPot(potModel);
       tempData.add(potModel);
+
       state = AsyncValue.data(tempData);
       return potModel.id!;
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }
     return "";
+  }
+
+  Future<String> editPot(PotModel potModel) async {
+    try {
+      state = const AsyncValue.loading();
+      potModel.updatedAt = DateTime.now().toString();
+      await potServices.updatePot(potModel);
+      tempData.add(potModel);
+
+      state = AsyncValue.data(tempData);
+      return potModel.id!;
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+    return "";
+  }
+
+  Future<void> deletePot(String potId) async {
+    try {
+      state = const AsyncValue.loading();
+      await potServices.deletePot(potId);
+      tempData.removeWhere((element) => element.id == potId);
+      state = AsyncValue.data(tempData);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
   }
 }
 

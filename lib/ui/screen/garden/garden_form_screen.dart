@@ -85,10 +85,6 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
 
     final expController = ref.read(expProvider.notifier);
 
-    void task() {
-      print("something alarm");
-    }
-
     Future<void> _submitForm() async {
       if (!_formKey.currentState!.validate()) {
         ScaffoldMessenger.of(context)

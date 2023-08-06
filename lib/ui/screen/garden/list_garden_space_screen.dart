@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/model/garden_model.dart';
+import 'package:greenify/states/file_notifier.dart';
 import 'package:greenify/states/garden_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/users_state.dart';
@@ -16,9 +17,12 @@ class ListGardenSpaceScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final gardenRef = ref.watch(gardenProvider);
+    final gardenNotifier = ref.read(gardenProvider.notifier);
     final textTheme = Theme.of(context).textTheme;
 
     final userNotifier = ref.read(userClientProvider.notifier);
+
+    final fileController = ref.read(fileEditGardenProvider.notifier);
 
     return Scaffold(
       appBar: const NewAppbar(title: "Gardens"),
@@ -84,6 +88,9 @@ class ListGardenSpaceScreen extends ConsumerWidget {
                             : GestureDetector(
                                 onTap: () {
                                   userNotifier.setVisitedUser();
+                                  fileController.imageUrl =
+                                      garden!.backgroundUrl;
+                                  gardenNotifier.getGardenByID(data[index].id);
                                   ref
                                       .read(
                                           potProvider(data[index].id).notifier)

@@ -5,7 +5,7 @@ import 'package:greenify/services/users_service.dart';
 
 class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   UsersServices usersServices;
-  String? visitedUser;
+  String? visitedUser = FireAuth.getCurrentUser()?.uid;
 
   UsersNotifier({required this.usersServices})
       : super(const AsyncValue.data([]));

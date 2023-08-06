@@ -11,7 +11,12 @@ class PotModel {
   static const String collectionPath = 'pots';
 
   PotModel(
-      {required this.status, required this.positionIndex, required this.plant});
+      {required this.status,
+      required this.positionIndex,
+      required this.plant,
+      this.createdAt,
+      this.updatedAt,
+      this.id});
 
   PotModel.fromQuery(DocumentSnapshot<Object?> element)
       : id = element.id,

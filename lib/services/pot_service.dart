@@ -71,4 +71,23 @@ class PotServices {
       throw Exception(e);
     }
   }
+
+  Future<void> updatePot(PotModel potModel) async {
+    try {
+      await gardenRef
+          .collection(collectionPath)
+          .doc(potModel.id)
+          .update(potModel.toQuery());
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> deletePot(String potId) async {
+    try {
+      await gardenRef.collection(collectionPath).doc(potId).delete();
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

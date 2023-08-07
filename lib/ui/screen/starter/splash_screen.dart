@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/services/bootstrap_service.dart';
 
@@ -16,7 +15,7 @@ class SplashScreen extends ConsumerWidget {
     return Scaffold(
       body: Center(
         child: Text(
-          "Greenify",
+          "Greeny",
           style: Theme.of(context).textTheme.displaySmall!.apply(
                 fontWeightDelta: 2,
                 color: Colors.white,

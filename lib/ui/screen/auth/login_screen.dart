@@ -57,7 +57,11 @@ class LoginScreen extends ConsumerWidget {
           children: [
             userAct.when(
                 data: (data) => Container(),
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: colorTheme.background,
+                      ),
+                    ),
                 error: (error, stack) => Container()),
             Center(
               child: Padding(

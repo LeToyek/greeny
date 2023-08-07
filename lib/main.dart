@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/config/theme.dart';
 import 'package:greenify/routes/index.dart';
 import 'package:greenify/services/background_service.dart';
-import 'package:greenify/states/theme_mode.dart';
+import 'package:greenify/states/theme_mode_state.dart';
 import 'package:greenify/utils/notification_helper.dart';
 import 'package:hive/hive.dart';
 import 'package:month_year_picker/month_year_picker.dart';
@@ -27,7 +27,13 @@ void main() async {
   await dotenv.load();
   final Directory tempDir = await getTemporaryDirectory();
   Hive.init(tempDir.path);
-  await Hive.openBox('prefs');
+  final box = await Hive.openBox('prefs');
+  final statusNotifier = box.get('is_checked', defaultValue: 0);
+  if (statusNotifier == 0) {
+    box.put('is_checked', 1);
+    await AndroidAlarmManager.oneShot(
+        Duration.zero, 88888888, BackgroundServices.initCallback);
+  }
 
   runApp(const ProviderScope(child: MyApp()));
 }

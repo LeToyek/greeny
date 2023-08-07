@@ -8,7 +8,7 @@ import 'package:greenify/model/plant_model.dart';
 import 'package:greenify/model/pot_model.dart';
 import 'package:greenify/services/background_service.dart';
 import 'package:greenify/states/exp_state.dart';
-import 'package:greenify/states/file_notifier.dart';
+import 'package:greenify/states/file_notifier_state.dart';
 import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
@@ -131,7 +131,26 @@ class _PlantEditScreenState extends ConsumerState<PlantEditScreen> {
             context: context,
             builder: (context) => StatefulBuilder(builder: (context, setState) {
                   return isLoading
-                      ? Container()
+                      ? AlertDialog(
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                          iconPadding: EdgeInsets.zero,
+                          insetPadding: EdgeInsets.zero,
+                          titlePadding: EdgeInsets.zero,
+                          buttonPadding: EdgeInsets.zero,
+                          actionsPadding: EdgeInsets.zero,
+                          contentPadding: EdgeInsets.zero,
+                          content: SizedBox(
+                            height: 72,
+                            width: 72,
+                            child: Center(
+                              child: CircularProgressIndicator.adaptive(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.background,
+                              ),
+                            ),
+                          ),
+                        )
                       : AlertDialog(
                           backgroundColor:
                               Theme.of(context).colorScheme.background,
@@ -273,6 +292,9 @@ class _PlantEditScreenState extends ConsumerState<PlantEditScreen> {
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "Nama tidak boleh kosong";
+                                }
+                                if (value.length > 30) {
+                                  return "Nama tidak boleh lebih dari 30 karakter";
                                 }
                                 return null;
                               }),

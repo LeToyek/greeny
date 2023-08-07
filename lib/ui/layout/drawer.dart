@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:greenify/states/theme_mode.dart';
+import 'package:greenify/states/theme_mode_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -66,7 +66,7 @@ class GrDrawerr extends ConsumerWidget {
                 grDrawerItem(
                     context: context,
                     icon: const Icon(Ionicons.information_circle),
-                    text: 'Tentang Greenify',
+                    text: 'Tentang Greeny',
                     ref: ref,
                     route: '/about'),
                 Divider(
@@ -108,6 +108,9 @@ class GrDrawerr extends ConsumerWidget {
       trailing: grTrailling,
       onTap: () {
         if (route != null) {
+          if (route == '/login') {
+            ref.read(singleUserProvider.notifier).logOut();
+          }
           context.push(route);
         }
       },

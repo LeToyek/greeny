@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/level_list.dart';
 import 'package:greenify/model/book_model.dart';
 import 'package:greenify/model/garden_model.dart';
-import 'package:greenify/states/theme_mode.dart';
+import 'package:greenify/states/theme_mode_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/capitalizer.dart';

@@ -6,6 +6,7 @@ import 'package:greenify/services/storage_service.dart';
 class FileNotifier extends StateNotifier<File?> {
   String? fileName;
   File? file;
+  String? imageUrl;
   final StorageService storageService;
   FileNotifier({required this.storageService}) : super(null);
 
@@ -28,8 +29,27 @@ class FileNotifier extends StateNotifier<File?> {
     file = null;
     return fullPath!;
   }
+
+  Future<String?> uploadFileForEdit() async {
+    if (file != null && fileName != null) {
+      await storageService.uploadFileWithFile(file!, fileName!);
+      final fullPath = await storageService.getLinkDownloadFile(fileName!);
+      return fullPath!;
+    }
+    return null;
+  }
 }
 
 final fileProvider = StateNotifierProvider<FileNotifier, File?>((ref) {
+  return FileNotifier(storageService: StorageService());
+});
+final fileEditProvider = StateNotifierProvider<FileNotifier, File?>((ref) {
+  return FileNotifier(storageService: StorageService());
+});
+final fileEditGardenProvider =
+    StateNotifierProvider<FileNotifier, File?>((ref) {
+  return FileNotifier(storageService: StorageService());
+});
+final fileEditBookProvider = StateNotifierProvider<FileNotifier, File?>((ref) {
   return FileNotifier(storageService: StorageService());
 });

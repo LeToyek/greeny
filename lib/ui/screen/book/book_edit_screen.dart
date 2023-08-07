@@ -11,27 +11,29 @@ import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/ui/widgets/upload_image_container.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
-class BookCreateScreen extends ConsumerWidget {
-  const BookCreateScreen({super.key});
+class BookEditScreen extends ConsumerWidget {
+  final String id;
+  const BookEditScreen({super.key, required this.id});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bookRef = ref.watch(bookProvider);
-    final funcBookRef = ref.read(bookProvider.notifier);
+    final bookRef = ref.watch(detailBookProvider(id));
+    final funcBookRef = ref.read(detailBookProvider(id).notifier);
 
-    final funcFileRef = ref.read(fileProvider.notifier);
+    final funcFileRef = ref.read(fileEditBookProvider.notifier);
     final funcUserRef = ref.read(singleUserProvider.notifier);
 
     return Scaffold(
         appBar: AppBar(
           actions: const [],
-          title: const Text("Buat Artikel"),
+          title: const Text("Ubah Artikel"),
           centerTitle: true,
         ),
         body: Material(
             color: Theme.of(context).colorScheme.background,
             child: bookRef.when(
-                data: (_) => TextEditor(
+                data: (data) => TextEditor(
+                    book: data.first,
                     bookNotifier: funcBookRef,
                     fileNotifier: funcFileRef,
                     usersNotifier: funcUserRef),
@@ -46,11 +48,13 @@ class BookCreateScreen extends ConsumerWidget {
 
 class TextEditor extends StatefulWidget {
   final BookNotifier bookNotifier;
+  final BookModel book;
   final FileNotifier fileNotifier;
   final UsersNotifier usersNotifier;
 
   const TextEditor(
       {super.key,
+      required this.book,
       required this.bookNotifier,
       required this.fileNotifier,
       required this.usersNotifier});
@@ -62,10 +66,18 @@ class TextEditor extends StatefulWidget {
 class _TextEditorState extends State<TextEditor> {
   String result = '';
   final HtmlEditorController controller = HtmlEditorController();
-  TextEditingController titleController = TextEditingController();
+  late TextEditingController titleController;
   final categoryList = BookServices.bookCategoryList;
   String? selectedChips = BookServices.bookCategoryList.first.name;
   bool isProcessing = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    titleController = TextEditingController(text: widget.book.title);
+    selectedChips = widget.book.category;
+  }
 
   void _toggleChip(String chip) {
     setState(() {
@@ -118,30 +130,26 @@ class _TextEditorState extends State<TextEditor> {
                       backgroundColor: Theme.of(context).colorScheme.background,
                       title: const Text("Konfirmasi"),
                       content: const Text(
-                          "Apakah anda yakin ingin membuat artikel ini?"),
+                          "Apakah anda yakin ingin mengubah artikel ini?"),
                       actions: [
                         TextButton(
                             onPressed: () => context.pop(),
                             child: const Text("Batal")),
                         TextButton(
                             onPressed: () async {
-                              setState(() {
-                                isProcessing = true;
-                              });
                               final fullPath =
-                                  await widget.fileNotifier.uploadFile();
-                              BookModel createdBook = BookModel(
-                                imageUrl: fullPath,
+                                  await widget.fileNotifier.uploadFileForEdit();
+
+                              BookModel updatedBook = BookModel(
+                                id: widget.book.id,
+                                imageUrl: fullPath ?? widget.book.imageUrl,
                                 title: titleController.value.text,
                                 category: selectedChips!,
                                 content: result,
                               );
-                              await widget.bookNotifier.createBook(createdBook);
+                              widget.bookNotifier.updateBook(updatedBook).then(
+                                  (value) => widget.usersNotifier.getUser());
 
-                              await widget.usersNotifier.getUser();
-                              setState(() {
-                                isProcessing = false;
-                              });
                               if (context.mounted) {
                                 context.pop();
                                 context.pop();
@@ -188,9 +196,6 @@ class _TextEditorState extends State<TextEditor> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Judul tidak boleh kosong';
-                    }
-                    if (value.length > 100) {
-                      return 'Judul tidak boleh lebih dari 100 karakter';
                     }
                     return null;
                   },
@@ -291,7 +296,6 @@ class _TextEditorState extends State<TextEditor> {
                       return true;
                     },
                   ),
-                  otherOptions: const OtherOptions(height: 550),
                   callbacks: Callbacks(
                     onBeforeCommand: (String? currentHtml) {
                       print('html before change is $currentHtml');
@@ -304,6 +308,9 @@ class _TextEditorState extends State<TextEditor> {
                         print(file.size);
                         print(file.type);
                       }
+                    },
+                    onInit: () {
+                      controller.setText(widget.book.content);
                     },
                   ),
                   plugins: [
@@ -382,7 +389,7 @@ class _TextEditorState extends State<TextEditor> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     Text(
-                      'Tambahkan',
+                      'Ubah',
                       style: TextStyle(color: Colors.white),
                     ),
                   ],

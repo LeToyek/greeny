@@ -95,7 +95,7 @@ class _PlantProgressChartState extends ConsumerState<PlantProgressChart> {
                               ),
                               const SizedBox(height: 20),
                               ...notifierPot.getAllGarden().map((garden) {
-                                return GestureDetector(
+                                return InkWell(
                                   onTap: () {
                                     notifierPot.getNewPots(garden: garden);
                                     context.pop();

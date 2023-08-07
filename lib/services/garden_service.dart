@@ -70,16 +70,24 @@ class GardensServices {
     }
   }
 
-  Future<void> updateGarden(
+  static Future<void> updateGarden(
       String id, String name, String backgroundUrl) async {
     try {
-      await FirebaseFirestore.instance.collection('gardens').doc(id).update({
+      await UsersServices.getUserRef().collection('gardens').doc(id).update({
         "name": name,
         "background_url": backgroundUrl,
         "updated_at": DateTime.now(),
       });
     } catch (e) {
-      throw Exception('Error occured!');
+      throw Exception(e);
+    }
+  }
+
+  static Future<void> deleteGarden(String id) async {
+    try {
+      await UsersServices.getUserRef().collection('gardens').doc(id).delete();
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

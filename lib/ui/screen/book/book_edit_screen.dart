@@ -8,6 +8,7 @@ import 'package:greenify/states/book_state.dart';
 import 'package:greenify/states/file_notifier_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
+import 'package:greenify/ui/widgets/loader_dialog.dart';
 import 'package:greenify/ui/widgets/upload_image_container.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
@@ -23,6 +24,8 @@ class BookEditScreen extends ConsumerWidget {
     final funcFileRef = ref.read(fileEditBookProvider.notifier);
     final funcUserRef = ref.read(singleUserProvider.notifier);
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
         appBar: AppBar(
           actions: const [],
@@ -30,7 +33,7 @@ class BookEditScreen extends ConsumerWidget {
           centerTitle: true,
         ),
         body: Material(
-            color: Theme.of(context).colorScheme.background,
+            color: colorScheme.background,
             child: bookRef.when(
                 data: (data) => TextEditor(
                     book: data.first,
@@ -96,7 +99,7 @@ class _TextEditorState extends State<TextEditor> {
     titleController.dispose();
   }
 
-  Future<void> _submitForm() async {
+  Future<void> _submitForm(context) async {
     if (result.length < 10 ||
         titleController.value.text.isEmpty ||
         selectedChips == null) {
@@ -105,29 +108,11 @@ class _TextEditorState extends State<TextEditor> {
     showDialog(
         context: context,
         builder: (context) => StatefulBuilder(builder: (context, setState) {
+              final colorScheme = Theme.of(context).colorScheme;
               return isProcessing
-                  ? AlertDialog(
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      iconPadding: EdgeInsets.zero,
-                      insetPadding: EdgeInsets.zero,
-                      titlePadding: EdgeInsets.zero,
-                      buttonPadding: EdgeInsets.zero,
-                      actionsPadding: EdgeInsets.zero,
-                      contentPadding: EdgeInsets.zero,
-                      content: SizedBox(
-                        height: 72,
-                        width: 72,
-                        child: Center(
-                          child: CircularProgressIndicator.adaptive(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.background,
-                          ),
-                        ),
-                      ),
-                    )
+                  ? loaderDialog(context)
                   : AlertDialog(
-                      backgroundColor: Theme.of(context).colorScheme.background,
+                      backgroundColor: colorScheme.background,
                       title: const Text("Konfirmasi"),
                       content: const Text(
                           "Apakah anda yakin ingin mengubah artikel ini?"),
@@ -164,6 +149,7 @@ class _TextEditorState extends State<TextEditor> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     List<Widget> chipWidgets = categoryList.map((chip) {
       bool isSelected = selectedChips == chip.name;
       return GestureDetector(
@@ -174,8 +160,7 @@ class _TextEditorState extends State<TextEditor> {
                 fontWeightDelta: 1,
                 color: Colors.white,
               )),
-          backgroundColor:
-              isSelected ? Theme.of(context).colorScheme.primary : Colors.grey,
+          backgroundColor: isSelected ? colorScheme.primary : Colors.grey,
         ),
       );
     }).toList();
@@ -373,7 +358,7 @@ class _TextEditorState extends State<TextEditor> {
               ),
               TextButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary),
+                    backgroundColor: colorScheme.secondary),
                 onPressed: () async {
                   var txt = await controller.getText();
                   if (txt.contains('src="data:')) {
@@ -383,7 +368,9 @@ class _TextEditorState extends State<TextEditor> {
                   setState(() {
                     result = txt;
                   });
-                  await _submitForm();
+                  if (context.mounted) {
+                    await _submitForm(context);
+                  }
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

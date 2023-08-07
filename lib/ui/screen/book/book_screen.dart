@@ -23,11 +23,15 @@ class BookScreen extends ConsumerStatefulWidget {
 
 class _BookScreenState extends ConsumerState<BookScreen> {
   String _selectedValue = "Semua";
+
   @override
   Widget build(BuildContext context) {
     final listItem = BookServices.bookCategoryList;
     final userRef = ref.watch(singleUserProvider);
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    const emptyGifLink =
+        "https://lottie.host/2074ca4c-e3b9-468f-92d0-c276fc401c23/bMZExAL1R7.json";
 
     return Scaffold(
         appBar: const NewAppbar(title: "Artikel"),
@@ -90,65 +94,7 @@ class _BookScreenState extends ConsumerState<BookScreen> {
                                 itemBuilder: (context, index) {
                                   BookModel? book;
                                   book = user.books![index];
-                                  return GestureDetector(
-                                    onTap: () => context
-                                        .push("/book/detail/${book!.id}"),
-                                    child: PlainCard(
-                                        padding: EdgeInsets.zero,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                                height: 200,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      const BorderRadius
-                                                              .vertical(
-                                                          top: Radius.circular(
-                                                              12)),
-                                                  child: Image.network(
-                                                    book.imageUrl,
-                                                    height: 200,
-                                                    width: double.infinity,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                )),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    capitalize(
-                                                        trimmer(book.title)),
-                                                    textAlign: TextAlign.center,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleMedium!
-                                                        .apply(
-                                                            fontWeightDelta: 2),
-                                                  ),
-                                                  Text(
-                                                    DateHelper
-                                                        .timestampToReadable(
-                                                            book.createdAt!),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium!
-                                                        .apply(
-                                                            fontWeightDelta: 2,
-                                                            color: Colors
-                                                                .grey[600]),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        )),
-                                  );
+                                  return _buildBookContainer(book);
                                 })
                             : Center(
                                 child: PlainCard(
@@ -156,18 +102,13 @@ class _BookScreenState extends ConsumerState<BookScreen> {
                                 children: [
                                   Text(
                                     "Tidak Ada Artikel",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineMedium!
+                                    style: textTheme.headlineMedium!
                                         .apply(fontWeightDelta: 2),
                                   ),
-                                  LottieBuilder.network(
-                                      "https://lottie.host/2074ca4c-e3b9-468f-92d0-c276fc401c23/bMZExAL1R7.json"),
+                                  LottieBuilder.network(emptyGifLink),
                                   Text(
                                     "Yuk, mulai menulis dan berbagi pengetahuan melalui artikelmu !",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
+                                    style: textTheme.bodyMedium!
                                         .apply(fontWeightDelta: 2),
                                     textAlign: TextAlign.center,
                                   )
@@ -205,6 +146,54 @@ class _BookScreenState extends ConsumerState<BookScreen> {
           onPressed: () => context.push("/book/create"),
           child: const Icon(Ionicons.add_outline),
         ));
+  }
+
+  Widget _buildBookContainer(BookModel book) {
+    return GestureDetector(
+      onTap: () => context.push("/book/detail/${book.id}"),
+      child: PlainCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                  height: 200,
+                  child: ClipRRect(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(12)),
+                    child: Image.network(
+                      book.imageUrl,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      capitalize(trimmer(book.title)),
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .apply(fontWeightDelta: 2),
+                    ),
+                    Text(
+                      DateHelper.timestampToReadable(book.createdAt!),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .apply(fontWeightDelta: 2, color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          )),
+    );
   }
 
   DropdownMenuItem _buildDropdownItem(String text) {

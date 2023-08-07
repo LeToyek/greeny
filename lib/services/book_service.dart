@@ -50,7 +50,7 @@ class BookServices {
     CollectionReference bookRef =
         FirebaseFirestore.instance.collection('books');
     List<BookModel> books = [];
-    final res = await bookRef.get();
+    final res = await bookRef.orderBy('created_at').get();
 
     for (final doc in res.docs) {
       if (doc['category'] == category) {

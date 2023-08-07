@@ -22,7 +22,9 @@ class RegisterScreen extends ConsumerWidget {
     final funcUserAction = ref.read(singleUserProvider.notifier);
 
     final refPots = ref.watch(homeProvider.notifier);
-    void _submitForm() async {
+
+    final colorTheme = Theme.of(context).colorScheme;
+    void submitForm() async {
       try {
         if (formKey.currentState!.validate()) {
           // Process data.
@@ -33,7 +35,9 @@ class RegisterScreen extends ConsumerWidget {
           await funcUserAction.registerUser(
               email: email, password: password, name: name);
           refPots.getPots();
-          context.pushReplacement("/");
+          if (context.mounted) {
+            context.pushReplacement("/");
+          }
         }
       } catch (e) {
         showDialog(
@@ -52,10 +56,9 @@ class RegisterScreen extends ConsumerWidget {
       }
     }
 
-    final colorTheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(title: const Text('Daftar')),
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: colorTheme.background,
       body: Stack(
         children: [
           userAction.when(
@@ -116,9 +119,9 @@ class RegisterScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 16.0),
                     GestureDetector(
-                      onTap: () => _submitForm(),
+                      onTap: () => submitForm(),
                       child: PlainCard(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: colorTheme.primary,
                           child: Row(
                             children: [
                               const Icon(Ionicons.person_add,

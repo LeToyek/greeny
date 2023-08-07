@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:greenify/model/book_model.dart';
 import 'package:greenify/services/book_service.dart';
 import 'package:greenify/states/book_state.dart';
-import 'package:greenify/states/file_notifier.dart';
+import 'package:greenify/states/file_notifier_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/ui/widgets/upload_image_container.dart';
@@ -65,6 +65,7 @@ class _TextEditorState extends State<TextEditor> {
   TextEditingController titleController = TextEditingController();
   final categoryList = BookServices.bookCategoryList;
   String? selectedChips = BookServices.bookCategoryList.first.name;
+  bool isProcessing = false;
 
   void _toggleChip(String chip) {
     setState(() {
@@ -91,35 +92,65 @@ class _TextEditorState extends State<TextEditor> {
     }
     showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-              backgroundColor: Theme.of(context).colorScheme.background,
-              title: const Text("Konfirmasi"),
-              content:
-                  const Text("Apakah anda yakin ingin membuat artikel ini?"),
-              actions: [
-                TextButton(
-                    onPressed: () => context.pop(), child: const Text("Batal")),
-                TextButton(
-                    onPressed: () async {
-                      final fullPath = await widget.fileNotifier.uploadFile();
-                      BookModel createdBook = BookModel(
-                        imageUrl: fullPath,
-                        title: titleController.value.text,
-                        category: selectedChips!,
-                        content: result,
-                      );
-                      widget.bookNotifier
-                          .createBook(createdBook)
-                          .then((value) => widget.usersNotifier.getUser());
+        builder: (context) => StatefulBuilder(builder: (context, setState) {
+              return isProcessing
+                  ? AlertDialog(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      iconPadding: EdgeInsets.zero,
+                      insetPadding: EdgeInsets.zero,
+                      titlePadding: EdgeInsets.zero,
+                      buttonPadding: EdgeInsets.zero,
+                      actionsPadding: EdgeInsets.zero,
+                      contentPadding: EdgeInsets.zero,
+                      content: SizedBox(
+                        height: 72,
+                        width: 72,
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.background,
+                          ),
+                        ),
+                      ),
+                    )
+                  : AlertDialog(
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      title: const Text("Konfirmasi"),
+                      content: const Text(
+                          "Apakah anda yakin ingin membuat artikel ini?"),
+                      actions: [
+                        TextButton(
+                            onPressed: () => context.pop(),
+                            child: const Text("Batal")),
+                        TextButton(
+                            onPressed: () async {
+                              setState(() {
+                                isProcessing = true;
+                              });
+                              final fullPath =
+                                  await widget.fileNotifier.uploadFile();
+                              BookModel createdBook = BookModel(
+                                imageUrl: fullPath,
+                                title: titleController.value.text,
+                                category: selectedChips!,
+                                content: result,
+                              );
+                              await widget.bookNotifier.createBook(createdBook);
 
-                      if (context.mounted) {
-                        context.pop();
-                        context.pop();
-                      }
-                    },
-                    child: const Text("Ya")),
-              ],
-            ));
+                              await widget.usersNotifier.getUser();
+                              setState(() {
+                                isProcessing = false;
+                              });
+                              if (context.mounted) {
+                                context.pop();
+                                context.pop();
+                              }
+                            },
+                            child: const Text("Ya")),
+                      ],
+                    );
+            }));
   }
 
   @override
@@ -157,6 +188,9 @@ class _TextEditorState extends State<TextEditor> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Judul tidak boleh kosong';
+                    }
+                    if (value.length > 100) {
+                      return 'Judul tidak boleh lebih dari 100 karakter';
                     }
                     return null;
                   },

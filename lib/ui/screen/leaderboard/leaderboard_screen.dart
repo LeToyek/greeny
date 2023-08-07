@@ -17,81 +17,59 @@ class LeaderboardScreen extends ConsumerWidget {
     return Scaffold(
       appBar: const NewAppbar(title: "Peringkat"),
       endDrawer: const GrDrawerr(),
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [],
-        body: Material(
-          color: Theme.of(context).colorScheme.background,
-          child: RefreshIndicator(
-            onRefresh: () async {
-              ref.refresh(usersProvider);
+      body: Material(
+        color: Theme.of(context).colorScheme.background,
+        child: userRef.when(loading: () {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }, error: (error, stackTrace) {
+          return Center(
+            child: Text(error.toString()),
+          );
+        }, data: (data) {
+          return ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      userClientController.getUserById(data[index].userId);
+                      context.push("/user/detail");
+                    },
+                    child: PlainCard(
+                        child: Row(
+                      children: [
+                        Text("${index + 1}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .apply(fontWeightDelta: 2)),
+                        const SizedBox(width: 16),
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(data[index].imageUrl ==
+                                  null
+                              ? "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
+                              : data[index].imageUrl!),
+                        ),
+                        const SizedBox(width: 16),
+                        Text(data[index].name ?? "User"),
+                        const Spacer(),
+                        Text(data[index].exp.toString()),
+                      ],
+                    )),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                ],
+              );
             },
-            child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  userRef.when(loading: () {
-                    return const SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }, error: (error, stackTrace) {
-                    return SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: Text(error.toString()),
-                      ),
-                    );
-                  }, data: (data) {
-                    return SliverPadding(
-                      padding: const EdgeInsets.all(16),
-                      sliver: SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  userClientController
-                                      .getUserById(data[index].userId);
-                                  context.push("/user/detail");
-                                },
-                                child: PlainCard(
-                                    child: Row(
-                                  children: [
-                                    Text("${index + 1}",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .apply(fontWeightDelta: 2)),
-                                    const SizedBox(width: 16),
-                                    CircleAvatar(
-                                      backgroundImage: NetworkImage(data[index]
-                                                  .imageUrl ==
-                                              null
-                                          ? "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-                                          : data[index].imageUrl!),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Text(data[index].name ?? "User"),
-                                    const Spacer(),
-                                    Text(data[index].exp.toString()),
-                                  ],
-                                )),
-                              ),
-                              const SizedBox(
-                                height: 12,
-                              )
-                            ],
-                          );
-                        },
-                        childCount: data.length,
-                      )),
-                    );
-                  })
-                ]),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

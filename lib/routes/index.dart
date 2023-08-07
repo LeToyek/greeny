@@ -2,19 +2,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:greenify/model/garden_model.dart';
+import 'package:greenify/model/pot_model.dart';
+import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/ui/screen/auth/login_screen.dart';
 import 'package:greenify/ui/screen/auth/register_screen.dart';
 import 'package:greenify/ui/screen/book/book_create_screen.dart';
 import 'package:greenify/ui/screen/book/book_detail_screen.dart';
+import 'package:greenify/ui/screen/book/book_edit_screen.dart';
 import 'package:greenify/ui/screen/book/book_list_screen.dart';
 import 'package:greenify/ui/screen/book/book_screen.dart';
 import 'package:greenify/ui/screen/client/user_screen.dart';
 import 'package:greenify/ui/screen/disease/disease_screen.dart';
 import 'package:greenify/ui/screen/garden/create_garden_screen.dart';
+import 'package:greenify/ui/screen/garden/edit_garden_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_form_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_pot_detail_screen.dart';
 import 'package:greenify/ui/screen/garden/garden_space_screen.dart';
 import 'package:greenify/ui/screen/garden/list_garden_space_screen.dart';
+import 'package:greenify/ui/screen/garden/plant/plant_edit_screen.dart';
 import 'package:greenify/ui/screen/home/content/about_screen.dart';
 import 'package:greenify/ui/screen/home/content/account_screen.dart';
 import 'package:greenify/ui/screen/home/sekelaton_screen.dart';
@@ -46,6 +52,12 @@ final _appRoutes =
       }),
   GoRoute(path: "/book", builder: (context, state) => const BookScreen()),
   GoRoute(
+      path: "/book/edit/:id",
+      builder: (context, state) {
+        final id = state.pathParameters['id'];
+        return BookEditScreen(id: id!);
+      }),
+  GoRoute(
       path: "/book/create",
       builder: (context, state) => const BookCreateScreen()),
   GoRoute(
@@ -69,10 +81,30 @@ final _appRoutes =
       path: "/garden/create",
       builder: (context, state) => const CreateGardenScree()),
   GoRoute(
+      path: "/garden/edit/:id",
+      builder: (context, state) {
+        final id = state.pathParameters["id"]!;
+        final garden = state.extra as GardenModel?;
+        return EditGardenScreen(
+          garden: garden!,
+        );
+      }),
+  GoRoute(
       path: "/garden/form/:id",
       builder: (context, state) {
         final id = state.pathParameters["id"]!;
         return GardenFormScreen(id: id);
+      }),
+  GoRoute(
+      path: "/garden/:id/plant/edit",
+      builder: (context, state) {
+        final id = state.pathParameters["id"]!;
+        final extras = state.extra as Map<String, dynamic>?;
+        return PlantEditScreen(
+          id: id,
+          potModel: extras!["pot"] as PotModel,
+          pageNotifier: extras["pageNotifier"] as PlantAvatarNotifier,
+        );
       }),
   GoRoute(
       path: "/garden/:gardenID/detail/:potID",

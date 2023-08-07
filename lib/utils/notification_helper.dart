@@ -20,16 +20,7 @@ class NotificationHelper {
   factory NotificationHelper() => _instance ?? NotificationHelper._internal();
 
   Future<void> initializeNotification() async {
-    await flutterLocalNotificationsPlugin.initialize(
-      initializeSettings,
-      onDidReceiveNotificationResponse: (details) {
-        if (details.payload != null) {
-          print(details.payload);
-        }
-        selectNotificationSubject.add(details.payload);
-      },
-    );
-
+    await flutterLocalNotificationsPlugin.initialize(initializeSettings);
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');

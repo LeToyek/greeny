@@ -30,6 +30,17 @@ class BackgroundServices {
     showNotification(id: 1, title: title, body: body, payload: "test");
   }
 
+  static Future<void> initCallback() async {
+    String plantName = "";
+    String title = "Selamat Datang di Greeny 🍃";
+    String body =
+        "Greeny siap menemani perjalananmu dalam mewujudkan kehidupan yang lebih hijau!";
+
+    _uiSendPort ??= IsolateNameServer.lookupPortByName(_isolatname);
+    _uiSendPort!.send(null);
+    showNotification(id: 99999999, title: title, body: body, payload: "test");
+  }
+
   void setNotificationMessage() {}
 
   Future<void> someTask() async {

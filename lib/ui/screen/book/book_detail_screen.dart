@@ -3,10 +3,13 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/book_state.dart';
+import 'package:greenify/states/file_notifier_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/widgets/action_menu.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/capitalizer.dart';
 import 'package:greenify/utils/date_helper.dart';
+import 'package:ionicons/ionicons.dart';
 
 class BookDetailScreen extends ConsumerWidget {
   final String bookId;
@@ -15,13 +18,71 @@ class BookDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bookRef = ref.watch(detailBookProvider(bookId));
+    final bookNotifier = ref.watch(detailBookProvider(bookId).notifier);
+    final funcFileRef = ref.read(fileEditBookProvider.notifier);
+    final userNotifier = ref.watch(singleUserProvider.notifier);
 
     final userClientController = ref.read(userClientProvider.notifier);
+    var appBarHeight = AppBar().preferredSize.height;
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(title: const Text('Artikel')),
+      appBar: AppBar(
+        title: const Text('Artikel'),
+        actions: [
+          !userClientController.isSelf()
+              ? Container()
+              : PopupMenuButton(
+                  offset: Offset(0.0, appBarHeight),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8.0),
+                      bottomRight: Radius.circular(8.0),
+                      topLeft: Radius.circular(8.0),
+                      topRight: Radius.circular(8.0),
+                    ),
+                  ),
+                  itemBuilder: (context) => [
+                        buildPopupMenuItem(
+                            text: "Edit Artikel",
+                            context: context,
+                            icon: Ionicons.pencil_outline,
+                            content: "Ubah Artikel ini",
+                            position: 0,
+                            additionalActions: [
+                              TextButton(
+                                  onPressed: () {
+                                    funcFileRef.imageUrl =
+                                        bookNotifier.getThisBook().imageUrl;
+                                    context.pop();
+                                    context.push("/book/edit/$bookId");
+                                  },
+                                  child: const Text("Ubah")),
+                            ]),
+                        buildPopupMenuItem(
+                            text: "Hapus Artikel",
+                            context: context,
+                            icon: Ionicons.trash_bin_outline,
+                            content:
+                                "Artikel anda akan dihapus secara permanen",
+                            position: 1,
+                            isDelete: true,
+                            additionalActions: [
+                              TextButton(
+                                  onPressed: () async {
+                                    await bookNotifier.deleteBook(bookId);
+                                    userNotifier.getUser();
+                                    if (context.mounted) {
+                                      context.pop();
+                                      context.pop();
+                                    }
+                                  },
+                                  child: const Text("Hapus")),
+                            ]),
+                      ])
+        ],
+      ),
       body: SingleChildScrollView(
         child: Material(
             color: Theme.of(context).colorScheme.background,

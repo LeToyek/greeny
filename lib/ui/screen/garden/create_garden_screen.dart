@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:greenify/states/file_notifier.dart';
+import 'package:greenify/states/file_notifier_state.dart';
 import 'package:greenify/states/garden_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
@@ -132,24 +132,25 @@ class _CreateGardenScreeState extends ConsumerState<CreateGardenScree> {
                         )
                       ],
                     )),
-                    Center(
-                      child: isLoading
-                          ? Container(
-                              color: Colors.grey.withOpacity(.5),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: const [
-                                  CircularProgressIndicator(),
-                                  SizedBox(height: 16),
-                                  Text("Processing")
-                                ],
-                              ))
-                          : Container(),
-                    )
                   ],
                 ),
               ),
             ),
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.center,
+                child: isLoading
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 16),
+                          Text("Processing")
+                        ],
+                      )
+                    : Container(),
+              ),
+            )
           ],
         ),
       ),

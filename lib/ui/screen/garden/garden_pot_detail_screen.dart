@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/plant_category_list.dart';
 import 'package:greenify/states/exp_state.dart';
-import 'package:greenify/states/file_notifier.dart';
+import 'package:greenify/states/file_notifier_state.dart';
 import 'package:greenify/states/home_state.dart';
 import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/pot_state.dart';

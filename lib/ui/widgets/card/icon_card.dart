@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:greenify/states/theme_mode.dart';
+import 'package:greenify/states/theme_mode_state.dart';
 
 class GrIconCard extends ConsumerWidget {
   const GrIconCard({super.key, required this.icon, required this.mode});

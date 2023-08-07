@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/constants/plant_category_list.dart';
 import 'package:greenify/states/plant_avatar_state.dart';
-import 'package:greenify/states/theme_mode.dart';
+import 'package:greenify/states/theme_mode_state.dart';
 import 'package:ionicons/ionicons.dart';
 
 Widget plantChoose(PageController pageController,

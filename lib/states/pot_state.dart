@@ -78,13 +78,8 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
       final plant = selectedPot.plant;
       final potHeight = plant.heightStat!;
       final lastDate = DateTime.parse(potHeight.last.date);
-      final lastHeight = HeightModel(
-          height: height,
-          date: DateTime(
-            lastDate.year,
-            lastDate.month,
-            lastDate.day + 1,
-          ).toString());
+      final lastHeight =
+          HeightModel(height: height, date: DateTime.now().toString());
       await potServices.waterPlant(id, lastHeight);
       potHeight.last = lastHeight;
       state = AsyncValue.data([selectedPot]);

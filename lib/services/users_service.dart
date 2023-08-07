@@ -45,10 +45,6 @@ class UsersServices {
       final resAchievement =
           await userDocument.collection(AchievementModel.collectionPath).get();
 
-      print('userMod $userMod');
-      print('resGarden $resGarden');
-      print('resAchievement $resAchievement');
-
       List<AchievementModel> achievementList = [];
       if (resGarden.docs.isNotEmpty) {
         userMod.gardens = await userDocument
@@ -69,9 +65,12 @@ class UsersServices {
         });
       }
       userMod.achievements = achievementList;
+
       List<BookModel> books = [];
-      final resBook =
-          await FirebaseFirestore.instance.collection("books").get();
+      final resBook = await FirebaseFirestore.instance
+          .collection("books")
+          .orderBy('created_at', descending: true)
+          .get();
 
       for (var element in resBook.docs) {
         final book = BookModel.fromQuery(element);

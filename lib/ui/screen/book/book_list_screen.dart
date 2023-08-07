@@ -13,12 +13,14 @@ class BookListScreen extends ConsumerWidget {
     final bookRef = ref.watch(bookFamilyProvider(category));
     final userClientController = ref.read(userClientProvider.notifier);
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: colorScheme.background,
         appBar: AppBar(title: Text(category), centerTitle: true),
         body: SingleChildScrollView(
           child: Material(
-              color: Theme.of(context).colorScheme.background,
+              color: colorScheme.background,
               child: bookRef.when(
                   data: (data) => ListView.builder(
                       padding: const EdgeInsets.all(16),
@@ -31,7 +33,7 @@ class BookListScreen extends ConsumerWidget {
                             ListTile(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
-                              tileColor: Theme.of(context).colorScheme.surface,
+                              tileColor: colorScheme.surface,
                               title: Text(data[index].title),
                               subtitle:
                                   Text("Penulis: ${data[index].user!.name}"),

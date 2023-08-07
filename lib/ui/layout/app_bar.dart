@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:greenify/states/theme_mode.dart';
+import 'package:greenify/states/theme_mode_state.dart';
 
 class NewAppbar extends ConsumerWidget implements PreferredSizeWidget {
   final String title;

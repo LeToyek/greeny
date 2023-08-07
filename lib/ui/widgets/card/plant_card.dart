@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:greenify/states/theme_mode.dart';
+import 'package:greenify/states/theme_mode_state.dart';
 import 'package:ionicons/ionicons.dart';
 
 enum PlantBoxStatus { empty, filled, locked }
@@ -66,6 +66,8 @@ class PlantCard extends ConsumerWidget {
         const Spacer(),
         Text(
           title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: textTheme.titleSmall!.apply(fontWeightDelta: 2),
         ),

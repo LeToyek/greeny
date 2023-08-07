@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:greenify/services/storage_service.dart';
-import 'package:greenify/states/file_notifier.dart';
+import 'package:greenify/states/file_notifier_state.dart';
 
 class UploadImageContainer extends StatefulWidget {
   final FileNotifier fileNotifier;

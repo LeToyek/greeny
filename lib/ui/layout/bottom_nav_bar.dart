@@ -12,8 +12,7 @@ class GrBottomNavBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int bottomNavIndex = ref.watch(bottomNavProvider);
-    final potRef = ref.read(homeProvider.notifier);
-    final userClientController = ref.read(userClientProvider.notifier);
+
     return Card(
       margin: const EdgeInsets.only(top: 1, right: 4, left: 4),
       elevation: 4,
@@ -27,15 +26,7 @@ class GrBottomNavBar extends ConsumerWidget {
       ),
       child: BottomNavigationBar(
         currentIndex: bottomNavIndex,
-        onTap: (int index) {
-          if (index == 0) {
-            potRef.getPots();
-          }
-          if (index == 1) {
-            userClientController.setVisitedUser();
-          }
-          ref.read(bottomNavProvider.notifier).setValueToDB(index);
-        },
+        onTap: (int index) => changeIndex(index, ref),
         type: BottomNavigationBarType.fixed,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -74,5 +65,17 @@ class GrBottomNavBar extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  void changeIndex(int index, WidgetRef ref) {
+    final potRef = ref.read(homeProvider.notifier);
+    final userClientController = ref.read(userClientProvider.notifier);
+    if (index == 0) {
+      potRef.getPots();
+    }
+    if (index == 1) {
+      userClientController.setVisitedUser();
+    }
+    ref.read(bottomNavProvider.notifier).setValueToDB(index);
   }
 }

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/level_list.dart';
+import 'package:greenify/model/achievement_model.dart';
 import 'package:greenify/model/book_model.dart';
 import 'package:greenify/model/garden_model.dart';
+import 'package:greenify/model/user_model.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
@@ -28,17 +30,203 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
   @override
   Widget build(BuildContext context) {
     final userRef = ref.watch(userClientProvider);
-    final funcUserRef = ref.read(userClientProvider.notifier);
 
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-    var size = MediaQuery.of(context).size;
+    const blankProfileLink =
+        'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
+
+    Widget buildHeadProfileWidget(UserModel user) {
+      return PlainCard(
+        child: Row(
+          children: [
+            ClipOval(
+              child: user.imageUrl != null
+                  ? Image.network(
+                      user.imageUrl!,
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.network(
+                      blankProfileLink,
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _textAccount(context: context, text: user.name!),
+                  const SizedBox(height: 4),
+                  _textAccount(
+                      context: context,
+                      text: user.email,
+                      color: Colors.grey[600]),
+                ],
+              ),
+            ),
+            cirPercent.CircularPercentIndicator(
+              radius: 36.0,
+              lineWidth: 4.0,
+              percent:
+                  user.level != 10 ? user.exp / levelList[user.level].exp : 1,
+              center: Text(
+                "Lv. ${user.level}",
+                style: textTheme.bodyMedium!
+                    .apply(fontWeightDelta: 2, color: colorScheme.primary),
+              ),
+              progressColor: colorScheme.primary,
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget buildEmblemCard(AchievementModel achievementModel) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.network(achievementModel.emblem!.imageUrl, height: 100),
+          Text(
+            textAlign: TextAlign.center,
+            achievementModel.emblem!.title,
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall!
+                .apply(fontWeightDelta: 2),
+          )
+        ],
+      );
+    }
+
+    Widget buildUnknownCard(String content) {
+      return Container(
+        margin: const EdgeInsets.only(top: 8),
+        child: DottedBorder(
+          borderType: BorderType.RRect,
+          radius: const Radius.circular(8),
+          dashPattern: const [8, 8],
+          color: Colors.grey,
+          strokeWidth: 2,
+          child: SizedBox(
+            height: 150,
+            child: Center(
+              child: Text(
+                content,
+                style: textTheme.bodyMedium!.apply(fontWeightDelta: 2),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget buildGardenCard(Function onTap, GardenModel garden) {
+      return GestureDetector(
+        onTap: () => onTap(),
+        child: Container(
+          margin: const EdgeInsets.only(top: 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: SizedBox(
+              height: 100,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    garden.backgroundUrl,
+                    fit: BoxFit.fitWidth,
+                  ),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: const Alignment(0.0, 0.5),
+                        end: const Alignment(0.0, 0.0),
+                        colors: <Color>[
+                          Colors.green.withOpacity(0.6),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        garden.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget buildArticleCard(BookModel book) {
+      return GestureDetector(
+        onTap: () => context.push("/book/detail/${book.id}"),
+        child: PlainCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                    height: 200,
+                    child: ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(12)),
+                      child: Image.network(
+                        book.imageUrl,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        capitalize(trimmer(book.title)),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .apply(fontWeightDelta: 2),
+                      ),
+                      Text(
+                        DateHelper.timestampToReadable(book.createdAt!),
+                        style: textTheme.bodyMedium!
+                            .apply(fontWeightDelta: 2, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            )),
+      );
+    }
 
     return userRef.when(
       data: (data) {
         final user = data[0];
-        // final expPercent = percentizer(user.exp);
-        const expPercent = 0.8;
+
         return NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
                   SliverAppBar(
@@ -48,9 +236,7 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
                         centerTitle: true,
                         title: Text(
                           "${user.name!.split(" ").first}'s Account",
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
+                          style: textTheme.titleLarge!
                               .apply(color: Colors.white, fontWeightDelta: 2),
                         ),
                         background: Stack(
@@ -89,59 +275,7 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
                             const SizedBox(
                               height: 16,
                             ),
-                            PlainCard(
-                              child: Row(
-                                children: [
-                                  ClipOval(
-                                    child: user.imageUrl != null
-                                        ? Image.network(
-                                            user.imageUrl!,
-                                            width: 80,
-                                            height: 80,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.network(
-                                            'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
-                                            width: 80,
-                                            height: 80,
-                                            fit: BoxFit.cover,
-                                          ),
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        _textAccount(
-                                            context: context, text: user.name!),
-                                        const SizedBox(height: 4),
-                                        _textAccount(
-                                            context: context,
-                                            text: user.email,
-                                            color: Colors.grey[600]),
-                                      ],
-                                    ),
-                                  ),
-                                  cirPercent.CircularPercentIndicator(
-                                    radius: 36.0,
-                                    lineWidth: 4.0,
-                                    percent: user.level != 10
-                                        ? user.exp / levelList[user.level].exp
-                                        : 1,
-                                    center: Text(
-                                      "Lv. ${user.level}",
-                                      style: textTheme.bodyMedium!.apply(
-                                          fontWeightDelta: 2,
-                                          color: colorScheme.primary),
-                                    ),
-                                    progressColor: colorScheme.primary,
-                                  ),
-                                ],
-                              ),
-                            ),
+                            buildHeadProfileWidget(user),
                             const SizedBox(height: 16),
                             Text(
                               "Medali",
@@ -163,55 +297,10 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
                                             mainAxisSpacing: 12),
                                     itemBuilder: (context, index) {
                                       return PlainCard(
-                                          child: user.achievements![index] ==
-                                                  null
-                                              ? Container()
-                                              : Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Image.network(
-                                                        user
-                                                            .achievements![
-                                                                index]
-                                                            .emblem!
-                                                            .imageUrl,
-                                                        height: 100),
-                                                    Text(
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      user.achievements![index]
-                                                          .emblem!.title,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .titleSmall!
-                                                          .apply(
-                                                              fontWeightDelta:
-                                                                  2),
-                                                    )
-                                                  ],
-                                                ));
+                                          child: buildEmblemCard(
+                                              user.achievements![index]));
                                     })
-                                : Container(
-                                    margin: const EdgeInsets.only(top: 8),
-                                    child: DottedBorder(
-                                      borderType: BorderType.RRect,
-                                      radius: const Radius.circular(8),
-                                      dashPattern: const [8, 8],
-                                      color: Colors.grey,
-                                      strokeWidth: 2,
-                                      child: SizedBox(
-                                        height: 150,
-                                        child: Center(
-                                          child: Text(
-                                            "Belum ada medali",
-                                            style: textTheme.bodyMedium!
-                                                .apply(fontWeightDelta: 2),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                : buildUnknownCard("Belum ada Medali"),
 
                             const SizedBox(height: 16),
                             Text(
@@ -232,75 +321,15 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
                                       user.gardens!.isNotEmpty) {
                                     garden = user.gardens![index];
                                   }
+                                  void getGarden() {
+                                    potsNotifier.getPotsByGardenId(
+                                        userId: user.userId, docId: garden!.id);
+                                    context.pushNamed("garden_detail",
+                                        pathParameters: {"id": garden.id});
+                                  }
+
                                   return garden != null
-                                      ? GestureDetector(
-                                          onTap: () {
-                                            potsNotifier.getPotsByGardenId(
-                                                userId: user.userId,
-                                                docId: garden!.id);
-                                            context.pushNamed("garden_detail",
-                                                pathParameters: {
-                                                  "id": garden.id
-                                                });
-                                          },
-                                          child: Container(
-                                            margin:
-                                                const EdgeInsets.only(top: 8),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              child: SizedBox(
-                                                height: 100,
-                                                child: Stack(
-                                                  fit: StackFit.expand,
-                                                  children: [
-                                                    Image.network(
-                                                      garden.backgroundUrl,
-                                                      fit: BoxFit.fitWidth,
-                                                    ),
-                                                    DecoratedBox(
-                                                      decoration: BoxDecoration(
-                                                        gradient:
-                                                            LinearGradient(
-                                                          begin:
-                                                              const Alignment(
-                                                                  0.0, 0.5),
-                                                          end: const Alignment(
-                                                              0.0, 0.0),
-                                                          colors: <Color>[
-                                                            Colors.green
-                                                                .withOpacity(
-                                                                    0.6),
-                                                            Colors.transparent,
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.bottomLeft,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(16.0),
-                                                        child: Text(
-                                                          garden.name,
-                                                          style:
-                                                              const TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 24,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
+                                      ? buildGardenCard(getGarden, garden)
                                       : Container();
                                 }),
                             const SizedBox(height: 16),
@@ -325,91 +354,9 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
                                       BookModel? book;
                                       book = user.books![index];
 
-                                      return GestureDetector(
-                                        onTap: () => context
-                                            .push("/book/detail/${book!.id}"),
-                                        child: PlainCard(
-                                            padding: EdgeInsets.zero,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                    height: 200,
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                                  .vertical(
-                                                              top: Radius
-                                                                  .circular(
-                                                                      12)),
-                                                      child: Image.network(
-                                                        book.imageUrl,
-                                                        height: 200,
-                                                        width: double.infinity,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    )),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        capitalize(trimmer(
-                                                            book.title)),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .titleMedium!
-                                                            .apply(
-                                                                fontWeightDelta:
-                                                                    2),
-                                                      ),
-                                                      Text(
-                                                        DateHelper
-                                                            .timestampToReadable(
-                                                                book.createdAt!),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyMedium!
-                                                            .apply(
-                                                                fontWeightDelta:
-                                                                    2,
-                                                                color: Colors
-                                                                    .grey[600]),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            )),
-                                      );
+                                      return buildArticleCard(book);
                                     })
-                                : Container(
-                                    margin: const EdgeInsets.only(top: 8),
-                                    child: DottedBorder(
-                                      borderType: BorderType.RRect,
-                                      radius: const Radius.circular(8),
-                                      dashPattern: const [8, 8],
-                                      color: Colors.grey,
-                                      strokeWidth: 2,
-                                      child: SizedBox(
-                                        height: 150,
-                                        child: Center(
-                                          child: Text(
-                                            "Belum ada artikel",
-                                            style: textTheme.bodyMedium!
-                                                .apply(fontWeightDelta: 2),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                : buildUnknownCard("Belum ada Artikel"),
 
                             const SizedBox(height: 36),
 

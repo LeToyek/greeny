@@ -3,7 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/book_state.dart';
-import 'package:greenify/states/file_notifier.dart';
+import 'package:greenify/states/file_notifier_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/action_menu.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/book_state.dart';
+import 'package:greenify/states/users_state.dart';
 
 class BookListScreen extends ConsumerWidget {
   final String category;
@@ -10,6 +11,7 @@ class BookListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bookRef = ref.watch(bookFamilyProvider(category));
+    final userClientController = ref.read(userClientProvider.notifier);
 
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -44,6 +46,8 @@ class BookListScreen extends ConsumerWidget {
                                     )),
                               ),
                               onTap: () {
+                                userClientController.setVisitedUser(
+                                    id: data[index].userID);
                                 context.push("/book/detail/${data[index].id}");
                               },
                             ),

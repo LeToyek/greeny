@@ -1,4 +1,4 @@
-package com.tocode.greeny
+package com.example.greenify
 
 import io.flutter.embedding.android.FlutterActivity
 

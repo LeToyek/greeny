@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -49,6 +46,16 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBmj_TqdSJ_bQ-JG0nrTg3S6xQTL4QTJxc',
+    appId: '1:408888696472:web:8d6e4bcd79e7f92c707aed',
+    messagingSenderId: '408888696472',
+    projectId: 'greenify-f07ad',
+    authDomain: 'greenify-f07ad.firebaseapp.com',
+    storageBucket: 'greenify-f07ad.appspot.com',
+    measurementId: 'G-K57BNC94TJ',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDLr8rD4R9TTMotUX_hNyw7racGWY8TOBU',
     appId: '1:408888696472:android:71eeacd4385143f3707aed',
@@ -63,7 +70,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '408888696472',
     projectId: 'greenify-f07ad',
     storageBucket: 'greenify-f07ad.appspot.com',
-    androidClientId: '408888696472-vqk71qhhfm75ak0oiknbtrqvseubl3ai.apps.googleusercontent.com',
+    androidClientId: '408888696472-1tttp8rbpa3bin6fn5i9l4h50m1gbd7q.apps.googleusercontent.com',
     iosClientId: '408888696472-dnk5ecvg2n9qk4b6qaidjhss7jti4lh0.apps.googleusercontent.com',
     iosBundleId: 'com.example.greenify',
   );

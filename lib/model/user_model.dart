@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:greenify/model/achievement_model.dart';
 import 'package:greenify/model/book_model.dart';
 import 'package:greenify/model/garden_model.dart';
+import 'package:greenify/model/wallet_model.dart';
 
 class UserModel {
   String userId;
@@ -14,6 +15,7 @@ class UserModel {
   List<GardenModel>? gardens;
   List<AchievementModel>? achievements;
   List<BookModel>? books;
+  late WalletModel wallet;
 
   UserModel(
       {required this.email,
@@ -33,4 +35,8 @@ class UserModel {
         level = element['level'],
         photoFrame = element['photo_frame'],
         imageUrl = element['image_url'];
+
+  void setWallet(DocumentSnapshot<Object?> element) {
+    wallet = WalletModel.fromMap(element['wallet']);
+  }
 }

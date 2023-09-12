@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/book_state.dart';
 import 'package:greenify/states/garden_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/screen/wallet/manager_screen.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -357,6 +359,7 @@ class HomeScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return PlainCard(
+      onTap: () => context.push(WalletManagerScreen.routePath),
       margin: const EdgeInsets.only(right: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,7 +389,21 @@ class HomeScreen extends ConsumerWidget {
                 fontWeightDelta: 2,
                 fontSizeDelta: 4,
                 color: colorScheme.onSurface),
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Text(
+            "Tekan untuk topup",
+            style: textTheme.labelSmall!
+                .apply(fontWeightDelta: 3, color: Colors.orange.shade700),
           )
+              .animate(
+                delay: 500.ms,
+                onPlay: (controller) => controller.repeat(reverse: true),
+              )
+              .fadeIn(duration: 500.ms)
+              .then(duration: 1.seconds),
         ],
       ),
     );

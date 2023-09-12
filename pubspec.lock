@@ -418,7 +418,7 @@ packages:
       name: flutter_animate
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.0"
+    version: "4.2.0+1"
   flutter_displaymode:
     dependency: "direct main"
     description:

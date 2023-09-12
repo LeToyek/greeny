@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:greenify/model/book_model.dart';
 import 'package:greenify/services/book_service.dart';
 import 'package:greenify/states/users_state.dart';
-import 'package:greenify/ui/layout/app_bar.dart';
-import 'package:greenify/ui/layout/drawer.dart';
 import 'package:greenify/ui/widgets/card/info_card.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/capitalizer.dart';
@@ -34,8 +32,6 @@ class _BookScreenState extends ConsumerState<BookScreen> {
         "https://lottie.host/2074ca4c-e3b9-468f-92d0-c276fc401c23/bMZExAL1R7.json";
 
     return Scaffold(
-        appBar: const NewAppbar(title: "Artikel"),
-        endDrawer: const GrDrawerr(),
         backgroundColor: colorScheme.background,
         body: Material(
           color: colorScheme.background,

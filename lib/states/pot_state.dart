@@ -27,6 +27,19 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
     }
   }
 
+  Future<void> getTopPots() async {
+    try {
+      state = const AsyncValue.loading();
+      final pots = await potServices.getPotsFromDB();
+      state = AsyncValue.data(pots);
+      tempData = pots;
+      fullData = pots;
+      print('tempData = $tempData');
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
   Future<void> getPotsByGardenId(
       {String? userId, required String docId}) async {
     try {
@@ -181,6 +194,12 @@ final potProvider = StateNotifierProviderFamily<PotNotifier,
         AsyncValue<List<PotModel>>, String>(
     (ref, arg) => PotNotifier(
         potServices: PotServices(gardenRef: GardensServices.getGardenRef(arg)))
+      ..getPots());
+final bestPotProvider = StateNotifierProviderFamily<PotNotifier,
+        AsyncValue<List<PotModel>>, String>(
+    (ref, arg) => PotNotifier(
+        potServices:
+            PotServices(gardenRef: GardensServices.getBestUserGardenRef(arg)))
       ..getPots());
 
 // final detailPotProvider = StateNotifierProviderFamily<PotNotifier,

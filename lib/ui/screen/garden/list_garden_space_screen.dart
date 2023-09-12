@@ -7,8 +7,6 @@ import 'package:greenify/states/file_notifier_state.dart';
 import 'package:greenify/states/garden_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/users_state.dart';
-import 'package:greenify/ui/layout/app_bar.dart';
-import 'package:greenify/ui/layout/drawer.dart';
 import 'package:ionicons/ionicons.dart';
 
 class ListGardenSpaceScreen extends ConsumerWidget {
@@ -23,12 +21,11 @@ class ListGardenSpaceScreen extends ConsumerWidget {
     final userNotifier = ref.read(userClientProvider.notifier);
 
     final fileController = ref.read(fileEditGardenProvider.notifier);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: const NewAppbar(title: "Gardens"),
-      endDrawer: const GrDrawerr(),
+      backgroundColor: colorScheme.background,
       body: gardenRef.when(data: (data) {
-        print(data.length);
         return ListView.builder(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(16),

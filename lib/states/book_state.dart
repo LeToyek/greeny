@@ -18,6 +18,16 @@ class BookNotifier extends StateNotifier<AsyncValue<List<BookModel>>> {
     }
   }
 
+  Future<void> getWholeBooks() async {
+    try {
+      state = const AsyncValue.loading();
+      final books = await bookServices.getWholeBooks();
+      state = AsyncValue.data(books);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
   Future<void> getBookByID(String id) async {
     try {
       state = const AsyncValue.loading();
@@ -81,7 +91,7 @@ final detailBookProvider = StateNotifierProviderFamily<BookNotifier,
 
 final bookProvider =
     StateNotifierProvider<BookNotifier, AsyncValue<List<BookModel>>>((ref) {
-  return BookNotifier(bookServices: BookServices());
+  return BookNotifier(bookServices: BookServices())..getWholeBooks();
 });
 
 final bookFamilyProvider = StateNotifierProviderFamily<BookNotifier,

@@ -34,15 +34,20 @@ class GrBottomNavBar extends ConsumerWidget {
         unselectedItemColor: Theme.of(context).textTheme.bodySmall!.color,
         items: [
           const BottomNavigationBarItem(
+            icon: Icon(Ionicons.home_outline),
+            activeIcon: Icon(Ionicons.home),
+            label: "Home",
+          ),
+          const BottomNavigationBarItem(
             icon: Icon(Ionicons.book_outline),
             activeIcon: Icon(Ionicons.book),
             label: "Artikel",
           ),
-          const BottomNavigationBarItem(
-            icon: Icon(Ionicons.leaf_outline),
-            activeIcon: Icon(Ionicons.leaf),
-            label: "Garden",
-          ),
+          // const BottomNavigationBarItem(
+          //   icon: Icon(Ionicons.leaf_outline),
+          //   activeIcon: Icon(Ionicons.leaf),
+          //   label: "Garden",
+          // ),
           bottomNavIndex == 3
               ? const BottomNavigationBarItem(
                   icon: Icon(

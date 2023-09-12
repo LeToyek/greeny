@@ -10,6 +10,15 @@ class GardensServices {
         .doc(docId);
   }
 
+  static DocumentReference getBestUserGardenRef(String docId) {
+    const String bestUserId = 'jCrKt22Hp6eX7unsc0jHvodUmFu1';
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(bestUserId)
+        .collection(GardenModel.collectionPath)
+        .doc(docId);
+  }
+
   static DocumentReference getGardenRefByUserID(
       {String? userId, required String docId}) {
     return UsersServices.getUserRef(id: userId)

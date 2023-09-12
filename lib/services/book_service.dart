@@ -63,6 +63,25 @@ class BookServices {
     return books;
   }
 
+  Future<List<BookModel>> getWholeBooks() async {
+    try {
+      CollectionReference bookRef =
+          FirebaseFirestore.instance.collection('books');
+      List<BookModel> books = [];
+      final res = await bookRef.orderBy('created_at').limit(3).get();
+
+      for (final doc in res.docs) {
+        final book = BookModel.fromQuery(doc);
+        await book.getUserModel();
+        books.add(book);
+      }
+
+      return books;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<BookModel> getBookByIDFromDB(String id) async {
     CollectionReference bookRef =
         FirebaseFirestore.instance.collection('books');

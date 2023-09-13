@@ -12,6 +12,7 @@ import 'package:greenify/ui/screen/home/content/about_screen.dart';
 import 'package:greenify/ui/screen/leaderboard/leaderboard_screen.dart';
 import 'package:greenify/ui/screen/starter/splash_screen.dart';
 import 'package:greenify/ui/screen/wallet/manager_screen.dart';
+import 'package:greenify/ui/screen/wallet/success_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -25,6 +26,10 @@ final _appRoutes =
   ...usersRoutes,
   ...booksRoutes,
   ...gardenRoutes,
+  GoRoute(
+      path: SuccessScreen.routePath,
+      name: SuccessScreen.routeName,
+      builder: (context, state) => const SuccessScreen()),
   GoRoute(
       path: "/disease",
       builder: (context, state) {

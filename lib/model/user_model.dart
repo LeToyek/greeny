@@ -39,4 +39,19 @@ class UserModel {
   void setWallet(DocumentSnapshot<Object?> element) {
     wallet = WalletModel.fromMap(element['wallet']);
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'image_url': imageUrl,
+      'user_id': userId,
+      "exp": exp,
+      "level": level,
+      "photo_frame": photoFrame ?? "default",
+      "created_at": DateTime.now(),
+      "updated_at": DateTime.now(),
+      "wallet": wallet.toMap(),
+    };
+  }
 }

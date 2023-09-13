@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/services/wallet_service.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/screen/wallet/success_screen.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/formatter.dart';
 
@@ -31,6 +32,7 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final userNotifier = ref.watch(singleUserProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     return DefaultTabController(
@@ -58,8 +60,9 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
         bottomNavigationBar: Container(
           padding: const EdgeInsets.all(12),
           child: GestureDetector(
-            onTap: () =>
-                _onPayTopUp(context: context, value: selectedTopUpValue),
+            onTap: () {
+              _onPayTopUp(context: context, value: selectedTopUpValue);
+            },
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -207,13 +210,12 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
     );
   }
 
-  void _onPayTopUp({required BuildContext context, required int value}) async {
+  Future<void> _onPayTopUp(
+      {required BuildContext context, required int value}) async {
     final userRef = ref.read(singleUserProvider.notifier);
     if (value != 0) {
       WalletService walletService = WalletService();
 
-      await walletService.increaseWalletValue(value);
-      await userRef.getUser();
       showDialog(
         context: context,
         builder: (context) {
@@ -227,10 +229,12 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
           );
         },
       );
+      await walletService.increaseWalletValue(value);
+      await userRef.getUser();
 
       if (context.mounted) {
         Future.delayed(const Duration(seconds: 1))
-            .then((value) => context.pop());
+            .then((value) => context.go(SuccessScreen.routePath));
       }
     } else {
       showDialog(

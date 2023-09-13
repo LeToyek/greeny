@@ -52,6 +52,7 @@ class LoginScreen extends ConsumerWidget {
     Future<void> loginWithGoogle() async {
       try {
         await funcUserAct.loginWithGoogle();
+        // print("test");
         if (context.mounted) context.pushReplacement("/");
         refPots.getPots();
       } catch (e) {
@@ -119,40 +120,36 @@ class LoginScreen extends ConsumerWidget {
                       },
                     ),
                     const SizedBox(height: 24),
-                    GestureDetector(
-                      onTap: () => submitForm(),
-                      child: PlainCard(
-                          color: colorTheme.primary,
-                          child: Row(
-                            children: [
-                              const Icon(Ionicons.log_in, color: Colors.white),
-                              const SizedBox(width: 12),
-                              Text(
-                                'Masuk',
-                                style: textTheme.bodyMedium!.apply(
-                                    fontWeightDelta: 2, color: Colors.white),
-                              ),
-                            ],
-                          )),
-                    ),
+                    PlainCard(
+                        onTap: () async => submitForm(),
+                        color: colorTheme.primary,
+                        child: Row(
+                          children: [
+                            const Icon(Ionicons.log_in, color: Colors.white),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Masuk',
+                              style: textTheme.bodyMedium!.apply(
+                                  fontWeightDelta: 2, color: Colors.white),
+                            ),
+                          ],
+                        )),
                     const SizedBox(height: 12),
-                    GestureDetector(
-                      onTap: () async => await loginWithGoogle(),
-                      child: PlainCard(
-                          color: colorTheme.error,
-                          child: Row(
-                            children: [
-                              const Icon(Ionicons.logo_google,
-                                  color: Colors.white),
-                              const SizedBox(width: 12),
-                              Text(
-                                'Masuk Dengan Google',
-                                style: textTheme.bodyMedium!.apply(
-                                    fontWeightDelta: 2, color: Colors.white),
-                              ),
-                            ],
-                          )),
-                    ),
+                    PlainCard(
+                        onTap: () async => loginWithGoogle(),
+                        color: colorTheme.error,
+                        child: Row(
+                          children: [
+                            const Icon(Ionicons.logo_google,
+                                color: Colors.white),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Masuk Dengan Google',
+                              style: textTheme.bodyMedium!.apply(
+                                  fontWeightDelta: 2, color: Colors.white),
+                            ),
+                          ],
+                        )),
                     const SizedBox(height: 24),
                     TextButton(
                       onPressed: () {

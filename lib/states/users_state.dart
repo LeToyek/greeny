@@ -6,6 +6,7 @@ import 'package:greenify/services/users_service.dart';
 class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   UsersServices usersServices;
   String? visitedUser = FireAuth.getCurrentUser()?.uid;
+  UserModel? visitedUserModel;
 
   UsersNotifier({required this.usersServices})
       : super(const AsyncValue.data([]));
@@ -38,9 +39,26 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
     }
   }
 
-  void setVisitedUser({String? id}) {
-    id ??= FireAuth.getCurrentUser()!.uid;
-    visitedUser = id;
+  Future<void> setVisitedUserModel() async {
+    try {
+      state = const AsyncValue.loading();
+      final res = await usersServices.getMainInfoUser(id: visitedUser!);
+      visitedUserModel = res;
+      state = AsyncValue.data([res]);
+    } catch (e) {
+      print("Error := $e");
+      state = AsyncError(e, StackTrace.current);
+    }
+  }
+
+  Future<void> setVisitedUser({String? id}) async {
+    try {
+      id ??= FireAuth.getCurrentUser()!.uid;
+      visitedUser = id;
+    } catch (e) {
+      print("Error := $e");
+      state = AsyncError(e, StackTrace.current);
+    }
   }
 
   bool isSelf() {

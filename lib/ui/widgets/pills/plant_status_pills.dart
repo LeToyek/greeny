@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greenify/model/plant_model.dart';
+import 'package:greenify/utils/formatter.dart';
 
 Widget plantStatusPill(PlantStatus status) {
   switch (status) {
@@ -34,19 +35,35 @@ Widget plantHeightPill(int height) {
   if (height > 100) {
     return Chip(
       label: Text("$height cm"),
-      backgroundColor: Colors.blue.shade200,
+      backgroundColor: Colors.blue.shade300,
       labelStyle: const TextStyle(color: Colors.white),
     );
   } else if (height > 50) {
     return Chip(
       label: Text("$height cm"),
-      backgroundColor: Colors.purple.shade200,
+      backgroundColor: Colors.purple.shade300,
       labelStyle: const TextStyle(color: Colors.white),
     );
   } else {
     return Chip(
       label: Text("$height cm"),
-      backgroundColor: Colors.green.shade200,
+      backgroundColor: Colors.green.shade300,
+      labelStyle: const TextStyle(color: Colors.white),
+    );
+  }
+}
+
+Widget plantPricePill({int? price}) {
+  if (price != null) {
+    return Chip(
+      label: Text("Rp ${formatMoney(price)}"),
+      backgroundColor: Colors.green.shade700,
+      labelStyle: const TextStyle(color: Colors.white),
+    );
+  } else {
+    return Chip(
+      label: const Text("Tidak untuk dijual"),
+      backgroundColor: Colors.red.shade300,
       labelStyle: const TextStyle(color: Colors.white),
     );
   }

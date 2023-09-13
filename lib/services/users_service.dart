@@ -31,6 +31,17 @@ class UsersServices {
     return usersList;
   }
 
+  Future<UserModel> getMainInfoUser({required String id}) async {
+    try {
+      DocumentSnapshot documentSnapshot = await users.doc(id).get();
+      print("infoSnap ${documentSnapshot.data()}");
+      UserModel userMod = UserModel.fromQuery(documentSnapshot);
+      return userMod;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   Future<UserModel> getUserById({String? id}) async {
     try {
       id ??= user!.uid;

@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:greenify/model/transaction_model.dart';
 import 'package:greenify/model/user_model.dart';
-import 'package:greenify/utils/formatter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class WalletService {
   WalletService._();
@@ -13,7 +12,7 @@ class WalletService {
     return _instance;
   }
   final userRef = FirebaseFirestore.instance
-      .collection("user")
+      .collection("users")
       .doc(FirebaseAuth.instance.currentUser!.uid);
 
   Future<void> increaseWalletValue(int inputValue) async {

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:greenify/model/wallet_model.dart';
 import 'package:greenify/utils/uuid.dart';
 
 class FireAuth {
@@ -125,6 +126,7 @@ class FireAuth {
         "level": 1,
         "photo_frame": "default",
         "title": "default",
+        "wallet": WalletModel(value: 0).toMap(),
         "created_at": DateTime.now(),
         "updated_at": DateTime.now(),
       });
@@ -135,6 +137,7 @@ class FireAuth {
         "created_at": DateTime.now(),
         "updated_at": DateTime.now(),
       });
+
       // await users
       //     .doc(user.uid)
       //     .collection('gardens')

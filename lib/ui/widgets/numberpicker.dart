@@ -68,21 +68,19 @@ class _GreenNumberPickerState extends State<GreenNumberPicker> {
             ),
           ],
         ),
-        GestureDetector(
-          onTap: () {
-            widget.schedulePickerNotifier.setSchedule(_currentIntValue);
-            context.pop();
-          },
-          child: PlainCard(
-              color: Theme.of(context).colorScheme.primary,
-              child: Text(
-                "Tetapkan",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .apply(fontWeightDelta: 2, color: Colors.white),
-              )),
-        )
+        PlainCard(
+            onTap: () {
+              widget.schedulePickerNotifier.setSchedule(_currentIntValue);
+              context.pop();
+            },
+            color: Theme.of(context).colorScheme.primary,
+            child: Text(
+              "Tetapkan",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .apply(fontWeightDelta: 2, color: Colors.white),
+            ))
       ],
     );
   }

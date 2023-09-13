@@ -37,7 +37,7 @@ class SekelatonScreen extends ConsumerWidget {
             floatingActionButton: index == 3
                 ? null
                 : FloatingActionButton(
-                    heroTag: "fab_main",
+                    heroTag: "fab_mainnn",
                     onPressed: () {
                       // ref.read(homeProvider.notifier).getPots();
                       ref.read(bottomNavProvider.notifier).setValueToDB(2);

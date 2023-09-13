@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/plant_category_list.dart';
+import 'package:greenify/constants/user_constants.dart';
 import 'package:greenify/states/exp_state.dart';
 import 'package:greenify/states/file_notifier_state.dart';
 import 'package:greenify/states/home_state.dart';
@@ -11,6 +12,7 @@ import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
 import 'package:greenify/states/scheduler/time_picker_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/ui/widgets/charts/detail_plant_progress_chart.dart';
 import 'package:greenify/ui/widgets/pills/plant_status_pills.dart';
 import 'package:greenify/ui/widgets/pot/watering_schedule.dart';
@@ -61,10 +63,12 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
 
     final color = Theme.of(context).colorScheme;
     final userClientController = ref.read(userClientProvider.notifier);
+    final userClientRef = ref.watch(userClientProvider);
 
     final expNotifier = ref.read(expProvider.notifier);
 
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     final homeNotifier = ref.read(homeProvider.notifier);
 
@@ -206,167 +210,230 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                     ),
                   ];
                 },
-                body: Material(
-                    color: Theme.of(context).colorScheme.surface,
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverList(
-                            delegate: SliverChildListDelegate([
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                !userClientController.isSelf()
-                                    ? Container()
-                                    : Container(
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: const BoxDecoration(
+                body: Scaffold(
+                  bottomNavigationBar: Container(
+                    padding: const EdgeInsets.all(16),
+                    child: PlainCard(
+                        color: colorScheme.primary,
+                        child: Row(
+                          children: [
+                            const Spacer(),
+                            Text(
+                              "Beli",
+                              style: textTheme.labelLarge!.apply(
+                                  fontWeightDelta: 2, color: Colors.white),
+                            ),
+                            const Spacer(),
+                          ],
+                        )),
+                  ),
+                  body: Material(
+                      color: Theme.of(context).colorScheme.surface,
+                      child: CustomScrollView(
+                        slivers: [
+                          SliverList(
+                              delegate: SliverChildListDelegate([
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  !userClientController.isSelf()
+                                      ? Container()
+                                      : Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: const BoxDecoration(
+                                              color: Colors.transparent,
+                                              shape: BoxShape.circle),
+                                          child: const Icon(
+                                            Ionicons.water_outline,
                                             color: Colors.transparent,
-                                            shape: BoxShape.circle),
-                                        child: const Icon(
-                                          Ionicons.water_outline,
-                                          color: Colors.transparent,
-                                        )),
-                                CircleAvatar(
-                                  radius: 50,
-                                  backgroundColor: color.primary,
-                                  child: CircleAvatar(
-                                      radius: 45,
-                                      backgroundColor: color.background,
-                                      child: Image.asset(
-                                        plantCategory.firstWhere((element) =>
-                                            element['name'] ==
-                                            pot.plant.category)['image'],
-                                        height: 80,
-                                      )),
-                                ),
-                                !userClientController.isSelf()
-                                    ? Container()
-                                    : GestureDetector(
-                                        onTap: () {
-                                          showWateringDialog(
-                                              context: context,
-                                              textTheme: textTheme,
-                                              counterHeight: counterHeight,
-                                              potsNotifier: potController,
-                                              isDetail: true,
-                                              id: pot.id,
-                                              expNotifier: expNotifier,
-                                              waterExp: waterExp,
-                                              achievementIDs: achievementIDs);
-                                        },
-                                        child: Container(
-                                            padding: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                                color: Colors.blue.shade200,
-                                                shape: BoxShape.circle),
-                                            child: Icon(
-                                              Ionicons.water_outline,
-                                              color: color.background,
+                                          )),
+                                  Stack(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 50,
+                                        backgroundColor: color.primary,
+                                        child: CircleAvatar(
+                                            radius: 45,
+                                            backgroundColor: color.background,
+                                            child: Image.asset(
+                                              plantCategory.firstWhere(
+                                                  (element) =>
+                                                      element['name'] ==
+                                                      pot.plant
+                                                          .category)['image'],
+                                              height: 80,
                                             )),
                                       ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  // plantChoose(pageController, context, ref,
-                                  //     _characterImages),
-                                  Text(pot.plant.name,
-                                      style: textTheme.titleLarge!
-                                          .apply(fontWeightDelta: 2)),
-
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      plantHeightPill(
-                                          pot.plant.heightStat!.last.height),
-                                      const SizedBox(width: 8),
-                                      plantStatusPill(pot.plant.status),
                                     ],
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    pot.plant.description,
-                                    style: textTheme.titleMedium!.apply(
-                                        fontWeightDelta: 1, color: Colors.grey),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ]),
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          !userClientController.isSelf()
-                              ? Container()
-                              : Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: wateringSchedule(
-                                      context,
-                                      int.parse(pot.plant.wateringSchedule),
-                                      funcScheduleController,
-                                      TimeOfDay.fromDateTime(DateTime.parse(
-                                          "2021-10-10 ${pot.plant.wateringTime}")),
-                                      funcTimeController),
-                                ),
-                          DetailPlantProgressChart(pot: pot),
-                        ])),
-                        SliverPadding(
-                          padding: const EdgeInsets.all(8.0),
-                          sliver: SliverGrid.builder(
-                            itemCount: 3,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              childAspectRatio: 1,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
+                                  !userClientController.isSelf()
+                                      ? Container()
+                                      : GestureDetector(
+                                          onTap: () {
+                                            showWateringDialog(
+                                                context: context,
+                                                textTheme: textTheme,
+                                                counterHeight: counterHeight,
+                                                potsNotifier: potController,
+                                                isDetail: true,
+                                                id: pot.id,
+                                                expNotifier: expNotifier,
+                                                waterExp: waterExp,
+                                                achievementIDs: achievementIDs);
+                                          },
+                                          child: Container(
+                                              padding: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.blue.shade200,
+                                                  shape: BoxShape.circle),
+                                              child: Icon(
+                                                Ionicons.water_outline,
+                                                color: color.background,
+                                              )),
+                                        ),
+                                ],
+                              ),
                             ),
-                            itemBuilder: (context, index) => Container(
-                              color: Colors.green.shade100,
-                              width: 100,
-                              height: 100,
-                              child: GestureDetector(
-                                onTap: () => showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      titlePadding: EdgeInsets.zero,
-                                      backgroundColor: Colors.transparent,
-                                      iconPadding: EdgeInsets.zero,
-                                      insetPadding: EdgeInsets.zero,
-                                      buttonPadding: EdgeInsets.zero,
-                                      actionsPadding: EdgeInsets.zero,
-                                      contentPadding: EdgeInsets.zero,
-                                      content: SizedBox(
-                                          width: double.infinity,
-                                          height: 300,
-                                          child: Image.network(
-                                            pot.plant.image,
-                                            fit: BoxFit.fitWidth,
-                                          )),
-                                    );
-                                  },
-                                ),
-                                child: Image.network(
-                                  pot.plant.image,
-                                  fit: BoxFit.cover,
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // plantChoose(pageController, context, ref,
+                                    //     _characterImages),
+                                    userClientRef.when(
+                                        error: (error, stackTrace) {
+                                          return Center(
+                                              child: Text("Error $error"));
+                                        },
+                                        loading: () => const Center(
+                                            child: Text("Loading...")),
+                                        data: (data) {
+                                          final userData = data.first;
+                                          return Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Text("By"),
+                                              const SizedBox(width: 4),
+                                              Text("${userData.name}",
+                                                  style: textTheme.labelLarge!
+                                                      .apply(
+                                                          fontWeightDelta: 2,
+                                                          color: Colors
+                                                              .blue.shade300)),
+                                              const SizedBox(width: 4),
+                                              CircleAvatar(
+                                                radius: 16,
+                                                backgroundImage: NetworkImage(
+                                                    userData.imageUrl ??
+                                                        unknownImage,
+                                                    scale: 1),
+                                              ),
+                                            ],
+                                          );
+                                        }),
+                                    Text(pot.plant.name,
+                                        style: textTheme.titleLarge!
+                                            .apply(fontWeightDelta: 2)),
+
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        plantHeightPill(
+                                            pot.plant.heightStat!.last.height),
+                                        const SizedBox(width: 8),
+                                        plantStatusPill(pot.plant.status),
+                                        const SizedBox(width: 8),
+                                        plantPricePill(price: 1000000)
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      pot.plant.description,
+                                      style: textTheme.titleMedium!.apply(
+                                          fontWeightDelta: 1,
+                                          color: Colors.grey),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ]),
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            !userClientController.isSelf()
+                                ? Container()
+                                : Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: wateringSchedule(
+                                        context,
+                                        int.parse(pot.plant.wateringSchedule),
+                                        funcScheduleController,
+                                        TimeOfDay.fromDateTime(DateTime.parse(
+                                            "2021-10-10 ${pot.plant.wateringTime}")),
+                                        funcTimeController),
+                                  ),
+                            DetailPlantProgressChart(pot: pot),
+                          ])),
+                          SliverPadding(
+                            padding: const EdgeInsets.all(8.0),
+                            sliver: SliverGrid.builder(
+                              itemCount: 3,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                childAspectRatio: 1,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                              ),
+                              itemBuilder: (context, index) => Container(
+                                color: Colors.green.shade100,
+                                width: 100,
+                                height: 100,
+                                child: GestureDetector(
+                                  onTap: () => showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        titlePadding: EdgeInsets.zero,
+                                        backgroundColor: Colors.transparent,
+                                        iconPadding: EdgeInsets.zero,
+                                        insetPadding: EdgeInsets.zero,
+                                        buttonPadding: EdgeInsets.zero,
+                                        actionsPadding: EdgeInsets.zero,
+                                        contentPadding: EdgeInsets.zero,
+                                        content: SizedBox(
+                                            width: double.infinity,
+                                            height: 300,
+                                            child: Image.network(
+                                              pot.plant.image,
+                                              fit: BoxFit.fitWidth,
+                                            )),
+                                      );
+                                    },
+                                  ),
+                                  child: Image.network(
+                                    pot.plant.image,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        )
-                      ],
-                    ))),
+                          )
+                        ],
+                      )),
+                )),
           );
         });
   }

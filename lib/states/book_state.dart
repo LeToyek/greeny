@@ -91,6 +91,11 @@ final detailBookProvider = StateNotifierProviderFamily<BookNotifier,
 
 final bookProvider =
     StateNotifierProvider<BookNotifier, AsyncValue<List<BookModel>>>((ref) {
+  return BookNotifier(bookServices: BookServices());
+});
+
+final bestBookProvider =
+    StateNotifierProvider<BookNotifier, AsyncValue<List<BookModel>>>((ref) {
   return BookNotifier(bookServices: BookServices())..getWholeBooks();
 });
 

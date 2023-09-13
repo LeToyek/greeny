@@ -12,6 +12,7 @@ class PlantModel {
   late PlantStatus status;
   String category;
   int? timeID;
+  int? price;
 
   PlantModel(
       {required this.name,
@@ -34,7 +35,8 @@ class PlantModel {
             .map<HeightModel>((e) => HeightModel.fromQuery(e))
             .toList(),
         category = json['category'],
-        timeID = json['timeID'] {
+        timeID = json['timeID'],
+        price = json['price'] {
     status = reverseStatusParse(json['status']);
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:greenify/constants/user_constants.dart';
 import 'package:greenify/states/book_state.dart';
 import 'package:greenify/states/garden_state.dart';
 import 'package:greenify/states/pot_state.dart';
@@ -59,7 +60,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildNewestArticle(BuildContext context, WidgetRef ref) {
-    final bookRef = ref.watch(bookProvider);
+    final bookRef = ref.watch(bestBookProvider);
     return PlainCard(
       margin: const EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.zero,
@@ -90,7 +91,7 @@ class HomeScreen extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     return Container(
                       margin: index != 2
-                          ? const EdgeInsets.only(right: 16)
+                          ? const EdgeInsets.only(right: 8)
                           : EdgeInsets.zero,
                       child: Column(
                         children: [
@@ -191,10 +192,14 @@ class HomeScreen extends ConsumerWidget {
                         : Column(
                             children: [
                               InkWell(
-                                onTap: () {
-                                  userClientController
+                                onTap: () async {
+                                  await userClientController.setVisitedUser(
+                                      id: data[index].userId);
+                                  await userClientController
                                       .getUserById(data[index].userId);
-                                  context.push("/user/detail");
+                                  if (context.mounted) {
+                                    context.push("/user/detail");
+                                  }
                                 },
                                 child: Container(
                                     child: Column(
@@ -211,12 +216,10 @@ class HomeScreen extends ConsumerWidget {
                                                 .apply(fontWeightDelta: 2)),
                                         const SizedBox(width: 16),
                                         CircleAvatar(
-                                          backgroundImage: NetworkImage(data[
-                                                          index]
-                                                      .imageUrl ==
-                                                  null
-                                              ? "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-                                              : data[index].imageUrl!),
+                                          backgroundImage: NetworkImage(
+                                              data[index].imageUrl == null
+                                                  ? unknownImage
+                                                  : data[index].imageUrl!),
                                         ),
                                         const SizedBox(width: 16),
                                         Text(data[index].name ?? "User"),
@@ -265,6 +268,9 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildNewestPlant(BuildContext context, WidgetRef ref) {
     const String bestPlant = "115aa02a-d72e-47bc-b83b-d4ba5bfe06c4";
     final potRef = ref.watch(bestPotProvider(bestPlant));
+    final potNotifier = ref.read(potProvider(bestPlant).notifier);
+    final userClientController = ref.read(userClientProvider.notifier);
+    // final potNotifier = ref.watch(bestPotProvider(bestPlant).notifier);
     return PlainCard(
         margin: const EdgeInsets.symmetric(vertical: 16),
         padding: EdgeInsets.zero,
@@ -288,62 +294,74 @@ class HomeScreen extends ConsumerWidget {
               }, data: (data) {
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(16),
                   itemCount: 4,
                   itemBuilder: (context, index) {
                     final pot = data[index];
-                    return Container(
-                      margin: const EdgeInsets.only(right: 8),
-                      width: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                          image: NetworkImage(pot.plant.image),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .background
-                                  .withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  pot.plant.name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .apply(
-                                          fontWeightDelta: 2,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
-                                ),
-                                Text(
-                                  "Rp 100.000",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .apply(
-                                          fontWeightDelta: 2,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
-                                ),
-                              ],
-                            ),
+                    return InkWell(
+                      onTap: () {
+                        const userId = "jCrKt22Hp6eX7unsc0jHvodUmFu1";
+                        userClientController.setVisitedUser(id: userId);
+                        userClientController.setVisitedUserModel();
+                        potNotifier.getTopPots(bestPlant).then((_) =>
+                            potNotifier.getPotById(data[index].id!).then((_) =>
+                                context.push(
+                                    "/garden/$bestPlant/detail/${pot.id}")));
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        width: 150,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                            image: NetworkImage(pot.plant.image),
+                            fit: BoxFit.cover,
                           ),
-                        ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .background
+                                    .withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    pot.plant.name,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .apply(
+                                            fontWeightDelta: 2,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface),
+                                  ),
+                                  Text(
+                                    "Rp 100.000",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .apply(
+                                            fontWeightDelta: 2,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },

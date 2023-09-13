@@ -18,24 +18,30 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
       state = const AsyncValue.loading();
       print('potServices = ${potServices.gardenRef.id}');
       final pots = await potServices.getPotsFromDB();
-      state = AsyncValue.data(pots);
       tempData = pots;
       fullData = pots;
       print('tempData = $tempData');
+      state = AsyncValue.data(pots);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }
   }
 
-  Future<void> getTopPots() async {
+  Future<void> getTopPots(String gardenID) async {
     try {
       state = const AsyncValue.loading();
-      final pots = await potServices.getPotsFromDB();
+      const userId = "jCrKt22Hp6eX7unsc0jHvodUmFu1";
+      final garden =
+          GardensServices.getGardenRefByUserID(docId: gardenID, userId: userId);
+      final pots = await PotServices(gardenRef: garden).getPotsFromDB();
+      print('gardenb = $gardenID');
+
       state = AsyncValue.data(pots);
       tempData = pots;
       fullData = pots;
       print('tempData = $tempData');
     } catch (e) {
+      print("aerror $e");
       state = AsyncValue.error(e, StackTrace.current);
     }
   }
@@ -142,6 +148,29 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
       state = const AsyncValue.loading();
       final pot = tempData.where((element) => element.id == potId).toList();
       state = AsyncValue.data(pot);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
+  Future<void> getbestPotById(String potId) async {
+    try {
+      state = const AsyncValue.loading();
+      List<PotModel> finalArray = [];
+      late final int selectedIndex;
+      for (var i = 0; i < tempData.length; i++) {
+        if (tempData[i].id == potId) {
+          selectedIndex = i;
+          finalArray.add(tempData[i]);
+        }
+      }
+      tempData.map((e) {
+        if (e.id != potId) {
+          finalArray.add(e);
+        }
+      });
+
+      state = AsyncValue.data(finalArray);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }

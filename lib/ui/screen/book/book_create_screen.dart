@@ -20,6 +20,8 @@ class BookCreateScreen extends ConsumerWidget {
     final bookRef = ref.watch(bookProvider);
     final funcBookRef = ref.read(bookProvider.notifier);
 
+    final funcBestBook = ref.read(bestBookProvider.notifier);
+
     final funcFileRef = ref.read(fileProvider.notifier);
     final funcUserRef = ref.read(singleUserProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
@@ -30,30 +32,33 @@ class BookCreateScreen extends ConsumerWidget {
           title: const Text("Buat Artikel"),
           centerTitle: true,
         ),
-        body: Material(
-            color: colorScheme.background,
-            child: bookRef.when(
+        body: Scaffold(
+            backgroundColor: colorScheme.background,
+            body: bookRef.when(
                 data: (_) => TextEditor(
                     bookNotifier: funcBookRef,
                     fileNotifier: funcFileRef,
+                    bestBook: funcBestBook,
                     usersNotifier: funcUserRef),
                 error: (e, s) => Center(
                       child: Text(e.toString()),
                     ),
-                loading: () => const Center(
-                      child: CircularProgressIndicator(),
+                loading: () => Center(
+                      child: Container(),
                     ))));
   }
 }
 
 class TextEditor extends StatefulWidget {
   final BookNotifier bookNotifier;
+  final BookNotifier bestBook;
   final FileNotifier fileNotifier;
   final UsersNotifier usersNotifier;
 
   const TextEditor(
       {super.key,
       required this.bookNotifier,
+      required this.bestBook,
       required this.fileNotifier,
       required this.usersNotifier});
 
@@ -125,13 +130,11 @@ class _TextEditorState extends State<TextEditor> {
                                 isProcessing = true;
                               });
                               await _createArticle();
+                              await widget.bestBook.getWholeBooks();
                               setState(() {
                                 isProcessing = false;
                               });
-                              if (context.mounted) {
-                                context.pop();
-                                context.pop();
-                              }
+                              if (context.mounted) context.go("/");
                             },
                             child: const Text("Ya")),
                       ],

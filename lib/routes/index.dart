@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/routes/books_routes.dart';
 import 'package:greenify/routes/garden_routes.dart';
+import 'package:greenify/routes/payments_routes.dart';
 import 'package:greenify/routes/users_routes.dart';
 import 'package:greenify/ui/screen/auth/login_screen.dart';
 import 'package:greenify/ui/screen/auth/register_screen.dart';
@@ -26,6 +27,7 @@ final _appRoutes =
   ...usersRoutes,
   ...booksRoutes,
   ...gardenRoutes,
+  ...paymentsRoutes,
   GoRoute(
       path: SuccessScreen.routePath,
       name: SuccessScreen.routeName,

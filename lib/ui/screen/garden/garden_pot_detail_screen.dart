@@ -12,6 +12,7 @@ import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/scheduler/schedule_picker_state.dart';
 import 'package:greenify/states/scheduler/time_picker_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/screen/payments/verification_screen.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/ui/widgets/charts/detail_plant_progress_chart.dart';
 import 'package:greenify/ui/widgets/pills/plant_status_pills.dart';
@@ -215,6 +216,10 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                     padding: const EdgeInsets.all(16),
                     child: PlainCard(
                         color: colorScheme.primary,
+                        onTap: () {
+                          context.push(VerificationScreen.routePath,
+                              extra: pot.plant);
+                        },
                         child: Row(
                           children: [
                             const Spacer(),

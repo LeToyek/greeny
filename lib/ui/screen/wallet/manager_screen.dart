@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/services/wallet_service.dart';
+import 'package:greenify/states/payments/transaction_history_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/wallet/success_screen.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
@@ -62,6 +63,7 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
           child: GestureDetector(
             onTap: () {
               _onPayTopUp(context: context, value: selectedTopUpValue);
+              ref.watch(transactionHistory.notifier).getTransactionHistory();
             },
             child: Container(
               decoration: BoxDecoration(

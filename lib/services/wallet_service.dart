@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:greenify/model/transaction_model.dart';
 import 'package:greenify/model/user_model.dart';
+import 'package:greenify/model/wallet_model.dart';
 
 class WalletService {
   WalletService._();
@@ -14,6 +15,8 @@ class WalletService {
   final userRef = FirebaseFirestore.instance
       .collection("users")
       .doc(FirebaseAuth.instance.currentUser!.uid);
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> increaseWalletValue(int inputValue) async {
     final timeNow = DateTime.now().toString();
@@ -28,19 +31,13 @@ class WalletService {
   }
 
   Future<bool> decreaseWalletValue(int inputValue, String message) async {
-    final timeNow = DateTime.now().toString();
     final userMap = await userRef.get();
+    final wallet = userMap.data()!['wallet'];
     final userWallet = UserModel.fromQuery(userMap);
+    userWallet.setWallet(WalletModel.fromMap(wallet));
     if (userWallet.wallet!.value < inputValue) {
       return false;
     }
-    userRef.collection("transactions").add(TransactionModel(
-            value: inputValue,
-            createdAt: timeNow,
-            updatedAt: timeNow,
-            logType: '[SUBSTRACT]',
-            logMessage: message)
-        .toMap());
     userRef.update({"wallet.value": FieldValue.increment(inputValue * -1)});
     return true;
   }
@@ -66,5 +63,25 @@ class WalletService {
     }
     transactionsList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return transactionsList;
+  }
+
+  Future<void> buyPlant(
+      {required TransactionModel transactionModel,
+      required String reference}) async {
+    final transactionRef = userRef.collection('transactions');
+    print("transactionModel.ownerID ${transactionModel.ownerID}");
+    try {
+      await _firestore.runTransaction((transaction) async {
+        transactionRef.add(transactionModel.toMap());
+        final isSuccess = await decreaseWalletValue(
+            transactionModel.value, transactionModel.logMessage);
+        if (!isSuccess) {
+          throw Exception("Saldo tidak cukup");
+        }
+        _firestore.doc(reference).update({"plant.market_status": "sold"});
+      });
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

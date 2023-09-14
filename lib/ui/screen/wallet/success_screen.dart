@@ -40,7 +40,7 @@ class SuccessScreen extends ConsumerWidget {
           child: PlainCard(
               color: Theme.of(context).colorScheme.primary,
               onTap: () {
-                context.go("/");
+                context.pushReplacement("/");
               },
               child: Center(
                   child: Text(

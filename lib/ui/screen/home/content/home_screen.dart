@@ -54,31 +54,26 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 _buildNewestPlant(context, ref),
                 _buildNewestArticle(context, ref),
-                PlainCard(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        flex: 2,
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          child: _buildMainCard(
-                              context: context, ref: ref, title: "Garden"),
-                        )),
-                    Expanded(
-                        flex: 2,
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 8),
-                          child: _buildMainCard(
-                              context: context, ref: ref, title: "Penyakit"),
-                        )),
-                  ],
-                )),
+                // _buildGetEmblem(context, ref),
+                // const SizedBox(
+                //   height: 16,
+                // ),
                 _buildTopPlayers(context, ref),
               ],
             ),
           )),
     );
+  }
+
+  Widget _buildGetEmblem(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return PlainCard(
+        color: colorScheme.primary,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [],
+        ));
   }
 
   Widget _buildNewestArticle(BuildContext context, WidgetRef ref) {
@@ -369,7 +364,7 @@ class HomeScreen extends ConsumerWidget {
                                                 .onSurface),
                                   ),
                                   Text(
-                                    "Rp 100.000",
+                                    "Rp ${formatMoney(pot.plant.price ?? 0)}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelMedium!

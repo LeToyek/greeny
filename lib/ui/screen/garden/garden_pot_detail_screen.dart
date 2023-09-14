@@ -89,7 +89,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
           return WillPopScope(
             onWillPop: () async {
               potController.turnBackData();
-              context.pop();
+              context.pushReplacement('/');
               return false;
             },
             child: NestedScrollView(
@@ -214,27 +214,36 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                 body: Scaffold(
                   bottomNavigationBar: pot.plant.price == null
                       ? null
-                      : Container(
-                          padding: const EdgeInsets.all(16),
-                          child: PlainCard(
-                              color: colorScheme.primary,
-                              onTap: () {
-                                context.push(VerificationScreen.routePath,
-                                    extra: pot.plant);
-                              },
-                              child: Row(
-                                children: [
-                                  const Spacer(),
-                                  Text(
-                                    "Beli",
-                                    style: textTheme.labelLarge!.apply(
-                                        fontWeightDelta: 2,
-                                        color: Colors.white),
-                                  ),
-                                  const Spacer(),
-                                ],
-                              )),
-                        ),
+                      : pot.plant.price! == 0
+                          ? null
+                          : userClientController.isSelf()
+                              ? null
+                              : Container(
+                                  padding: const EdgeInsets.all(16),
+                                  child: PlainCard(
+                                      color: colorScheme.primary,
+                                      onTap: () {
+                                        context.push(
+                                            VerificationScreen.routePath,
+                                            extra: {
+                                              "plant": pot.plant,
+                                              "plant_reference":
+                                                  "gardens/${widget.gardenID}/pots/${widget.potID}"
+                                            });
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Spacer(),
+                                          Text(
+                                            "Beli",
+                                            style: textTheme.labelLarge!.apply(
+                                                fontWeightDelta: 2,
+                                                color: Colors.white),
+                                          ),
+                                          const Spacer(),
+                                        ],
+                                      )),
+                                ),
                   body: Material(
                       color: Theme.of(context).colorScheme.surface,
                       child: CustomScrollView(

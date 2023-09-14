@@ -8,22 +8,24 @@ class PlantModel {
   String image;
   String wateringSchedule;
   String wateringTime;
+  String? marketStatus;
   List<HeightModel>? heightStat;
   late PlantStatus status;
   String category;
   int? timeID;
   int? price;
 
-  PlantModel(
-      {required this.name,
-      required this.description,
-      required this.image,
-      required this.wateringSchedule,
-      required this.wateringTime,
-      required this.heightStat,
-      required this.status,
-      required this.category,
-      required this.timeID});
+  PlantModel({
+    required this.name,
+    required this.description,
+    required this.image,
+    required this.wateringSchedule,
+    required this.wateringTime,
+    required this.heightStat,
+    required this.status,
+    required this.category,
+    required this.timeID,
+  });
 
   PlantModel.fromQuery(Map<String, dynamic> json)
       : name = json['name'],
@@ -38,6 +40,11 @@ class PlantModel {
         timeID = json['timeID'] {
     if (json.containsKey("price")) {
       price = json['price'];
+    }
+    if (json.containsKey("market_status")) {
+      marketStatus = json['market_status'];
+    } else {
+      marketStatus = null;
     }
     status = reverseStatusParse(json['status']);
   }

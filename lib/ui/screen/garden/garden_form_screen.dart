@@ -50,7 +50,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    priceController = TextEditingController();
+    priceController = TextEditingController(text: "0");
     nameController = TextEditingController();
     deskripsiController = TextEditingController();
     plantHeightController = TextEditingController(text: plantHeight.toString());
@@ -176,6 +176,10 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                       await fileController.uploadFile();
                                   final randInt =
                                       Random().nextInt(pow(2, 31).toInt());
+                                  final plantPrice =
+                                      priceController.text.isEmpty
+                                          ? 0
+                                          : int.parse(priceController.text);
                                   final plantSubmit = PlantModel(
                                       name: name,
                                       description: description,
@@ -190,8 +194,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                       status: status,
                                       category: category,
                                       timeID: randInt);
-                                  plantSubmit.price =
-                                      int.parse(priceController.text);
+                                  plantSubmit.price = plantPrice;
                                   String potCreatedId =
                                       await potController.createPot(PotModel(
                                           status: PotStatus.filled,

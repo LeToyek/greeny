@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/model/plant_model.dart';
+import 'package:greenify/model/transaction_model.dart';
+import 'package:greenify/services/wallet_service.dart';
+import 'package:greenify/states/payments/transaction_history_state.dart';
 import 'package:greenify/states/theme_mode_state.dart';
+import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/payments/payment_success_screen.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/formatter.dart';
@@ -13,8 +17,10 @@ class VerificationScreen extends ConsumerStatefulWidget {
   static const routeName = 'payments-verification';
 
   final PlantModel plant;
+  final String plantRef;
 
-  const VerificationScreen({super.key, required this.plant});
+  const VerificationScreen(
+      {super.key, required this.plant, required this.plantRef});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -40,7 +46,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
         title: const Text('Verifikasi Pembayaran'),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,6 +133,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       BuildContext context, WidgetRef ref, Color boldTextColor) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
+    final userClientController = ref.watch(userClientProvider.notifier);
     return PlainCard(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -195,7 +202,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
             Expanded(
                 flex: 2,
                 child: PlainCard(
-                    onTap: () {
+                    onTap: () async {
                       if (_isAgree) {
                         showDialog(
                           context: context,
@@ -210,7 +217,32 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                             );
                           },
                         );
-                        context.pushReplacement(PaymentSuccessScreen.routePath);
+                        String timeNow = DateTime.now().toString();
+                        final owner = userClientController.visitedUserModel!;
+                        final logMessage =
+                            'Pembelian tanaman ${widget.plant.name} milik ${owner.name} berhasil ';
+                        final transaction = TransactionModel(
+                            value: widget.plant.price!,
+                            createdAt: timeNow,
+                            updatedAt: timeNow,
+                            logType: '[MIN]',
+                            logMessage: logMessage);
+                        ref.watch(singleUserProvider.notifier).getUser();
+
+                        transaction.setPlant(widget.plant);
+                        transaction.ownerID = owner.userId;
+                        await WalletService().buyPlant(
+                            transactionModel: transaction,
+                            reference:
+                                "users/${owner.userId}/${widget.plantRef}");
+                        ref
+                            .watch(transactionHistory.notifier)
+                            .getTransactionHistory();
+                        if (context.mounted) {
+                          context.pushReplacement(
+                              PaymentSuccessScreen.routePath,
+                              extra: transaction);
+                        }
                       }
                     },
                     boxShadow: const BoxShadow(

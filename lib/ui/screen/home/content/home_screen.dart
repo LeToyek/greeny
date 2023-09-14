@@ -54,6 +54,26 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 _buildNewestPlant(context, ref),
                 _buildNewestArticle(context, ref),
+                PlainCard(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          child: _buildMainCard(
+                              context: context, ref: ref, title: "Garden"),
+                        )),
+                    Expanded(
+                        flex: 2,
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 8),
+                          child: _buildMainCard(
+                              context: context, ref: ref, title: "Penyakit"),
+                        )),
+                  ],
+                )),
                 _buildTopPlayers(context, ref),
               ],
             ),

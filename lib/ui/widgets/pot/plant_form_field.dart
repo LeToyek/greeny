@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 
 Widget platFormField(
-    {required String label,
+    {String? label,
     required String hint,
     context,
+    TextInputType? keyboardType,
     required TextEditingController nameController,
     required String? Function(String?) validator,
     int? maxLines}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label,
-          style: Theme.of(context).textTheme.titleMedium!.apply(
-                fontWeightDelta: 2,
-              )),
-      const SizedBox(height: 8.0),
+      label != null
+          ? Text(label,
+              style: Theme.of(context).textTheme.titleMedium!.apply(
+                    fontWeightDelta: 2,
+                  ))
+          : Container(),
+      SizedBox(height: label != null ? 8.0 : 0),
       TextFormField(
+        keyboardType: keyboardType ?? TextInputType.text,
         controller: nameController,
         validator: validator,
         maxLines: maxLines ?? 1,

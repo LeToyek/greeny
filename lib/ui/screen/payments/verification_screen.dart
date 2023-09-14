@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:greenify/model/plant_model.dart';
 import 'package:greenify/states/theme_mode_state.dart';
+import 'package:greenify/ui/screen/payments/payment_success_screen.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/formatter.dart';
 import 'package:ionicons/ionicons.dart';
@@ -193,17 +195,41 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
             Expanded(
                 flex: 2,
                 child: PlainCard(
+                    onTap: () {
+                      if (_isAgree) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const AlertDialog(
+                              // title: const Text("Parkir"),
+                              elevation: 0,
+                              backgroundColor: Colors.transparent,
+                              content: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          },
+                        );
+                        context.pushReplacement(PaymentSuccessScreen.routePath);
+                      }
+                    },
                     boxShadow: const BoxShadow(
                       blurRadius: 0,
                       spreadRadius: 0,
                     ),
-                    color: colorScheme.primary,
+                    border: Border.all(
+                        color: _isAgree
+                            ? Colors.transparent
+                            : colorScheme.primary),
+                    color: _isAgree ? colorScheme.primary : colorScheme.surface,
                     child: Text("Bayar",
                         textAlign: TextAlign.center,
                         style: textTheme.labelLarge!.apply(
                             fontWeightDelta: 2,
                             fontSizeDelta: 1,
-                            color: Colors.white))))
+                            color: _isAgree
+                                ? Colors.white
+                                : colorScheme.primary))))
           ],
         )
       ],

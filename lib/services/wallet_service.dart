@@ -31,7 +31,7 @@ class WalletService {
     final timeNow = DateTime.now().toString();
     final userMap = await userRef.get();
     final userWallet = UserModel.fromQuery(userMap);
-    if (userWallet.wallet.value < inputValue) {
+    if (userWallet.wallet!.value < inputValue) {
       return false;
     }
     userRef.collection("transactions").add(TransactionModel(
@@ -43,5 +43,28 @@ class WalletService {
         .toMap());
     userRef.update({"wallet.value": FieldValue.increment(inputValue * -1)});
     return true;
+  }
+
+  Future<TransactionModel> getTransactionById({required String id}) async {
+    try {
+      DocumentSnapshot documentSnapshot =
+          await userRef.collection("transactions").doc(id).get();
+      print("infoSnap ${documentSnapshot.data()}");
+      TransactionModel transaction = TransactionModel.fromMap(documentSnapshot);
+      return transaction;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<List<TransactionModel>> getTransactions() async {
+    List<TransactionModel> transactionsList = [];
+    QuerySnapshot querySnapshot =
+        await userRef.collection("transactions").get();
+    for (var element in querySnapshot.docs) {
+      transactionsList.add(TransactionModel.fromMap(element));
+    }
+    transactionsList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return transactionsList;
   }
 }

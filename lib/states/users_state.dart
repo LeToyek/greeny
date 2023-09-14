@@ -29,6 +29,8 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
         return;
       }
       final user = await usersServices.getUserById(id: authUser.uid);
+      final wallet = await usersServices.getWalletUser(id: authUser.uid);
+      user.setWallet(wallet);
       state = AsyncValue.data([user]);
     } catch (e) {
       state = AsyncError(e, StackTrace.current);

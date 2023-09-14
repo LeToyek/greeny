@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/states/payments/transaction_history_state.dart';
+import 'package:greenify/ui/widgets/card/plain_card.dart';
+import 'package:greenify/utils/formatter.dart';
+import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
 
 class HistoryScreen extends ConsumerWidget {
   static const routePath = '/payments/history';
@@ -8,6 +13,59 @@ class HistoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(body: Container());
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final transactions = ref.watch(transactionHistory);
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("Riwayat Transaksi"),
+        ),
+        body: transactions.when(
+            data: (data) {
+              return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    final isAdd = data[index].logType == '[ADD]';
+                    return ListTile(
+                      leading: PlainCard(
+                        padding: const EdgeInsets.all(8),
+                        boxShadow: const BoxShadow(
+                          blurRadius: 0,
+                          offset: Offset(0, 0),
+                        ),
+                        color:
+                            isAdd ? Colors.green.shade100 : Colors.red.shade100,
+                        child: isAdd
+                            ? const Icon(
+                                Ionicons.arrow_up,
+                                color: Colors.green,
+                              )
+                            : const Icon(
+                                Ionicons.arrow_down,
+                                color: Colors.red,
+                              ),
+                      ),
+                      title: Text(data[index].logMessage),
+                      subtitle: Text(DateFormat('yyyy-MM-dd')
+                          .format(DateTime.parse(data[index].createdAt))),
+                      trailing: Text("Rp ${formatMoney(data[index].value)}"),
+                    );
+                  });
+            },
+            error: (error, stackTrace) => Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        error.toString(),
+                        style: TextStyle(color: colorScheme.error),
+                      ),
+                      Text(stackTrace.toString(),
+                          style: TextStyle(color: colorScheme.error))
+                    ],
+                  ),
+                ),
+            loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                )));
   }
 }

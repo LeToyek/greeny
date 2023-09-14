@@ -5,6 +5,7 @@ import 'package:greenify/model/achievement_model.dart';
 import 'package:greenify/model/book_model.dart';
 import 'package:greenify/model/garden_model.dart';
 import 'package:greenify/model/user_model.dart';
+import 'package:greenify/model/wallet_model.dart';
 import 'package:greenify/services/auth_service.dart';
 import 'package:greenify/services/emblem_service.dart';
 import 'package:greenify/services/storage_service.dart';
@@ -42,12 +43,24 @@ class UsersServices {
     }
   }
 
+  Future<WalletModel> getWalletUser({required String id}) async {
+    try {
+      DocumentSnapshot documentSnapshot = await users.doc(id).get();
+      print("infoSnap ${documentSnapshot.data()}");
+      WalletModel wallet = WalletModel.fromMap(documentSnapshot['wallet']);
+      return wallet;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   Future<UserModel> getUserById({String? id}) async {
     try {
       id ??= user!.uid;
       DocumentSnapshot documentSnapshot = await users.doc(id).get();
-      print(documentSnapshot);
+
       UserModel userMod = UserModel.fromQuery(documentSnapshot);
+
       DocumentReference userDocument =
           UsersServices.getUserRef(id: documentSnapshot.id);
 

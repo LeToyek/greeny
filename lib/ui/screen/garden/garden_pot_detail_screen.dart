@@ -212,26 +212,29 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                   ];
                 },
                 body: Scaffold(
-                  bottomNavigationBar: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: PlainCard(
-                        color: colorScheme.primary,
-                        onTap: () {
-                          context.push(VerificationScreen.routePath,
-                              extra: pot.plant);
-                        },
-                        child: Row(
-                          children: [
-                            const Spacer(),
-                            Text(
-                              "Beli",
-                              style: textTheme.labelLarge!.apply(
-                                  fontWeightDelta: 2, color: Colors.white),
-                            ),
-                            const Spacer(),
-                          ],
-                        )),
-                  ),
+                  bottomNavigationBar: pot.plant.price == null
+                      ? null
+                      : Container(
+                          padding: const EdgeInsets.all(16),
+                          child: PlainCard(
+                              color: colorScheme.primary,
+                              onTap: () {
+                                context.push(VerificationScreen.routePath,
+                                    extra: pot.plant);
+                              },
+                              child: Row(
+                                children: [
+                                  const Spacer(),
+                                  Text(
+                                    "Beli",
+                                    style: textTheme.labelLarge!.apply(
+                                        fontWeightDelta: 2,
+                                        color: Colors.white),
+                                  ),
+                                  const Spacer(),
+                                ],
+                              )),
+                        ),
                   body: Material(
                       color: Theme.of(context).colorScheme.surface,
                       child: CustomScrollView(
@@ -361,7 +364,7 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                         const SizedBox(width: 8),
                                         plantStatusPill(pot.plant.status),
                                         const SizedBox(width: 8),
-                                        plantPricePill(price: 1000000)
+                                        plantPricePill(price: pot.plant.price)
                                       ],
                                     ),
                                     const SizedBox(height: 4),

@@ -35,8 +35,10 @@ class PlantModel {
             .map<HeightModel>((e) => HeightModel.fromQuery(e))
             .toList(),
         category = json['category'],
-        timeID = json['timeID'],
-        price = json['price'] {
+        timeID = json['timeID'] {
+    if (json.containsKey("price")) {
+      price = json['price'];
+    }
     status = reverseStatusParse(json['status']);
   }
 
@@ -76,6 +78,7 @@ class PlantModel {
       "height_stat": heightStat!.map((e) => e.toQuery()).toList(),
       "status": statusParse(status),
       "category": category,
+      "price": price,
       "timeID": timeID
     };
   }

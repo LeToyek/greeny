@@ -34,6 +34,7 @@ class GardenFormScreen extends ConsumerStatefulWidget {
 
 class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   late TextEditingController nameController;
+  late TextEditingController priceController;
   late TextEditingController deskripsiController;
   late TextEditingController plantHeightController;
   late FocusNode _focusNode;
@@ -49,6 +50,7 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    priceController = TextEditingController();
     nameController = TextEditingController();
     deskripsiController = TextEditingController();
     plantHeightController = TextEditingController(text: plantHeight.toString());
@@ -174,26 +176,27 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                       await fileController.uploadFile();
                                   final randInt =
                                       Random().nextInt(pow(2, 31).toInt());
+                                  final plantSubmit = PlantModel(
+                                      name: name,
+                                      description: description,
+                                      image: image,
+                                      wateringSchedule: wateringSchedule,
+                                      wateringTime: wateringTime,
+                                      heightStat: [
+                                        HeightModel(
+                                            height: height,
+                                            date: DateTime.now().toString())
+                                      ],
+                                      status: status,
+                                      category: category,
+                                      timeID: randInt);
+                                  plantSubmit.price =
+                                      int.parse(priceController.text);
                                   String potCreatedId =
                                       await potController.createPot(PotModel(
                                           status: PotStatus.filled,
                                           positionIndex: 0,
-                                          plant: PlantModel(
-                                              name: name,
-                                              description: description,
-                                              image: image,
-                                              wateringSchedule:
-                                                  wateringSchedule,
-                                              wateringTime: wateringTime,
-                                              heightStat: [
-                                                HeightModel(
-                                                    height: height,
-                                                    date: DateTime.now()
-                                                        .toString())
-                                              ],
-                                              status: status,
-                                              category: category,
-                                              timeID: randInt)));
+                                          plant: plantSubmit));
                                   DateTime now = DateTime.now();
                                   DateTime tomorrow = DateTime(
                                     now.year,
@@ -451,6 +454,32 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                     nameController: deskripsiController,
                                     maxLines: 4,
                                     validator: (p0) => null),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Text(
+                                  "Harga",
+                                  style: textTheme.titleMedium!
+                                      .apply(fontWeightDelta: 2),
+                                  textAlign: TextAlign.start,
+                                ),
+                                Text(
+                                  "Beri harga pada tanaman anda apabila anda ingin menjualnya",
+                                  style: textTheme.bodyMedium!
+                                      .apply(color: Colors.grey),
+                                  textAlign: TextAlign.start,
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                platFormField(
+                                    hint: "Harga tanaman",
+                                    context: context,
+                                    keyboardType: TextInputType.number,
+                                    nameController: priceController,
+                                    validator: (value) {
+                                      return null;
+                                    }),
                                 const SizedBox(
                                   height: 16,
                                 ),

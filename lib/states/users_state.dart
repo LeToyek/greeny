@@ -46,6 +46,8 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
       state = const AsyncValue.loading();
       final res = await usersServices.getMainInfoUser(id: visitedUser!);
       visitedUserModel = res;
+      visitedUser = res.userId;
+      print("visitedUser $visitedUser");
       state = AsyncValue.data([res]);
     } catch (e) {
       print("Error := $e");

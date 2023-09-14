@@ -54,7 +54,7 @@ Widget plantHeightPill(int height) {
 }
 
 Widget plantPricePill({int? price}) {
-  if (price != null) {
+  if (price != null && price > 0) {
     return Chip(
       label: Text("Rp ${formatMoney(price)}"),
       backgroundColor: Colors.green.shade700,

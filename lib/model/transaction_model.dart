@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:greenify/model/plant_model.dart';
+import 'package:greenify/model/user_model.dart';
 
 class TransactionModel {
   final int value;
@@ -8,6 +10,9 @@ class TransactionModel {
   final String updatedAt;
   final String logType;
   final String logMessage;
+
+  PlantModel? plant;
+  String? ownerID;
   TransactionModel({
     required this.value,
     required this.createdAt,
@@ -32,14 +37,34 @@ class TransactionModel {
     );
   }
 
+  void setPlant(PlantModel plant) {
+    this.plant = plant;
+  }
+
+  Future<UserModel> toUserModel() async {
+    final user =
+        await FirebaseFirestore.instance.collection('users').doc(ownerID).get();
+    return UserModel.fromQuery(user);
+  }
+
   Map<String, dynamic> toMap() {
-    return {
-      'value': value,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-      'logType': logType,
-      'logMessage': logMessage,
-    };
+    return plant == null
+        ? {
+            'value': value,
+            'createdAt': createdAt,
+            'updatedAt': updatedAt,
+            'logType': logType,
+            'logMessage': logMessage,
+          }
+        : {
+            'value': value,
+            'createdAt': createdAt,
+            'updatedAt': updatedAt,
+            'logType': logType,
+            'logMessage': logMessage,
+            'plant': plant!.toQuery(),
+            'ownerID': ownerID,
+          };
   }
 
   String toJson() => json.encode(toMap());
@@ -73,13 +98,18 @@ class TransactionModel {
         logMessage.hashCode;
   }
 
-  factory TransactionModel.fromMap(DocumentSnapshot<Object?> map) {
-    return TransactionModel(
+  factory TransactionModel.fromMap(DocumentSnapshot map) {
+    final transactionModel = TransactionModel(
       value: map['value']?.toInt() ?? 0,
       createdAt: map['createdAt'],
       updatedAt: map['updatedAt'],
       logType: map['logType'],
       logMessage: map['logMessage'],
     );
+    // if (map.containsKey('plant') && map.containsKey('ownerID')) {
+    //   transactionModel.setPlant(PlantModel.fromQuery(map['plant']));
+    //   transactionModel.ownerID = map['ownerID'];
+    // }
+    return transactionModel;
   }
 }

@@ -39,6 +39,7 @@ class _PlantEditScreenState extends ConsumerState<PlantEditScreen> {
   late TextEditingController nameController;
   late TextEditingController deskripsiController;
   late TextEditingController plantHeightController;
+  late TextEditingController priceController;
   late FocusNode _focusNode;
 
   final _formKey = GlobalKey<FormState>();
@@ -53,6 +54,7 @@ class _PlantEditScreenState extends ConsumerState<PlantEditScreen> {
     // TODO: implement initState
     super.initState();
     nameController = TextEditingController();
+    priceController = TextEditingController();
     deskripsiController = TextEditingController();
     plantHeightController = TextEditingController(text: plantHeight.toString());
     _focusNode = FocusNode();
@@ -170,26 +172,31 @@ class _PlantEditScreenState extends ConsumerState<PlantEditScreen> {
                                       await fileController.uploadFileForEdit();
                                   widget.potModel.plant.heightStat!.last
                                       .height = height;
+                                  final plantPrice =
+                                      priceController.text.isEmpty
+                                          ? 0
+                                          : int.parse(priceController.text);
+                                  final submitPlant = PotModel(
+                                      id: widget.potModel.id,
+                                      createdAt: widget.potModel.createdAt,
+                                      status: PotStatus.filled,
+                                      positionIndex: 0,
+                                      plant: PlantModel(
+                                          name: name,
+                                          description: description,
+                                          image: image ??
+                                              widget.potModel.plant.image,
+                                          wateringSchedule: wateringSchedule,
+                                          wateringTime: wateringTime,
+                                          heightStat:
+                                              widget.potModel.plant.heightStat!,
+                                          status: status,
+                                          category: category,
+                                          timeID:
+                                              widget.potModel.plant.timeID));
+                                  submitPlant.plant.price = plantPrice;
                                   String potCreatedId =
-                                      await potController.editPot(PotModel(
-                                          id: widget.potModel.id,
-                                          createdAt: widget.potModel.createdAt,
-                                          status: PotStatus.filled,
-                                          positionIndex: 0,
-                                          plant: PlantModel(
-                                              name: name,
-                                              description: description,
-                                              image: image ??
-                                                  widget.potModel.plant.image,
-                                              wateringSchedule:
-                                                  wateringSchedule,
-                                              wateringTime: wateringTime,
-                                              heightStat: widget
-                                                  .potModel.plant.heightStat!,
-                                              status: status,
-                                              category: category,
-                                              timeID: widget
-                                                  .potModel.plant.timeID)));
+                                      await potController.editPot(submitPlant);
                                   DateTime now = DateTime.now();
                                   DateTime tomorrow = DateTime(
                                     now.year,
@@ -445,6 +452,32 @@ class _PlantEditScreenState extends ConsumerState<PlantEditScreen> {
                               nameController: deskripsiController,
                               maxLines: 4,
                               validator: (p0) => null),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Text(
+                            "Harga",
+                            style: textTheme.titleMedium!
+                                .apply(fontWeightDelta: 2),
+                            textAlign: TextAlign.start,
+                          ),
+                          Text(
+                            "Beri harga pada tanaman anda apabila anda ingin menjualnya",
+                            style:
+                                textTheme.bodyMedium!.apply(color: Colors.grey),
+                            textAlign: TextAlign.start,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          platFormField(
+                              hint: "Harga tanaman",
+                              context: context,
+                              keyboardType: TextInputType.number,
+                              nameController: priceController,
+                              validator: (value) {
+                                return null;
+                              }),
                           const SizedBox(
                             height: 16,
                           ),

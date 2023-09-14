@@ -128,11 +128,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const <Widget>[
+                  children: <Widget>[
                     // User's name
                     Text(
-                      'John Doe',
-                      style: TextStyle(
+                      user.name!,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -140,7 +140,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
 
                     // User's detailed name (e.g., job title)
-                    Text(
+                    const Text(
                       'Photographer | Traveler',
                       style: TextStyle(
                         fontSize: 12,

@@ -9,6 +9,7 @@ import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/wallet/manager_screen.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
+import 'package:greenify/utils/formatter.dart';
 import 'package:ionicons/ionicons.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -20,6 +21,7 @@ class HomeScreen extends ConsumerWidget {
     final gardenRef = ref.watch(gardenProvider.notifier);
 
     final userClientController = ref.read(userClientProvider.notifier);
+
     return Container(
       margin: const EdgeInsets.only(top: 16),
       child: Material(
@@ -375,6 +377,7 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildWalletCard(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final wallet = ref.watch(singleUserProvider).value!.first.wallet;
 
     return PlainCard(
       onTap: () => context.push(WalletManagerScreen.routePath),
@@ -402,7 +405,7 @@ class HomeScreen extends ConsumerWidget {
             height: 8,
           ),
           Text(
-            "Rp100.000",
+            "Rp ${formatMoney(wallet!.value)}",
             style: textTheme.labelLarge!.apply(
                 fontWeightDelta: 2,
                 fontSizeDelta: 4,

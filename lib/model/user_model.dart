@@ -15,7 +15,7 @@ class UserModel {
   List<GardenModel>? gardens;
   List<AchievementModel>? achievements;
   List<BookModel>? books;
-  late WalletModel wallet;
+  WalletModel? wallet;
 
   UserModel(
       {required this.email,
@@ -36,8 +36,8 @@ class UserModel {
         photoFrame = element['photo_frame'],
         imageUrl = element['image_url'];
 
-  void setWallet(DocumentSnapshot<Object?> element) {
-    wallet = WalletModel.fromMap(element['wallet']);
+  void setWallet(WalletModel walletModel) {
+    wallet = walletModel;
   }
 
   Map<String, dynamic> toMap() {
@@ -51,7 +51,7 @@ class UserModel {
       "photo_frame": photoFrame ?? "default",
       "created_at": DateTime.now(),
       "updated_at": DateTime.now(),
-      "wallet": wallet.toMap(),
+      "wallet": wallet!.toMap(),
     };
   }
 }

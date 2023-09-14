@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/theme_mode_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/screen/payments/history_screen.dart';
 import 'package:ionicons/ionicons.dart';
 
 class GrDrawerr extends ConsumerWidget {
@@ -51,6 +52,12 @@ class GrDrawerr extends ConsumerWidget {
                     text: 'Akun Saya',
                     ref: ref,
                     route: '/account'),
+                grDrawerItem(
+                    context: context,
+                    icon: const Icon(Ionicons.time_outline),
+                    text: 'Riwayat Transaksi',
+                    ref: ref,
+                    route: HistoryScreen.routePath),
                 grDrawerItem(
                     context: context,
                     icon: const Icon(Ionicons.moon_outline),

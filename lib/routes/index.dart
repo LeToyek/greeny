@@ -6,6 +6,7 @@ import 'package:greenify/routes/books_routes.dart';
 import 'package:greenify/routes/garden_routes.dart';
 import 'package:greenify/routes/payments_routes.dart';
 import 'package:greenify/routes/users_routes.dart';
+import 'package:greenify/ui/screen/additional/emblem_screen.dart';
 import 'package:greenify/ui/screen/auth/login_screen.dart';
 import 'package:greenify/ui/screen/auth/register_screen.dart';
 import 'package:greenify/ui/screen/disease/disease_screen.dart';
@@ -28,6 +29,10 @@ final _appRoutes =
   ...booksRoutes,
   ...gardenRoutes,
   ...paymentsRoutes,
+  GoRoute(
+      path: EmblemScreen.routePath,
+      name: EmblemScreen.routeName,
+      builder: (context, state) => const EmblemScreen()),
   GoRoute(
       path: SuccessScreen.routePath,
       name: SuccessScreen.routeName,

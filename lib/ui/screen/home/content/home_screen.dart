@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/user_constants.dart';
 import 'package:greenify/states/book_state.dart';
+import 'package:greenify/states/bottom_nav_bar_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/wallet/manager_screen.dart';
@@ -16,6 +17,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userRef = ref.watch(singleUserProvider);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
@@ -24,32 +26,48 @@ class HomeScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // _subTitleSection(context, "Tanaman Terbaru"),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(flex: 3, child: _buildWalletCard(context, ref)),
-                Expanded(
-                    flex: 2,
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 8),
-                      child: _buildMainCard(
-                          context: context, ref: ref, title: "Tanaman"),
-                    )),
-                Expanded(
-                    flex: 2,
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 8),
-                      child: _buildMainCard(
-                          context: context, ref: ref, title: "Artikel"),
-                    )),
-              ],
-            ),
+            userRef.when(
+                loading: () => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                error: (error, stackTrace) => Center(
+                      child: Text(error.toString()),
+                    ),
+                data: (data) {
+                  final user = data.first;
+                  final totalArtikel =
+                      user.books == null ? 0 : user.books!.length;
+                  final totalGardens =
+                      user.gardens == null ? 0 : user.gardens!.length;
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(flex: 3, child: _buildWalletCard(context, ref)),
+                      Expanded(
+                          flex: 2,
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 8),
+                            child: _buildMainCard(
+                                context: context,
+                                ref: ref,
+                                title: "Kebun",
+                                total: totalGardens),
+                          )),
+                      Expanded(
+                          flex: 2,
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 8),
+                            child: _buildMainCard(
+                                context: context,
+                                ref: ref,
+                                title: "Artikel",
+                                total: totalArtikel),
+                          )),
+                    ],
+                  );
+                }),
             _buildNewestPlant(context, ref),
             _buildNewestArticle(context, ref),
-            // _buildGetEmblem(context, ref),
-            // const SizedBox(
-            //   height: 16,
-            // ),
             _buildTopPlayers(context, ref),
           ],
         ),
@@ -191,6 +209,7 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildTopPlayers(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(usersProvider);
     final userClientController = ref.read(userClientProvider.notifier);
+    final bottomNavRef = ref.read(bottomNavProvider.notifier);
     return PlainCard(
       margin: const EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.zero,
@@ -220,9 +239,9 @@ class HomeScreen extends ConsumerWidget {
                     return index == 3
                         ? Center(
                             child: TextButton(
-                                child: const Text("Show more"),
+                                child: const Text("Tampilkan semua pemain"),
                                 onPressed: () {
-                                  print("object");
+                                  bottomNavRef.setValueToDB(4);
                                 }),
                           )
                         : Column(
@@ -478,7 +497,8 @@ class HomeScreen extends ConsumerWidget {
       {required BuildContext context,
       Color? color,
       required WidgetRef ref,
-      required String title}) {
+      required String title,
+      required int total}) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
@@ -493,7 +513,7 @@ class HomeScreen extends ConsumerWidget {
                 .apply(fontWeightDelta: 2, color: colorScheme.onSurface),
           ),
           Text(
-            "20",
+            "$total",
             style: textTheme.labelLarge!.apply(
                 fontWeightDelta: 2,
                 fontSizeDelta: 4,

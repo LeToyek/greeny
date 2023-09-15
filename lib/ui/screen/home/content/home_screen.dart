@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/user_constants.dart';
 import 'package:greenify/states/book_state.dart';
-import 'package:greenify/states/garden_state.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/wallet/manager_screen.dart';
@@ -17,51 +16,44 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRef = ref.read(usersProvider.notifier);
-    final gardenRef = ref.watch(gardenProvider.notifier);
-
-    final userClientController = ref.read(userClientProvider.notifier);
-
-    return Container(
-      margin: const EdgeInsets.only(top: 16),
-      child: Material(
-          color: Theme.of(context).colorScheme.background,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // _subTitleSection(context, "Tanaman Terbaru"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // _subTitleSection(context, "Tanaman Terbaru"),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(flex: 3, child: _buildWalletCard(context, ref)),
-                    Expanded(
-                        flex: 2,
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          child: _buildMainCard(
-                              context: context, ref: ref, title: "Tanaman"),
-                        )),
-                    Expanded(
-                        flex: 2,
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 8),
-                          child: _buildMainCard(
-                              context: context, ref: ref, title: "Artikel"),
-                        )),
-                  ],
-                ),
-                _buildNewestPlant(context, ref),
-                _buildNewestArticle(context, ref),
-                // _buildGetEmblem(context, ref),
-                // const SizedBox(
-                //   height: 16,
-                // ),
-                _buildTopPlayers(context, ref),
+                Expanded(flex: 3, child: _buildWalletCard(context, ref)),
+                Expanded(
+                    flex: 2,
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      child: _buildMainCard(
+                          context: context, ref: ref, title: "Tanaman"),
+                    )),
+                Expanded(
+                    flex: 2,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 8),
+                      child: _buildMainCard(
+                          context: context, ref: ref, title: "Artikel"),
+                    )),
               ],
             ),
-          )),
+            _buildNewestPlant(context, ref),
+            _buildNewestArticle(context, ref),
+            // _buildGetEmblem(context, ref),
+            // const SizedBox(
+            //   height: 16,
+            // ),
+            _buildTopPlayers(context, ref),
+          ],
+        ),
+      ),
     );
   }
 
@@ -193,6 +185,7 @@ class HomeScreen extends ConsumerWidget {
                   child: Text(error.toString()),
                 );
               }, data: (data) {
+                print("data.length: ${data.length}");
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(16),
@@ -392,7 +385,7 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildWalletCard(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final wallet = ref.watch(singleUserProvider).value!.first.wallet;
+    final wallet = ref.watch(singleUserProvider);
 
     return PlainCard(
       onTap: () => context.push(WalletManagerScreen.routePath),
@@ -419,12 +412,22 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(
             height: 8,
           ),
-          Text(
-            "Rp ${formatMoney(wallet!.value)}",
-            style: textTheme.labelLarge!.apply(
-                fontWeightDelta: 2,
-                fontSizeDelta: 4,
-                color: colorScheme.onSurface),
+          wallet.when(
+            data: (data) {
+              return Text(
+                data.first.wallet == null
+                    ? "loading.."
+                    : "Rp ${formatMoney(data.first.wallet!.value)}",
+                style: textTheme.labelLarge!.apply(
+                    fontWeightDelta: 2,
+                    fontSizeDelta: 4,
+                    color: colorScheme.onSurface),
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stackTrace) => Center(
+              child: Text("error $error"),
+            ),
           ),
           const SizedBox(
             height: 2,

@@ -35,6 +35,7 @@ class RegisterScreen extends ConsumerWidget {
           await funcUserAction.registerUser(
               email: email, password: password, name: name);
           refPots.getPots();
+          await funcUserAction.getUser();
           if (context.mounted) {
             context.pushReplacement("/");
           }
@@ -118,27 +119,24 @@ class RegisterScreen extends ConsumerWidget {
                       },
                     ),
                     const SizedBox(height: 16.0),
-                    GestureDetector(
-                      onTap: () => submitForm(),
-                      child: PlainCard(
-                          color: colorTheme.primary,
-                          child: Row(
-                            children: [
-                              const Icon(Ionicons.person_add,
-                                  color: Colors.white),
-                              const SizedBox(width: 12),
-                              Text(
-                                'Daftar',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .apply(
-                                        fontWeightDelta: 2,
-                                        color: Colors.white),
-                              ),
-                            ],
-                          )),
-                    ),
+                    PlainCard(
+                        onTap: submitForm,
+                        color: colorTheme.primary,
+                        child: Row(
+                          children: [
+                            const Icon(Ionicons.person_add,
+                                color: Colors.white),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Daftar',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .apply(
+                                      fontWeightDelta: 2, color: Colors.white),
+                            ),
+                          ],
+                        )),
                   ],
                 ),
               ),

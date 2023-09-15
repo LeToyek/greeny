@@ -32,6 +32,12 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
   final bool _isProcessing = false;
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // final userNotifier = ref.watch(singleUserProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
@@ -120,7 +126,9 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12)),
-                    hintText: "Masukkan nominal top up"),
+                    hintText: "Masukkan nominal top up",
+                    hintStyle: TextStyle(color: colorScheme.onSurface),
+                    fillColor: colorScheme.onSurface),
                 keyboardType: TextInputType.number,
                 onChanged: (value) => setState(() {
                   selectedTopUpValue = int.parse(value);
@@ -189,7 +197,7 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
           children: [
             Image.asset(
               "$iconCard.png",
-              height: 54,
+              height: 48,
             ),
             const SizedBox(
               height: 8,

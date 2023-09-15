@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/constants/user_constants.dart';
 import 'package:greenify/model/user_model.dart';
 import 'package:greenify/states/bottom_nav_bar_state.dart';
 import 'package:greenify/states/users_state.dart';
@@ -120,38 +121,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   padding: const EdgeInsets.only(right: 8),
                   child: CircleAvatar(
                     radius: 24,
-                    backgroundImage: NetworkImage(user.imageUrl!),
+                    backgroundImage:
+                        NetworkImage(user.imageUrl ?? unknownImage),
                   ),
                 ),
 
                 // User's name and money
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // User's name
-                    Text(
-                      user.name!,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-
-                    // User's detailed name (e.g., job title)
-                    const Text(
-                      'Photographer | Traveler',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-
-                    // SizedBox(height: 10),
-
-                    // Money balance
-                  ],
+                Text(
+                  user.name!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 const Spacer(),
                 IconButton(

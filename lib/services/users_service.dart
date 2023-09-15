@@ -46,7 +46,6 @@ class UsersServices {
   Future<WalletModel> getWalletUser({required String id}) async {
     try {
       DocumentSnapshot documentSnapshot = await users.doc(id).get();
-      print("infoSnap ${documentSnapshot.data()}");
       WalletModel wallet = WalletModel.fromMap(documentSnapshot['wallet']);
       return wallet;
     } catch (e) {

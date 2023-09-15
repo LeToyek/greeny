@@ -229,6 +229,8 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                             updatedAt: timeNow,
                             logType: '[MIN]',
                             logMessage: logMessage);
+                        transaction.refModel =
+                            "users/${owner.userId}/${widget.plantRef}";
                         ref.watch(singleUserProvider.notifier).getUser();
 
                         transaction.setPlant(widget.plant);

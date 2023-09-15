@@ -60,6 +60,12 @@ class GrDrawerr extends ConsumerWidget {
                     route: HistoryScreen.routePath),
                 grDrawerItem(
                     context: context,
+                    icon: const Icon(Ionicons.time_outline),
+                    text: 'Medali',
+                    ref: ref,
+                    route: HistoryScreen.routePath),
+                grDrawerItem(
+                    context: context,
                     icon: const Icon(Ionicons.moon_outline),
                     text: 'Dark Mode',
                     ref: ref,

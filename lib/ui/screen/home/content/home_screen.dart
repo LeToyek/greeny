@@ -70,6 +70,7 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildNewestArticle(BuildContext context, WidgetRef ref) {
     final bookRef = ref.watch(bestBookProvider);
+
     return PlainCard(
       margin: const EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.zero,
@@ -91,67 +92,92 @@ class HomeScreen extends ConsumerWidget {
                   child: Text(error.toString()),
                 );
               }, data: (data) {
-                final book = data;
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(16),
                   scrollDirection: Axis.horizontal,
                   itemCount: 3,
                   itemBuilder: (context, index) {
-                    return Container(
-                      margin: index != 2
-                          ? const EdgeInsets.only(right: 8)
-                          : EdgeInsets.zero,
-                      child: Column(
-                        children: [
-                          ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(8)),
-                              child: Image.network(
-                                book[index].imageUrl ?? "",
-                                width: 150,
-                                height: 180,
-                                fit: BoxFit.cover,
-                              )),
-                          Container(
-                            width: 150,
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .background
-                                  .withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(8),
+                    final book = data[index];
+                    return InkWell(
+                      onTap: () async {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const AlertDialog(
+                              // title: const Text("Parkir"),
+                              elevation: 0,
+                              backgroundColor: Colors.transparent,
+                              content: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          },
+                        );
+                        await ref
+                            .read(detailBookProvider(book.id!).notifier)
+                            .getBookByID(book.id!);
+
+                        if (context.mounted) {
+                          context.pop();
+                          context.push("/book/detail/${book.id}");
+                        }
+                      },
+                      child: Container(
+                        margin: index != 2
+                            ? const EdgeInsets.only(right: 8)
+                            : EdgeInsets.zero,
+                        child: Column(
+                          children: [
+                            ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(8)),
+                                child: Image.network(
+                                  book.imageUrl ?? "",
+                                  width: 150,
+                                  height: 180,
+                                  fit: BoxFit.cover,
+                                )),
+                            Container(
+                              width: 150,
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .background
+                                    .withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    book.title ?? "Title",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .apply(
+                                            fontWeightDelta: 2,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface),
+                                  ),
+                                  Text(
+                                    book.category ?? "Category",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .apply(
+                                            fontWeightDelta: 2,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface),
+                                  ),
+                                ],
+                              ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  book[index].title ?? "Title",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .apply(
-                                          fontWeightDelta: 2,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
-                                ),
-                                Text(
-                                  book[index].category ?? "Category",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .apply(
-                                          fontWeightDelta: 2,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

@@ -13,6 +13,7 @@ class TransactionModel {
 
   PlantModel? plant;
   String? ownerID;
+  String? refModel;
   TransactionModel({
     required this.value,
     required this.createdAt,
@@ -41,6 +42,10 @@ class TransactionModel {
     this.plant = plant;
   }
 
+  void setRef(String refModel) {
+    this.refModel = refModel;
+  }
+
   Future<UserModel> toUserModel() async {
     final user =
         await FirebaseFirestore.instance.collection('users').doc(ownerID).get();
@@ -64,6 +69,7 @@ class TransactionModel {
             'logMessage': logMessage,
             'plant': plant!.toQuery(),
             'ownerID': ownerID,
+            'refModel': refModel ?? "",
           };
   }
 

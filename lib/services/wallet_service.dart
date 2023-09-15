@@ -3,8 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:greenify/model/transaction_model.dart';
 import 'package:greenify/model/user_model.dart';
 import 'package:greenify/model/wallet_model.dart';
+import 'package:greenify/services/transaction_notification_service.dart';
 
 class WalletService {
+  final TransactionNotificationService _transactionNotificationService =
+      TransactionNotificationService();
   WalletService._();
 
   static final WalletService _instance = WalletService._();
@@ -78,6 +81,7 @@ class WalletService {
         if (!isSuccess) {
           throw Exception("Saldo tidak cukup");
         }
+        _transactionNotificationService.sendNotification(transactionModel);
         _firestore.doc(reference).update({"plant.market_status": "sold"});
       });
     } catch (e) {

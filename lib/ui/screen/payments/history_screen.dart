@@ -20,37 +20,53 @@ class HistoryScreen extends ConsumerWidget {
         appBar: AppBar(
           title: const Text("Riwayat Transaksi"),
         ),
+        backgroundColor: colorScheme.background,
         body: transactions.when(
             data: (data) {
-              return ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (context, index) {
-                    final isAdd = data[index].logType == '[ADD]';
-                    return ListTile(
-                      leading: PlainCard(
-                        padding: const EdgeInsets.all(8),
-                        boxShadow: const BoxShadow(
-                          blurRadius: 0,
-                          offset: Offset(0, 0),
-                        ),
-                        color:
-                            isAdd ? Colors.green.shade100 : Colors.red.shade100,
-                        child: isAdd
-                            ? const Icon(
-                                Ionicons.arrow_up,
-                                color: Colors.green,
-                              )
-                            : const Icon(
-                                Ionicons.arrow_down,
-                                color: Colors.red,
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final isAdd = data[index].logType == '[ADD]';
+                      return Column(
+                        children: [
+                          ListTile(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                            tileColor: colorScheme.surface,
+                            leading: PlainCard(
+                              padding: const EdgeInsets.all(8),
+                              boxShadow: const BoxShadow(
+                                blurRadius: 0,
+                                offset: Offset(0, 0),
                               ),
-                      ),
-                      title: Text(data[index].logMessage),
-                      subtitle: Text(DateFormat('yyyy-MM-dd')
-                          .format(DateTime.parse(data[index].createdAt))),
-                      trailing: Text("Rp ${formatMoney(data[index].value)}"),
-                    );
-                  });
+                              color: isAdd
+                                  ? Colors.green.shade100
+                                  : Colors.red.shade100,
+                              child: isAdd
+                                  ? const Icon(
+                                      Ionicons.arrow_up,
+                                      color: Colors.green,
+                                    )
+                                  : const Icon(
+                                      Ionicons.arrow_down,
+                                      color: Colors.red,
+                                    ),
+                            ),
+                            title: Text(data[index].logMessage),
+                            subtitle: Text(DateFormat('yyyy-MM-dd')
+                                .format(DateTime.parse(data[index].createdAt))),
+                            trailing:
+                                Text("Rp ${formatMoney(data[index].value)}"),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          )
+                        ],
+                      );
+                    }),
+              );
             },
             error: (error, stackTrace) => Center(
                   child: Column(

@@ -45,18 +45,20 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       appBar: AppBar(
         title: const Text('Verifikasi Pembayaran'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailPlantInfo(context, ref, boldTextColor),
-            const SizedBox(height: 8),
-            _buildProTip(context, ref, boldTextColor),
-            const SizedBox(height: 8),
-            _buildPaymentDetail(context, ref, boldTextColor),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailPlantInfo(context, ref, boldTextColor),
+              const SizedBox(height: 8),
+              _buildProTip(context, ref, boldTextColor),
+              const SizedBox(height: 8),
+              _buildPaymentDetail(context, ref, boldTextColor),
+            ],
+          ),
         ),
       ),
     );

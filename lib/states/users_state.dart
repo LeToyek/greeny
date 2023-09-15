@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/model/user_model.dart';
 import 'package:greenify/services/auth_service.dart';
@@ -7,9 +9,9 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   UsersServices usersServices;
   String? visitedUser = FireAuth.getCurrentUser()?.uid;
   UserModel? visitedUserModel;
-
   UsersNotifier({required this.usersServices})
       : super(const AsyncValue.data([]));
+
   Future<void> getUsers() async {
     try {
       state = const AsyncValue.loading();

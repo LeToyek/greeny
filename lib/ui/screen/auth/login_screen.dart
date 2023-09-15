@@ -18,6 +18,7 @@ class LoginScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final userAct = ref.watch(singleUserProvider);
     final funcUserAct = ref.read(singleUserProvider.notifier);
+    final singleUserNotifier = ref.read(singleUserProvider.notifier);
 
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
@@ -31,6 +32,7 @@ class LoginScreen extends ConsumerWidget {
           String password = passwordController.text;
 
           await funcUserAct.basicLogin(email: email, password: password);
+          await singleUserNotifier.getUser();
           if (context.mounted) context.pushReplacement("/");
           refPots.getPots();
         } catch (e) {
@@ -53,6 +55,7 @@ class LoginScreen extends ConsumerWidget {
       try {
         await funcUserAct.loginWithGoogle();
         // print("test");
+        await singleUserNotifier.getUser();
         if (context.mounted) context.pushReplacement("/");
         refPots.getPots();
       } catch (e) {

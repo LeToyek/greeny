@@ -46,7 +46,7 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   Future<void> setVisitedUserModel() async {
     try {
       state = const AsyncValue.loading();
-      final res = await usersServices.getMainInfoUser(id: visitedUser!);
+      final res = await usersServices.getUserById(id: visitedUser!);
       visitedUserModel = res;
       visitedUser = res.userId;
       print("visitedUser $visitedUser");

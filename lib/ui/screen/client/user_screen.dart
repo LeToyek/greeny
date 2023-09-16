@@ -30,6 +30,7 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
   @override
   Widget build(BuildContext context) {
     final userRef = ref.watch(userClientProvider);
+    final userController = ref.read(userClientProvider.notifier);
 
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
@@ -226,7 +227,7 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
     return userRef.when(
       data: (data) {
         final user = data[0];
-
+        print("userClient = $user");
         return NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
                   SliverAppBar(
@@ -307,31 +308,38 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
                               "Gardens",
                               style: textTheme.titleLarge,
                             ),
-                            ListView.builder(
-                                padding: EdgeInsets.zero,
-                                itemCount: user.gardens!.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final potsNotifier = ref.watch(
-                                      potProvider(user.gardens![index].id)
-                                          .notifier);
-                                  GardenModel? garden;
-                                  if (user.gardens != null ||
-                                      user.gardens!.isNotEmpty) {
-                                    garden = user.gardens![index];
-                                  }
-                                  void getGarden() {
-                                    potsNotifier.getPotsByGardenId(
-                                        userId: user.userId, docId: garden!.id);
-                                    context.pushNamed("garden_detail",
-                                        pathParameters: {"id": garden.id});
-                                  }
+                            user.gardens != null
+                                ? ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    itemCount: user.gardens!.length,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      final potsNotifier = ref.watch(
+                                          potProvider(user.gardens![index].id)
+                                              .notifier);
+                                      GardenModel? garden;
+                                      if (user.gardens != null ||
+                                          user.gardens!.isNotEmpty) {
+                                        garden = user.gardens![index];
+                                      }
+                                      void getGarden() {
+                                        userController.setVisitedUser(
+                                            id: user.userId);
+                                        potsNotifier.getPotsByGardenId(
+                                            userId: user.userId,
+                                            docId: garden!.id);
+                                        context.pushNamed("garden_detail",
+                                            pathParameters: {"id": garden.id});
+                                      }
 
-                                  return garden != null
-                                      ? buildGardenCard(getGarden, garden)
-                                      : Container();
-                                }),
+                                      return garden != null
+                                          ? buildGardenCard(getGarden, garden)
+                                          : Container();
+                                    })
+                                : buildUnknownCard("Belum ada Garden"),
+
                             const SizedBox(height: 16),
                             Text(
                               "Artikel",

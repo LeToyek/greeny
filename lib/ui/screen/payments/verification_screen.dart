@@ -29,7 +29,6 @@ class VerificationScreen extends ConsumerStatefulWidget {
 
 class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   bool _isAgree = false;
-
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -136,6 +135,8 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final userClientController = ref.watch(userClientProvider.notifier);
+    final wallet = ref.watch(singleUserProvider);
+
     return PlainCard(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -223,29 +224,49 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                         final owner = userClientController.visitedUserModel!;
                         final logMessage =
                             'Pembelian tanaman ${widget.plant.name} milik ${owner.name} berhasil ';
-                        final transaction = TransactionModel(
-                            value: widget.plant.price!,
-                            createdAt: timeNow,
-                            updatedAt: timeNow,
-                            logType: '[MIN]',
-                            logMessage: logMessage);
-                        transaction.refModel =
-                            "users/${owner.userId}/${widget.plantRef}";
-                        ref.watch(singleUserProvider.notifier).getUser();
+                        final walletVal = wallet.value!.first.wallet!.value;
+                        if (walletVal > widget.plant.price!) {
+                          final transaction = TransactionModel(
+                              value: widget.plant.price!,
+                              createdAt: timeNow,
+                              updatedAt: timeNow,
+                              logType: '[MIN]',
+                              logMessage: logMessage);
+                          transaction.refModel =
+                              "users/${owner.userId}/${widget.plantRef}";
+                          ref.watch(singleUserProvider.notifier).getUser();
 
-                        transaction.setPlant(widget.plant);
-                        transaction.ownerID = owner.userId;
-                        await WalletService().buyPlant(
-                            transactionModel: transaction,
-                            reference:
-                                "users/${owner.userId}/${widget.plantRef}");
-                        ref
-                            .watch(transactionHistory.notifier)
-                            .getTransactionHistory();
-                        if (context.mounted) {
-                          context.pushReplacement(
-                              PaymentSuccessScreen.routePath,
-                              extra: transaction);
+                          transaction.setPlant(widget.plant);
+                          transaction.ownerID = owner.userId;
+                          await WalletService().buyPlant(
+                              transactionModel: transaction,
+                              reference:
+                                  "users/${owner.userId}/${widget.plantRef}");
+                          ref
+                              .watch(transactionHistory.notifier)
+                              .getTransactionHistory();
+                          if (context.mounted) {
+                            context.pushReplacement(
+                                PaymentSuccessScreen.routePath,
+                                extra: transaction);
+                          }
+                        } else {
+                          context.pop();
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text("Gagal"),
+                                  content: const Text("Saldo tidak cukup"),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          context.pop();
+                                        },
+                                        child: const Text("OK"))
+                                  ],
+                                );
+                              });
                         }
                       }
                     },

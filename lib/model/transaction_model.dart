@@ -76,6 +76,7 @@ class TransactionModel {
             'refModel': refModel ?? "",
             'fromID': fromID ?? "",
             'status': status ?? "",
+            'id': id ?? ""
           };
   }
 
@@ -117,7 +118,8 @@ class TransactionModel {
         updatedAt: map['updatedAt'],
         logType: map['logType'],
         logMessage: map['logMessage'],
-        status: map['status']);
+        status: map['status'],
+        id: map['id']);
     if (map.containsKey('plant') && map.containsKey('ownerID')) {
       transactionModel.setPlant(PlantModel.fromQuery(map['plant']));
       transactionModel.ownerID = map['ownerID'];

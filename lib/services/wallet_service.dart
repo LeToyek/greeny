@@ -83,7 +83,8 @@ class WalletService {
       await _firestore.runTransaction((transaction) async {
         transactionModel.fromID = FirebaseAuth.instance.currentUser!.uid;
         transactionModel.status = 'req';
-        transactionRef.add(transactionModel.toMap());
+        final tfId = await transactionRef.add(transactionModel.toMap());
+        transactionModel.id = tfId.id;
         final isSuccess = await decreaseWalletValue(
             transactionModel.value, transactionModel.logMessage);
         if (!isSuccess) {
@@ -92,6 +93,52 @@ class WalletService {
         _transactionNotificationService.sendNotification(transactionModel);
         _firestore.doc(reference).update({"plant.market_status": "sold"});
       });
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> processTransaction(
+      {required String userId,
+      required String notifID,
+      required String transactionId}) async {
+    try {
+      final buyerRef =
+          FirebaseFirestore.instance.collection("users").doc(userId);
+      final selfRef = FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid);
+      final selfTranscationRef =
+          selfRef.collection("notifications").doc(notifID);
+      selfTranscationRef.update({"trxModel.status": "process"});
+
+      final transactionRef =
+          buyerRef.collection("transactions").doc(transactionId);
+      transactionRef.update({"status": "process"});
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> denyTransaction(
+      {required String userId,
+      required String notifID,
+      required String transactionId,
+      required int price}) async {
+    try {
+      final buyerRef =
+          FirebaseFirestore.instance.collection("users").doc(userId);
+      final selfRef = FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid);
+      final selfTranscationRef =
+          selfRef.collection("notifications").doc(notifID);
+      selfTranscationRef.update({"trxModel.status": "denied"});
+
+      final transactionRef =
+          buyerRef.collection("transactions").doc(transactionId);
+      buyerRef.update({"wallet.value": FieldValue.increment(price)});
+      transactionRef.update({"status": "denied"});
     } catch (e) {
       throw Exception(e);
     }

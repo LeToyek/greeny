@@ -78,7 +78,7 @@ class TransactionNotificationModel {
         refModel: map['refModel'],
         fromID: map['fromID'],
         toID: map['toID'],
-        trxModel: map['trxModel']);
+        trxModel: TransactionModel.fromMap(map['trxModel']));
   }
 
   String toJson() => json.encode(toMap());

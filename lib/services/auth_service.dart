@@ -16,6 +16,8 @@ class FireAuth {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
       user = userCredential.user;
       await user!.updateDisplayName(name);
       await sendDataToCollection(user: user, name: name);

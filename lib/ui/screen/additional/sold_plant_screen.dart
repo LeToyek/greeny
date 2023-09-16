@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:greenify/services/pot_service.dart';
-import 'package:greenify/services/users_service.dart';
 import 'package:greenify/states/payments/trx_notification_state.dart';
 import 'package:greenify/ui/screen/additional/verif_buy_screen.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
@@ -33,16 +31,11 @@ class SoldPlantScreen extends ConsumerWidget {
                           subtitle: Text(trxNotif.description),
                           trailing: PlainCard(
                               onTap: () async {
-                                final userModel = await UsersServices()
-                                    .getMainInfoUser(id: trxNotif.fromID!);
-                                final plant = await PotServices.getPlantFromRef(
-                                    trxNotif.refModel!);
                                 if (context.mounted) {
-                                  context.push(VerifBuyScreen.routePath,
-                                      extra: {
-                                        "plant": plant,
-                                        "buyer": userModel
-                                      });
+                                  context
+                                      .push(VerifBuyScreen.routePath, extra: {
+                                    "index": index,
+                                  });
                                 }
                               },
                               child: const Text("Proses")),

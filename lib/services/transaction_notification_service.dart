@@ -26,7 +26,6 @@ class TransactionNotificationService {
         title: "Pembelian Tanaman",
         description: transactionModel.logMessage,
         trxModel: transactionModel,
-        
         fromID: transactionModel.fromID,
         toID: transactionModel.ownerID,
         createdAt: timeNow,
@@ -40,9 +39,11 @@ class TransactionNotificationService {
   Future<List<TransactionNotificationModel>>
       getTransactionNotification() async {
     final snapshot = await userRef.collection("notifications").get();
-    final data = snapshot.docs
-        .map((e) => TransactionNotificationModel.fromMap(e.data()))
-        .toList();
+    final data = snapshot.docs.map((e) {
+      final tfData = TransactionNotificationModel.fromMap(e.data());
+      tfData.id = e.id;
+      return tfData;
+    }).toList();
     return data;
   }
 

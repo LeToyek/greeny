@@ -2,9 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:greenify/model/plant_model.dart';
-import 'package:greenify/model/transaction_model.dart';
-import 'package:greenify/model/user_model.dart';
 import 'package:greenify/routes/books_routes.dart';
 import 'package:greenify/routes/garden_routes.dart';
 import 'package:greenify/routes/payments_routes.dart';
@@ -39,7 +36,7 @@ final _appRoutes =
       path: TrxStatusScreen.routePath,
       name: TrxStatusScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as Map<String,dynamic>;
+        final args = state.extra as Map<String, dynamic>;
 
         return TrxStatusScreen(trxIndex: args["index"]);
       }),
@@ -61,8 +58,7 @@ final _appRoutes =
       builder: (context, state) {
         final args = state.extra as Map<String, dynamic>;
         return VerifBuyScreen(
-          plantModel: args['plant'] as PlantModel,
-          buyer: args['buyer'] as UserModel,
+          indexTrx: args['index'],
         );
       }),
   GoRoute(

@@ -14,6 +14,7 @@ class UserModel {
   String? photoFrame;
   List<GardenModel>? gardens;
   List<AchievementModel>? achievements;
+  List<AchievementModel>? pseudoAchievements;
   List<BookModel>? books;
   WalletModel? wallet;
 

@@ -69,6 +69,7 @@ class UsersServices {
           await userDocument.collection(AchievementModel.collectionPath).get();
 
       List<AchievementModel> achievementList = [];
+      List<AchievementModel> pseudoAchievementList = [];
       if (resGarden.docs.isNotEmpty) {
         userMod.gardens = await userDocument
             .collection(GardenModel.collectionPath)
@@ -82,12 +83,15 @@ class UsersServices {
               AchievementModel.fromQuery(element);
           achievementModel.emblem =
               await EmblemService.getEmblemByID(element.id);
+          pseudoAchievementList.add(achievementModel);
           if (achievementModel.isExist) {
             achievementList.add(achievementModel);
           }
         });
       }
       userMod.achievements = achievementList;
+      userMod.pseudoAchievements = pseudoAchievementList;
+      print("data.first.achievements ${userMod.achievements}");
 
       List<BookModel> books = [];
       final resBook = await FirebaseFirestore.instance

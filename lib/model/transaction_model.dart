@@ -10,18 +10,21 @@ class TransactionModel {
   final String updatedAt;
   final String logType;
   final String logMessage;
+  String? id;
 
   PlantModel? plant;
   String? ownerID;
   String? fromID;
   String? refModel;
-  TransactionModel({
-    required this.value,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.logType,
-    required this.logMessage,
-  });
+  String? status;
+  TransactionModel(
+      {this.id,
+      required this.value,
+      required this.createdAt,
+      required this.updatedAt,
+      required this.logType,
+      required this.logMessage,
+      this.status});
 
   TransactionModel copyWith({
     int? value,
@@ -72,6 +75,7 @@ class TransactionModel {
             'ownerID': ownerID,
             'refModel': refModel ?? "",
             'fromID': fromID ?? "",
+            'status': status ?? "",
           };
   }
 
@@ -106,18 +110,18 @@ class TransactionModel {
         logMessage.hashCode;
   }
 
-  factory TransactionModel.fromMap(DocumentSnapshot map) {
+  factory TransactionModel.fromMap(Map<String, dynamic> map) {
     final transactionModel = TransactionModel(
-      value: map['value']?.toInt() ?? 0,
-      createdAt: map['createdAt'],
-      updatedAt: map['updatedAt'],
-      logType: map['logType'],
-      logMessage: map['logMessage'],
-    );
-    // if (map.containsKey('plant') && map.containsKey('ownerID')) {
-    //   transactionModel.setPlant(PlantModel.fromQuery(map['plant']));
-    //   transactionModel.ownerID = map['ownerID'];
-    // }
+        value: map['value']?.toInt() ?? 0,
+        createdAt: map['createdAt'],
+        updatedAt: map['updatedAt'],
+        logType: map['logType'],
+        logMessage: map['logMessage'],
+        status: map['status']);
+    if (map.containsKey('plant') && map.containsKey('ownerID')) {
+      transactionModel.setPlant(PlantModel.fromQuery(map['plant']));
+      transactionModel.ownerID = map['ownerID'];
+    }
     return transactionModel;
   }
 }

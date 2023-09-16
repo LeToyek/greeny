@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:greenify/states/theme_mode_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/additional/emblem_screen.dart';
+import 'package:greenify/ui/screen/additional/sold_plant_screen.dart';
 import 'package:greenify/ui/screen/payments/history_screen.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -58,7 +59,7 @@ class GrDrawerr extends ConsumerWidget {
                     icon: const Icon(Ionicons.storefront_outline),
                     text: 'Tanaman Terjual',
                     ref: ref,
-                    route: '/account'),
+                    route: SoldPlantScreen.routePath),
                 grDrawerItem(
                     context: context,
                     icon: const Icon(Ionicons.time_outline),

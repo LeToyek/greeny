@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:greenify/model/height_model.dart';
+import 'package:greenify/model/plant_model.dart';
 import 'package:greenify/model/pot_model.dart';
 
 class PotServices {
@@ -95,6 +96,17 @@ class PotServices {
   Future<void> deletePot(String potId) async {
     try {
       await gardenRef.collection(collectionPath).doc(potId).delete();
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<PlantModel> getPlantFromRef(String ref) async {
+    try {
+      final res = await FirebaseFirestore.instance.doc(ref).get();
+      print("res: ${res.data()}");
+      final plant = PlantModel.fromQuery(res.data()!['plant']);
+      return plant;
     } catch (e) {
       throw Exception(e);
     }

@@ -25,7 +25,8 @@ class TransactionNotificationService {
         isRead: false,
         title: "Pembelian Tanaman",
         description: transactionModel.logMessage,
-        refModel: transactionModel.refModel,
+        trxModel: transactionModel,
+        
         fromID: transactionModel.fromID,
         toID: transactionModel.ownerID,
         createdAt: timeNow,
@@ -34,6 +35,15 @@ class TransactionNotificationService {
         .doc(transactionModel.ownerID)
         .collection("notifications")
         .add(tfNotification.toMap());
+  }
+
+  Future<List<TransactionNotificationModel>>
+      getTransactionNotification() async {
+    final snapshot = await userRef.collection("notifications").get();
+    final data = snapshot.docs
+        .map((e) => TransactionNotificationModel.fromMap(e.data()))
+        .toList();
+    return data;
   }
 
   final StreamController<TransactionNotificationModel> _streamController =

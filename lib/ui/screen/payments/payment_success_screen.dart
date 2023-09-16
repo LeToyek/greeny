@@ -36,7 +36,7 @@ class PaymentSuccessScreen extends ConsumerWidget {
             child: Column(
               // mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(
                   height: 8,
@@ -194,6 +194,15 @@ class PaymentSuccessScreen extends ConsumerWidget {
                         height: 8,
                       ),
                     ])),
+                const SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  'Terima kasih telah berbelanja di Greenify',
+                  textAlign: TextAlign.center,
+                  style: textTheme.labelLarge!.copyWith(
+                      color: boldTextColor, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(
                   height: 8,
                 ),

@@ -49,8 +49,9 @@ class WalletService {
     try {
       DocumentSnapshot documentSnapshot =
           await userRef.collection("transactions").doc(id).get();
-      print("infoSnap ${documentSnapshot.data()}");
-      TransactionModel transaction = TransactionModel.fromMap(documentSnapshot);
+
+      TransactionModel transaction = TransactionModel.fromMap(
+          documentSnapshot.data() as Map<String, dynamic>);
       return transaction;
     } catch (e) {
       throw Exception(e);
@@ -62,7 +63,12 @@ class WalletService {
     QuerySnapshot querySnapshot =
         await userRef.collection("transactions").get();
     for (var element in querySnapshot.docs) {
-      transactionsList.add(TransactionModel.fromMap(element));
+      final transaction =
+          TransactionModel.fromMap(element.data() as Map<String, dynamic>);
+      print("element.data() ${element.data()}");
+      transaction.id = element.id;
+
+      transactionsList.add(transaction);
     }
     transactionsList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return transactionsList;
@@ -76,6 +82,7 @@ class WalletService {
     try {
       await _firestore.runTransaction((transaction) async {
         transactionModel.fromID = FirebaseAuth.instance.currentUser!.uid;
+        transactionModel.status = 'req';
         transactionRef.add(transactionModel.toMap());
         final isSuccess = await decreaseWalletValue(
             transactionModel.value, transactionModel.logMessage);

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:greenify/model/transaction_model.dart';
+
 class TransactionNotificationModel {
   bool isRead = false;
   String? id;
@@ -8,6 +10,7 @@ class TransactionNotificationModel {
   String? createdAt;
   String? updatedAt;
   String? refModel;
+  TransactionModel? trxModel;
   String? fromID;
   String? toID;
   TransactionNotificationModel({
@@ -20,6 +23,7 @@ class TransactionNotificationModel {
     this.refModel,
     this.fromID,
     this.toID,
+    this.trxModel,
   });
 
   TransactionNotificationModel copyWith({
@@ -32,6 +36,7 @@ class TransactionNotificationModel {
     String? refModel,
     String? fromID,
     String? toID,
+    TransactionModel? trxModel,
   }) {
     return TransactionNotificationModel(
       isRead: isRead ?? this.isRead,
@@ -43,6 +48,7 @@ class TransactionNotificationModel {
       refModel: refModel ?? this.refModel,
       fromID: fromID ?? this.fromID,
       toID: toID ?? this.toID,
+      trxModel: trxModel ?? this.trxModel,
     );
   }
 
@@ -57,21 +63,22 @@ class TransactionNotificationModel {
       'refModel': refModel,
       'fromID': fromID,
       'toID': toID,
+      'trxModel': trxModel?.toMap(),
     };
   }
 
   factory TransactionNotificationModel.fromMap(Map<String, dynamic> map) {
     return TransactionNotificationModel(
-      isRead: map['isRead'] ?? false,
-      id: map['id'],
-      title: map['title'] ?? '',
-      description: map['description'] ?? '',
-      createdAt: map['createdAt'],
-      updatedAt: map['updatedAt'],
-      refModel: map['refModel'],
-      fromID: map['fromID'],
-      toID: map['toID'],
-    );
+        isRead: map['isRead'] ?? false,
+        id: map['id'],
+        title: map['title'] ?? '',
+        description: map['description'] ?? '',
+        createdAt: map['createdAt'],
+        updatedAt: map['updatedAt'],
+        refModel: map['refModel'],
+        fromID: map['fromID'],
+        toID: map['toID'],
+        trxModel: map['trxModel']);
   }
 
   String toJson() => json.encode(toMap());

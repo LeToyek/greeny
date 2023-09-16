@@ -51,6 +51,29 @@ class DateHelper {
     return formattedDate;
   }
 
+  static String extractDate(String input) {
+    // Split the input string by space to separate date and time
+    var parts = input.split(' ');
+
+    // The date is the first part
+    return parts[0];
+  }
+
+  static String extractTime(String input) {
+    // Split the input string by space to separate date and time
+    var parts = input.split(' ');
+
+    // The time is the second part without seconds and fractional seconds
+    var timePart = parts[1].split('.')[0];
+
+    // Extract only the hour and minutes from the time part
+    var timeComponents = timePart.split(':');
+    var hour = timeComponents[0];
+    var minute = timeComponents[1];
+
+    return "$hour:$minute";
+  }
+
   static String _getMonthName(int month) {
     List<String> monthNames = [
       "", // Index 0 not used

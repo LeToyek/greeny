@@ -481,24 +481,22 @@ class _PlantEditScreenState extends ConsumerState<PlantEditScreen> {
                           const SizedBox(
                             height: 16,
                           ),
-                          GestureDetector(
-                            onTap: () async {
-                              await _submitForm();
-                            },
-                            child: PlainCard(
-                                color: Theme.of(context).colorScheme.primary,
-                                child: Center(
-                                  child: Text(
-                                    "Ubah Tanaman",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .apply(
-                                            fontWeightDelta: 2,
-                                            color: Colors.white),
-                                  ),
-                                )),
-                          ),
+                          PlainCard(
+                              onTap: () async {
+                                await _submitForm();
+                              },
+                              color: Theme.of(context).colorScheme.primary,
+                              child: Center(
+                                child: Text(
+                                  "Ubah Tanaman",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .apply(
+                                          fontWeightDelta: 2,
+                                          color: Colors.white),
+                                ),
+                              )),
                           const SizedBox(
                             height: 16,
                           )

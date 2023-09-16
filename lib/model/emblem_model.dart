@@ -6,6 +6,7 @@ class EmblemModel {
   final String imageUrl;
   final int counter;
   final String title;
+  String? must;
   static CollectionReference ref =
       FirebaseFirestore.instance.collection('emblems');
 

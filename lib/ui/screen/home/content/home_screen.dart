@@ -39,31 +39,38 @@ class HomeScreen extends ConsumerWidget {
                       user.books == null ? 0 : user.books!.length;
                   final totalGardens =
                       user.gardens == null ? 0 : user.gardens!.length;
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(flex: 3, child: _buildWalletCard(context, ref)),
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 8),
-                            child: _buildMainCard(
-                                context: context,
-                                ref: ref,
-                                title: "Kebun",
-                                total: totalGardens),
-                          )),
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 8),
-                            child: _buildMainCard(
-                                context: context,
-                                ref: ref,
-                                title: "Artikel",
-                                total: totalArtikel),
-                          )),
-                    ],
+                  return IntrinsicHeight(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                            flex: 3, child: _buildWalletCard(context, ref)),
+                        Expanded(
+                            flex: 2,
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 8),
+                              child: _buildMainCard(
+                                  color: Colors.tealAccent.shade700,
+                                  icon: Ionicons.leaf_outline,
+                                  context: context,
+                                  ref: ref,
+                                  title: "Kebun",
+                                  total: totalGardens),
+                            )),
+                        Expanded(
+                            flex: 2,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 8),
+                              child: _buildMainCard(
+                                  color: Colors.deepOrange.shade700,
+                                  icon: Ionicons.book_outline,
+                                  context: context,
+                                  ref: ref,
+                                  title: "Artikel",
+                                  total: totalArtikel),
+                            )),
+                      ],
+                    ),
                   );
                 }),
             _buildNewestPlant(context, ref),
@@ -498,28 +505,46 @@ class HomeScreen extends ConsumerWidget {
       Color? color,
       required WidgetRef ref,
       required String title,
+      required IconData icon,
       required int total}) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
     return PlainCard(
       color: color ?? colorScheme.surface,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: textTheme.labelMedium!
-                .apply(fontWeightDelta: 2, color: colorScheme.onSurface),
-          ),
-          Text(
-            "$total",
-            style: textTheme.labelLarge!.apply(
-                fontWeightDelta: 2,
-                fontSizeDelta: 4,
-                color: colorScheme.onSurface),
-          )
-        ],
+      child: Container(
+        child: Stack(
+          children: [
+            Positioned(
+                bottom: 0,
+                right: 0,
+                child: Icon(
+                  icon,
+                  size: 24,
+                  color: Colors.white,
+                )),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: textTheme.labelMedium!
+                      .apply(fontWeightDelta: 2, color: Colors.white),
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  "$total",
+                  style: textTheme.labelLarge!.apply(
+                      fontWeightDelta: 2,
+                      fontSizeDelta: 6,
+                      color: Colors.white),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

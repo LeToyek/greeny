@@ -4,8 +4,12 @@ class EmblemService {
   Future<List<EmblemModel>> getEmblems() async {
     try {
       final res = await EmblemModel.ref.get();
-      List<EmblemModel> emblems = [];
-      res.docs.map((e) => emblems.add(EmblemModel.fromQuery(e)));
+
+      final emblems = res.docs.map((e) {
+        final emblem = EmblemModel.fromQuery(e);
+        emblem.must = e['must'];
+        return emblem;
+      }).toList();
 
       return emblems;
     } catch (e) {

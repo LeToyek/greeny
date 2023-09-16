@@ -23,9 +23,11 @@ class TransactionNotificationService {
     final timeNow = DateTime.now().toString();
     final tfNotification = TransactionNotificationModel(
         isRead: false,
-        title: transactionModel.logType,
+        title: "Pembelian Tanaman",
         description: transactionModel.logMessage,
         refModel: transactionModel.refModel,
+        fromID: transactionModel.fromID,
+        toID: transactionModel.ownerID,
         createdAt: timeNow,
         updatedAt: timeNow);
     await userCollection

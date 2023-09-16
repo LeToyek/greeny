@@ -145,51 +145,49 @@ class _BookScreenState extends ConsumerState<BookScreen> {
   }
 
   Widget _buildBookContainer(BookModel book) {
-    return GestureDetector(
-      onTap: () => context.push("/book/detail/${book.id}"),
-      child: PlainCard(
-          padding: EdgeInsets.zero,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                  height: 200,
-                  child: ClipRRect(
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(12)),
-                    child: Image.network(
-                      book.imageUrl,
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  )),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      capitalize(trimmer(book.title)),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .apply(fontWeightDelta: 2),
-                    ),
-                    Text(
-                      DateHelper.timestampToReadable(book.createdAt!),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .apply(fontWeightDelta: 2, color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          )),
-    );
+    return PlainCard(
+        onTap: () => context.push("/book/detail/${book.id}"),
+        padding: EdgeInsets.zero,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+                height: 200,
+                child: ClipRRect(
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(12)),
+                  child: Image.network(
+                    book.imageUrl,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    capitalize(trimmer(book.title)),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .apply(fontWeightDelta: 2),
+                  ),
+                  Text(
+                    DateHelper.timestampToReadable(book.createdAt!),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .apply(fontWeightDelta: 2, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ));
   }
 
   DropdownMenuItem _buildDropdownItem(String text) {

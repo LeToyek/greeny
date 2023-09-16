@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class TransactionNotificationModel {
   bool isRead = false;
   String? id;
@@ -12,7 +10,6 @@ class TransactionNotificationModel {
   String? refModel;
   String? fromID;
   String? toID;
-
   TransactionNotificationModel({
     required this.isRead,
     this.id,
@@ -21,6 +18,8 @@ class TransactionNotificationModel {
     this.createdAt,
     this.updatedAt,
     this.refModel,
+    this.fromID,
+    this.toID,
   });
 
   TransactionNotificationModel copyWith({
@@ -31,6 +30,8 @@ class TransactionNotificationModel {
     String? createdAt,
     String? updatedAt,
     String? refModel,
+    String? fromID,
+    String? toID,
   }) {
     return TransactionNotificationModel(
       isRead: isRead ?? this.isRead,
@@ -40,6 +41,8 @@ class TransactionNotificationModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       refModel: refModel ?? this.refModel,
+      fromID: fromID ?? this.fromID,
+      toID: toID ?? this.toID,
     );
   }
 
@@ -52,10 +55,12 @@ class TransactionNotificationModel {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'refModel': refModel,
+      'fromID': fromID,
+      'toID': toID,
     };
   }
 
-  factory TransactionNotificationModel.fromMap(DocumentSnapshot<Object?> map) {
+  factory TransactionNotificationModel.fromMap(Map<String, dynamic> map) {
     return TransactionNotificationModel(
       isRead: map['isRead'] ?? false,
       id: map['id'],
@@ -64,6 +69,8 @@ class TransactionNotificationModel {
       createdAt: map['createdAt'],
       updatedAt: map['updatedAt'],
       refModel: map['refModel'],
+      fromID: map['fromID'],
+      toID: map['toID'],
     );
   }
 
@@ -74,7 +81,7 @@ class TransactionNotificationModel {
 
   @override
   String toString() {
-    return 'TransactionNotificationModel(isRead: $isRead, id: $id, title: $title, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, refModel: $refModel)';
+    return 'TransactionNotificationModel(isRead: $isRead, id: $id, title: $title, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, refModel: $refModel, fromID: $fromID, toID: $toID)';
   }
 
   @override
@@ -88,7 +95,9 @@ class TransactionNotificationModel {
         other.description == description &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt &&
-        other.refModel == refModel;
+        other.refModel == refModel &&
+        other.fromID == fromID &&
+        other.toID == toID;
   }
 
   @override
@@ -99,6 +108,8 @@ class TransactionNotificationModel {
         description.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode ^
-        refModel.hashCode;
+        refModel.hashCode ^
+        fromID.hashCode ^
+        toID.hashCode;
   }
 }

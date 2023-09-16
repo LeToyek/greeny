@@ -13,6 +13,7 @@ class TransactionModel {
 
   PlantModel? plant;
   String? ownerID;
+  String? fromID;
   String? refModel;
   TransactionModel({
     required this.value,
@@ -70,6 +71,7 @@ class TransactionModel {
             'plant': plant!.toQuery(),
             'ownerID': ownerID,
             'refModel': refModel ?? "",
+            'fromID': fromID ?? "",
           };
   }
 

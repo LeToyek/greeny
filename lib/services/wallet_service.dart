@@ -75,6 +75,7 @@ class WalletService {
     print("transactionModel.ownerID ${transactionModel.ownerID}");
     try {
       await _firestore.runTransaction((transaction) async {
+        transactionModel.fromID = FirebaseAuth.instance.currentUser!.uid;
         transactionRef.add(transactionModel.toMap());
         final isSuccess = await decreaseWalletValue(
             transactionModel.value, transactionModel.logMessage);

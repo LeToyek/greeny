@@ -7,6 +7,7 @@ import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/wallet/success_screen.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/formatter.dart';
+import 'package:lottie/lottie.dart';
 
 class WalletManagerScreen extends ConsumerStatefulWidget {
   static const routePath = "/wallet-manager";
@@ -211,12 +212,35 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
   }
 
   Widget _buildOtherPage(TextTheme textTheme, ColorScheme colorScheme) {
-    return Column(
-      children: [
-        PlainCard(
-          child: const Text("other page"),
-        )
-      ],
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Lottie.asset(
+            "lib/assets/lottie/ud_dev_gif.json",
+            height: 300,
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Text(
+            "Fitur masih dalam pengembangan",
+            style: textTheme.bodyLarge!
+                .apply(fontWeightDelta: 2, fontSizeDelta: 4),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Text(
+            "Mohon maaf atas ketidaknyamanannya",
+            style: textTheme.bodyMedium!
+                .apply(fontWeightDelta: 2, fontSizeDelta: 2),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 

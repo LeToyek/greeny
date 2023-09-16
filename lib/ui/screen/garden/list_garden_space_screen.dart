@@ -74,6 +74,7 @@ class ListGardenSpaceScreen extends ConsumerWidget {
                   : GestureDetector(
                       onTap: () {
                         userNotifier.setVisitedUser();
+                        userNotifier.setVisitedUserModel();
                         fileController.imageUrl = garden!.backgroundUrl;
                         gardenNotifier.getGardenByID(data[index].id);
                         ref

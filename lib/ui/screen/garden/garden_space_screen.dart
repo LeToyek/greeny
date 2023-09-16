@@ -177,6 +177,8 @@ class GardenSpaceScreen extends ConsumerWidget {
                                           achievementIDs: achievementIDs);
                                     }
                                   : () {
+                                      userClientController
+                                          .setVisitedUserModel();
                                       context.push(
                                           "/garden/$id/detail/${data[index].id}");
                                       potsNotifier.getPotById(data[index].id!);

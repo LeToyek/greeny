@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/model/user_model.dart';
 import 'package:greenify/services/auth_service.dart';
@@ -37,9 +38,8 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
     } catch (e) {
       state = AsyncError(e, StackTrace.current);
       print(StackTrace.current);
-      throw Exception(
-        e,
-      );
+
+      rethrow;
     }
   }
 
@@ -109,6 +109,7 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
       final userMod = await usersServices.getUserById(id: authUser!.uid);
       state = AsyncValue.data([userMod]);
     } catch (e) {
+      print(e);
       state = AsyncValue.error(e, StackTrace.current);
     }
   }
@@ -156,13 +157,30 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   }
 }
 
+final firebaseUserProvider = StreamProvider<User?>((ref) {
+  return FirebaseAuth.instance.userChanges();
+});
+
+final userServiceProvider = Provider<UsersServices>((ref) {
+  return UsersServices();
+});
+
 final usersProvider =
     StateNotifierProvider<UsersNotifier, AsyncValue<List<UserModel>>>(
-        (ref) => UsersNotifier(usersServices: UsersServices())..getUsers());
+  (ref) => UsersNotifier(
+    usersServices: ref.watch(userServiceProvider),
+  )..getUsers(),
+);
 
 final singleUserProvider =
-    StateNotifierProvider<UsersNotifier, AsyncValue<List<UserModel>>>(
-        (ref) => UsersNotifier(usersServices: UsersServices())..getUser());
+    StateNotifierProvider<UsersNotifier, AsyncValue<List<UserModel>>>((ref) {
+  // watch for firebase user changes
+  // ref.watch(firebaseUserProvider);
+
+  return UsersNotifier(
+    usersServices: ref.watch(userServiceProvider),
+  )..getUser();
+});
 
 final userClientProvider =
     StateNotifierProvider<UsersNotifier, AsyncValue<List<UserModel>>>((ref) {

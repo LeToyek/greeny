@@ -20,6 +20,11 @@ class SekelatonScreen extends ConsumerWidget {
     // final initializer = ref.watch(notificationProvider);
     return profileNotifier.when(
       data: (data) {
+        if (data.isEmpty) {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
+        }
+
         final user = data[0];
         return Scaffold(
             appBar: index == 0

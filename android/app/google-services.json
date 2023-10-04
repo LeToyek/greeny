@@ -7,50 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:408888696472:android:71eeacd4385143f3707aed",
-        "android_client_info": {
-          "package_name": "com.example.greenify"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "408888696472-1tttp8rbpa3bin6fn5i9l4h50m1gbd7q.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.greenify",
-            "certificate_hash": "1765f39111db72b16161b6d964f3954e9e6386ab"
-          }
-        },
-        {
-          "client_id": "408888696472-tf6l18o852ebue8t8s6bab6uujv6cibd.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDLr8rD4R9TTMotUX_hNyw7racGWY8TOBU"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "408888696472-tf6l18o852ebue8t8s6bab6uujv6cibd.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "408888696472-dnk5ecvg2n9qk4b6qaidjhss7jti4lh0.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.greenify"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:408888696472:android:5f922c78588635f2707aed",
         "android_client_info": {
           "package_name": "com.tocode.greeny"
@@ -75,10 +31,54 @@
               "client_type": 3
             },
             {
-              "client_id": "408888696472-dnk5ecvg2n9qk4b6qaidjhss7jti4lh0.apps.googleusercontent.com",
+              "client_id": "408888696472-a4hklj64lej4ck4kkgjab3jbief84mi9.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.greenify"
+                "bundle_id": "com.tocode.greeny"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:408888696472:android:f81ff9e0577f0512707aed",
+        "android_client_info": {
+          "package_name": "id.greenlock.greeny"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "408888696472-9okjteqa2umh3apvprele1jtehd7o9kk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.greenlock.greeny",
+            "certificate_hash": "a7b035034ce2da92ab4cc0a0519786640898c774"
+          }
+        },
+        {
+          "client_id": "408888696472-tf6l18o852ebue8t8s6bab6uujv6cibd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLr8rD4R9TTMotUX_hNyw7racGWY8TOBU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "408888696472-tf6l18o852ebue8t8s6bab6uujv6cibd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "408888696472-a4hklj64lej4ck4kkgjab3jbief84mi9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tocode.greeny"
               }
             }
           ]

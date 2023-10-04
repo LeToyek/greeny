@@ -21,66 +21,69 @@ import 'package:greenify/ui/screen/wallet/success_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-final _appRoutes =
-    GoRouter(initialLocation: "/splash", navigatorKey: navigatorKey, routes: [
-  GoRoute(
-      path: "/about",
-      builder: (context, state) {
-        return const AboutScreen();
-      }),
-  ...usersRoutes,
-  ...booksRoutes,
-  ...gardenRoutes,
-  ...paymentsRoutes,
-  GoRoute(
-      path: TrxStatusScreen.routePath,
-      name: TrxStatusScreen.routeName,
-      builder: (context, state) {
-        final args = state.extra as Map<String, dynamic>;
+final _appRoutes = GoRouter(
+  initialLocation: "/splash",
+  navigatorKey: navigatorKey,
+  routes: [
+    GoRoute(
+        path: "/about",
+        builder: (context, state) {
+          return const AboutScreen();
+        }),
+    ...usersRoutes,
+    ...booksRoutes,
+    ...gardenRoutes,
+    ...paymentsRoutes,
+    GoRoute(
+        path: TrxStatusScreen.routePath,
+        name: TrxStatusScreen.routeName,
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
 
-        return TrxStatusScreen(trxIndex: args["index"]);
-      }),
-  GoRoute(
-      path: SoldPlantScreen.routePath,
-      name: SoldPlantScreen.routeName,
-      builder: (context, state) => const SoldPlantScreen()),
-  GoRoute(
-      path: EmblemScreen.routePath,
-      name: EmblemScreen.routeName,
-      builder: (context, state) => const EmblemScreen()),
-  GoRoute(
-      path: SuccessScreen.routePath,
-      name: SuccessScreen.routeName,
-      builder: (context, state) => const SuccessScreen()),
-  GoRoute(
-      path: VerifBuyScreen.routePath,
-      name: VerifBuyScreen.routeName,
-      builder: (context, state) {
-        final args = state.extra as Map<String, dynamic>;
-        return VerifBuyScreen(
-          indexTrx: args['index'],
-        );
-      }),
-  GoRoute(
-      path: "/disease",
-      builder: (context, state) {
-        return const DiseaseScreen();
-      }),
-  GoRoute(
-      path: "/leaderboard",
-      builder: (context, state) => const LeaderboardScreen()),
-  GoRoute(
-      path: WalletManagerScreen.routePath,
-      builder: (context, state) => WalletManagerScreen()),
-  GoRoute(
-    path: "/register",
-    builder: (context, state) => const RegisterScreen(),
-  ),
-  GoRoute(
-    path: "/login",
-    builder: (context, state) => const LoginScreen(),
-  ),
-  GoRoute(path: "/splash", builder: (context, state) => const SplashScreen())
-]);
+          return TrxStatusScreen(trxIndex: args["index"]);
+        }),
+    GoRoute(
+        path: SoldPlantScreen.routePath,
+        name: SoldPlantScreen.routeName,
+        builder: (context, state) => const SoldPlantScreen()),
+    GoRoute(
+        path: EmblemScreen.routePath,
+        name: EmblemScreen.routeName,
+        builder: (context, state) => const EmblemScreen()),
+    GoRoute(
+        path: SuccessScreen.routePath,
+        name: SuccessScreen.routeName,
+        builder: (context, state) => const SuccessScreen()),
+    GoRoute(
+        path: VerifBuyScreen.routePath,
+        name: VerifBuyScreen.routeName,
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          return VerifBuyScreen(
+            indexTrx: args['index'],
+          );
+        }),
+    GoRoute(
+        path: "/disease",
+        builder: (context, state) {
+          return const DiseaseScreen();
+        }),
+    GoRoute(
+        path: "/leaderboard",
+        builder: (context, state) => const LeaderboardScreen()),
+    GoRoute(
+        path: WalletManagerScreen.routePath,
+        builder: (context, state) => WalletManagerScreen()),
+    GoRoute(
+      path: "/register",
+      builder: (context, state) => const RegisterScreen(),
+    ),
+    GoRoute(
+      path: "/login",
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
+  ],
+);
 
 final appRouteProvider = Provider((ref) => _appRoutes);

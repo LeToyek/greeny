@@ -13,12 +13,12 @@ class WalletManagerScreen extends ConsumerStatefulWidget {
   static const routePath = "/wallet-manager";
   static const routeName = "wallet-manager";
   final List<Map<String, dynamic>> nominalValue = [
-    {"value": 20000, "icon": "lib/assets/images/money/money-1"},
-    {"value": 40000, "icon": "lib/assets/images/money/money-2"},
-    {"value": 80000, "icon": "lib/assets/images/money/money-3"},
-    {"value": 100000, "icon": "lib/assets/images/money/money-4"},
-    {"value": 120000, "icon": "lib/assets/images/money/money-5"},
-    {"value": 160000, "icon": "lib/assets/images/money/money-6"},
+    {"value": 20000, "icon": "assets/images/money/money-1.png"},
+    {"value": 40000, "icon": "assets/images/money/money-2.png"},
+    {"value": 80000, "icon": "assets/images/money/money-3.png"},
+    {"value": 100000, "icon": "assets/images/money/money-4.png"},
+    {"value": 120000, "icon": "assets/images/money/money-5.png"},
+    {"value": 160000, "icon": "assets/images/money/money-6.png"},
   ];
   WalletManagerScreen({super.key});
 
@@ -197,7 +197,7 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              "$iconCard.png",
+              iconCard,
               height: 48,
             ),
             const SizedBox(
@@ -218,7 +218,7 @@ class _WalletManagerScreenState extends ConsumerState<WalletManagerScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Lottie.asset(
-            "lib/assets/lottie/ud_dev_gif.json",
+            "assets/lottie/ud_dev_gif.json",
             height: 300,
           ),
           const SizedBox(

@@ -144,7 +144,7 @@ class GardenSpaceScreen extends ConsumerWidget {
                                 child: PlantCard(
                                   status: PlantBoxStatus.empty,
                                   title: 'Add Plant',
-                                  imageURI: "lib/assets/images/dumPlant.png",
+                                  imageURI: "assets/images/dumPlant.png",
                                 ),
                               );
                             }
@@ -152,7 +152,7 @@ class GardenSpaceScreen extends ConsumerWidget {
                               print('index2: $index');
                               return PlantCard(
                                 title: 'Empty',
-                                imageURI: "lib/assets/images/dumPlant.png",
+                                imageURI: "assets/images/dumPlant.png",
                               );
                             }
 

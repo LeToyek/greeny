@@ -87,9 +87,9 @@ class HomeScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     return PlainCard(
         color: colorScheme.primary,
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [],
+          children: [],
         ));
   }
 
@@ -178,6 +178,8 @@ class HomeScreen extends ConsumerWidget {
                                 children: [
                                   Text(
                                     book.title ?? "Title",
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelMedium!
@@ -295,7 +297,12 @@ class HomeScreen extends ConsumerWidget {
                               const SizedBox(
                                 height: 6,
                               ),
-                              const Divider()
+                              Divider(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.2), 
+                              )
                             ],
                           );
                   },
@@ -454,10 +461,14 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(
                 width: 4,
               ),
-              Text(
-                "Greeny Wallet",
-                style: textTheme.labelMedium!
-                    .apply(fontWeightDelta: 2, color: colorScheme.onSurface),
+              Expanded(
+                child: FittedBox(
+                  child: Text(
+                    "Greeny Wallet",
+                    style: textTheme.labelMedium!.apply(
+                        fontWeightDelta: 2, color: colorScheme.onSurface),
+                  ),
+                ),
               ),
             ],
           ),

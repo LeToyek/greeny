@@ -17,8 +17,7 @@ class SuccessScreen extends ConsumerWidget {
       body: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         const Spacer(),
-        Lottie.asset("lib/assets/lottie/success_gif.json",
-            width: 200, height: 200),
+        Lottie.asset("assets/lottie/success_gif.json", width: 200, height: 200),
         const SizedBox(height: 20),
         Text(
           "Top Up Berhasil!",

@@ -58,6 +58,7 @@ final ColorScheme darkColorScheme = ColorScheme.dark(
 );
 
 final ThemeData lightTheme = ThemeData(
+  useMaterial3: false,
   colorScheme: lightColorScheme,
   fontFamily: GoogleFonts.nunito().fontFamily,
   textTheme: TextTheme(
@@ -157,6 +158,7 @@ final ThemeData lightTheme = ThemeData(
 
 final ThemeData darkTheme = lightTheme.copyWith(
   colorScheme: darkColorScheme,
+  useMaterial3: false,
   textTheme: TextTheme(
     displayLarge: GoogleFonts.nunito(
       color: textSwatch.shade200,

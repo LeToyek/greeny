@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -93,8 +94,8 @@ class ListGardenSpaceScreen extends ConsumerWidget {
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
-                                Image.network(
-                                  garden!.backgroundUrl,
+                                CachedNetworkImage(
+                                  imageUrl: garden!.backgroundUrl,
                                   fit: BoxFit.fitWidth,
                                 ),
                                 DecoratedBox(

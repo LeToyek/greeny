@@ -1,4 +1,5 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -197,14 +198,14 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                       if (widget.photoHero != null)
                         Hero(
                           tag: widget.photoHero!,
-                          child: Image.network(
-                            pot!.plant.image,
+                          child: CachedNetworkImage(
+                            imageUrl: pot!.plant.image,
                             fit: BoxFit.cover,
                           ),
                         )
                       else
-                        Image.network(
-                          pot!.plant.image,
+                        CachedNetworkImage(
+                          imageUrl: pot!.plant.image,
                           fit: BoxFit.cover,
                         ),
                       const DecoratedBox(
@@ -379,9 +380,11 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                         const SizedBox(width: 4),
                                         CircleAvatar(
                                           radius: 16,
-                                          backgroundImage: NetworkImage(
-                                              userData.imageUrl ?? unknownImage,
-                                              scale: 1),
+                                          backgroundImage:
+                                              CachedNetworkImageProvider(
+                                                  userData.imageUrl ??
+                                                      unknownImage,
+                                                  scale: 1),
                                         ),
                                       ],
                                     );
@@ -458,15 +461,15 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                   content: SizedBox(
                                       width: double.infinity,
                                       height: 300,
-                                      child: Image.network(
-                                        pot!.plant.image,
+                                      child: CachedNetworkImage(
+                                        imageUrl: pot!.plant.image,
                                         fit: BoxFit.fitWidth,
                                       )),
                                 );
                               },
                             ),
-                            child: Image.network(
-                              pot!.plant.image,
+                            child: CachedNetworkImage(
+                              imageUrl: pot!.plant.image,
                               fit: BoxFit.cover,
                             ),
                           ),

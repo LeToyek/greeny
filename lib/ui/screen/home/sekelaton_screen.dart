@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/constants/user_constants.dart';
@@ -126,8 +127,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   padding: const EdgeInsets.only(right: 8),
                   child: CircleAvatar(
                     radius: 24,
-                    backgroundImage:
-                        NetworkImage(user.imageUrl ?? unknownImage),
+                    backgroundImage: CachedNetworkImageProvider(
+                        user.imageUrl ?? unknownImage),
                   ),
                 ),
 

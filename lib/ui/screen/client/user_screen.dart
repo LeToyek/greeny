@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,14 +44,14 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
           children: [
             ClipOval(
               child: user.imageUrl != null
-                  ? Image.network(
-                      user.imageUrl!,
+                  ? CachedNetworkImage(
+                      imageUrl: user.imageUrl!,
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
                     )
-                  : Image.network(
-                      blankProfileLink,
+                  : CachedNetworkImage(
+                      imageUrl: blankProfileLink,
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
@@ -93,7 +94,10 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.network(achievementModel.emblem!.imageUrl, height: 100),
+          CachedNetworkImage(
+            imageUrl: achievementModel.emblem!.imageUrl,
+            height: 100,
+          ),
           Text(
             textAlign: TextAlign.center,
             achievementModel.emblem!.title,
@@ -140,8 +144,8 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    garden.backgroundUrl,
+                  CachedNetworkImage(
+                    imageUrl: garden.backgroundUrl,
                     fit: BoxFit.fitWidth,
                   ),
                   DecoratedBox(
@@ -191,8 +195,8 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
                     child: ClipRRect(
                       borderRadius:
                           const BorderRadius.vertical(top: Radius.circular(12)),
-                      child: Image.network(
-                        book.imageUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: book.imageUrl,
                         height: 200,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -244,8 +248,8 @@ class _UserClientScreenState extends ConsumerState<UserClientScreen> {
                             clipBehavior: Clip.none,
                             fit: StackFit.expand,
                             children: [
-                              Image.network(
-                                user.gardens![0].backgroundUrl,
+                              CachedNetworkImage(
+                                imageUrl: user.gardens![0].backgroundUrl,
                                 fit: BoxFit.cover,
                               ),
                               const DecoratedBox(

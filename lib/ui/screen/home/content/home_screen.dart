@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -158,8 +159,8 @@ class HomeScreen extends ConsumerWidget {
                             ClipRRect(
                                 borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(8)),
-                                child: Image.network(
-                                  book.imageUrl ?? "",
+                                child: CachedNetworkImage(
+                                  imageUrl: book.imageUrl,
                                   width: 150,
                                   height: 180,
                                   fit: BoxFit.cover,
@@ -281,10 +282,11 @@ class HomeScreen extends ConsumerWidget {
                                                 .apply(fontWeightDelta: 2)),
                                         const SizedBox(width: 16),
                                         CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              data[index].imageUrl == null
-                                                  ? unknownImage
-                                                  : data[index].imageUrl!),
+                                          backgroundImage:
+                                              CachedNetworkImageProvider(
+                                                  data[index].imageUrl == null
+                                                      ? unknownImage
+                                                      : data[index].imageUrl!),
                                         ),
                                         const SizedBox(width: 16),
                                         Text(data[index].name ?? "User"),
@@ -401,7 +403,8 @@ class HomeScreen extends ConsumerWidget {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             image: DecorationImage(
-                              image: NetworkImage(pot.plant.image),
+                              image:
+                                  CachedNetworkImageProvider(pot.plant.image),
                               fit: BoxFit.cover,
                             ),
                           ),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/model/achievement_model.dart';
@@ -30,7 +31,8 @@ class AchievementDialog extends ConsumerWidget {
           const SizedBox(
             height: 24,
           ),
-          Image.network(achievementModel.emblem!.imageUrl, height: 100),
+          CachedNetworkImage(
+              imageUrl: achievementModel.emblem!.imageUrl, height: 100),
           const SizedBox(
             height: 8,
           ),

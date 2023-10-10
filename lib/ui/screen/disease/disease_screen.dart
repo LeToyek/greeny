@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,9 +27,6 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
   bool isProcessing = false;
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
-    if (_controller == null) {
-      return;
-    }
     final offset = Offset(
       details.localPosition.dx / constraints.maxWidth,
       details.localPosition.dy / constraints.maxHeight,
@@ -101,10 +99,10 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                       isProcessing
                           ? Container(
                               color: Colors.transparent,
-                              child: Center(
+                              child: const Center(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: const [
+                                  children: [
                                     CircularProgressIndicator(),
                                     SizedBox(height: 16),
                                     Text("Processing...",
@@ -293,7 +291,8 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                                     height: 200,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: NetworkImage(res['images'][0]),
+                                        image: CachedNetworkImageProvider(
+                                            res['images'][0]),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -304,7 +303,8 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                                     height: 200,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: NetworkImage(res['images'][1]),
+                                        image: CachedNetworkImageProvider(
+                                            res['images'][1]),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -316,7 +316,8 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                                     height: 200,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: NetworkImage(res['images'][2]),
+                                        image: CachedNetworkImageProvider(
+                                            res['images'][2]),
                                         fit: BoxFit.cover,
                                       ),
                                     ),

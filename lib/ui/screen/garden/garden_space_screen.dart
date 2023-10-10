@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -167,36 +169,46 @@ class GardenSpaceScreen extends ConsumerWidget {
                             final isSold =
                                 data[index].plant.marketStatus == "sold";
 
+                            final heroKey = "pot_${data[index].id}_index";
+                            final delay = (Random().nextDouble()).seconds;
+
                             return GestureDetector(
-                              onTap: data[index].plant.status ==
-                                          PlantStatus.dry &&
-                                      !isSold &&
-                                      userClientController.isSelf()
-                                  ? () {
-                                      showWateringDialog(
-                                          context: context,
-                                          textTheme: textTheme,
-                                          counterHeight: counterHeight,
-                                          isDetail: false,
-                                          potsNotifier: potsNotifier,
-                                          index: index,
-                                          expNotifier: expNotifier,
-                                          waterExp: waterExp,
-                                          achievementIDs: achievementIDs);
-                                    }
-                                  : () {
-                                      userClientController
-                                          .setVisitedUserModel();
-                                      context.push(
-                                          "/garden/$id/detail/${data[index].id}");
-                                      potsNotifier.getPotById(data[index].id!);
-                                      return;
-                                    },
+                              onTap:
+                                  data[index].plant.status == PlantStatus.dry &&
+                                          !isSold &&
+                                          userClientController.isSelf()
+                                      ? () {
+                                          showWateringDialog(
+                                              context: context,
+                                              textTheme: textTheme,
+                                              counterHeight: counterHeight,
+                                              isDetail: false,
+                                              potsNotifier: potsNotifier,
+                                              index: index,
+                                              expNotifier: expNotifier,
+                                              waterExp: waterExp,
+                                              achievementIDs: achievementIDs);
+                                        }
+                                      : () {
+                                          userClientController
+                                              .setVisitedUserModel();
+
+                                          context.push(
+                                            "/garden/$id/detail/${data[index].id}",
+                                            extra: {
+                                              "pot": data[index],
+                                              "iconHero": heroKey,
+                                            },
+                                          );
+                                          // potsNotifier.getPotById(data[index].id!);
+                                          return;
+                                        },
                               child: Stack(
                                 children: [
                                   PlantCard(
                                     status: PlantBoxStatus.filled,
                                     title: data[index].plant.name,
+                                    heroKey: heroKey,
                                     imageURI: plantCategory
                                         .where((element) =>
                                             element['name'] ==
@@ -205,7 +217,8 @@ class GardenSpaceScreen extends ConsumerWidget {
                                   ).animate().saturate(
                                         end: isSold ? 0.0 : 1.0,
                                       ),
-                                  data[index].plant.status == PlantStatus.dry
+                                  data[index].plant.status == PlantStatus.dry &&
+                                          !isSold
                                       ? Positioned(
                                           // top: 0,
                                           // right: 0,
@@ -223,23 +236,28 @@ class GardenSpaceScreen extends ConsumerWidget {
                                               color: Colors.white,
                                               size: 20,
                                             ),
-                                          ),
+                                          )
+                                              .animate(
+                                                delay:
+                                                    delay + 0.1.seconds * index,
+                                              )
+                                              .scale(
+                                                curve: Curves.easeOut,
+                                                duration: 0.5.seconds,
+                                              )
+                                              .animate(
+                                                delay:
+                                                    delay + 0.1.seconds * index,
+                                                onPlay: (controller) =>
+                                                    controller.repeat(
+                                                        reverse: true),
+                                              )
+                                              .scaleXY(
+                                                end: 0.9,
+                                                duration: 1.seconds,
+                                                curve: Curves.easeInOut,
+                                              ),
                                         )
-                                          .animate()
-                                          .scale(
-                                            curve: Curves.easeOut,
-                                            duration: 0.5.seconds,
-                                          )
-                                          .animate(
-                                            delay: 1.seconds,
-                                            onPlay: (controller) => controller
-                                                .repeat(reverse: true),
-                                          )
-                                          .scaleXY(
-                                            end: 0.9,
-                                            duration: 1.seconds,
-                                            curve: Curves.easeInOut,
-                                          )
                                       : Container(),
                                   if (isSold)
                                     Center(

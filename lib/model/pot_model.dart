@@ -10,6 +10,13 @@ class PotModel {
   final PlantModel plant;
   static const String collectionPath = 'pots';
 
+  DocumentReference? ref;
+
+  DateTime? get createdAtDate =>
+      createdAt != null ? DateTime.parse(createdAt!) : null;
+  DateTime? get updatedAtDate =>
+      updatedAt != null ? DateTime.parse(updatedAt!) : null;
+
   PotModel(
       {required this.status,
       required this.positionIndex,
@@ -24,6 +31,7 @@ class PotModel {
         plant = PlantModel.fromQuery(element['plant']),
         createdAt = element['created_at'].toString(),
         updatedAt = element['updated_at'].toString() {
+    ref = element.reference;
     status = reverseStatusParse(element['status']);
   }
 

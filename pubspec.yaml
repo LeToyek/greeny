@@ -76,6 +76,7 @@ dependencies:
   syncfusion_flutter_charts: ^23.1.38
   month_year_picker: ^0.3.0+1
   timelines: ^0.1.0
+  cached_network_image: ^3.3.0
   
 
 dev_dependencies:

@@ -10,11 +10,13 @@ class PlantCard extends ConsumerWidget {
     super.key,
     required this.title,
     required this.imageURI,
+    this.heroKey,
     this.status = PlantBoxStatus.locked,
   });
 
   final String title;
   final String imageURI;
+  final String? heroKey;
   final PlantBoxStatus status;
 
   @override
@@ -73,18 +75,29 @@ class PlantCard extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         const Spacer(),
-        imageURI != null
-            ? Image.asset(
+        if (imageURI != null)
+          if (heroKey != null)
+            Hero(
+              tag: heroKey!,
+              child: Image.asset(
                 imageURI,
                 height: 80,
                 width: double.infinity,
-              )
-            : Icon(
-                icon,
-                color: state != ThemeMode.light
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.onBackground,
               ),
+            )
+          else
+            Image.asset(
+              imageURI,
+              height: 80,
+              width: double.infinity,
+            )
+        else
+          Icon(
+            icon,
+            color: state != ThemeMode.light
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.onBackground,
+          ),
         const Spacer(),
         Text(
           title,

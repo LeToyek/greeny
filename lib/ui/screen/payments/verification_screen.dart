@@ -206,68 +206,80 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                 flex: 2,
                 child: PlainCard(
                     onTap: () async {
-                      if (_isAgree) {
+                      if (!_isAgree) return;
+
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AlertDialog(
+                            // title: const Text("Parkir"),
+                            elevation: 0,
+                            backgroundColor: Colors.transparent,
+                            content: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        },
+                      );
+
+                      final walletVal = wallet.value!.first.wallet!.value;
+
+                      if (walletVal < widget.plant.price!) {
+                        context.pop();
+
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return const AlertDialog(
-                              // title: const Text("Parkir"),
-                              elevation: 0,
-                              backgroundColor: Colors.transparent,
-                              content: Center(
-                                child: CircularProgressIndicator(),
-                              ),
+                            return AlertDialog(
+                              title: const Text("Gagal"),
+                              content: const Text("Saldo tidak cukup"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      context.pop();
+                                    },
+                                    child: const Text("OK"))
+                              ],
                             );
                           },
                         );
-                        String timeNow = DateTime.now().toString();
-                        final owner = userClientController.visitedUserModel!;
-                        final logMessage =
-                            'Pembelian tanaman ${widget.plant.name} milik ${owner.name} berhasil ';
-                        final walletVal = wallet.value!.first.wallet!.value;
-                        if (walletVal > widget.plant.price!) {
-                          final transaction = TransactionModel(
-                              value: widget.plant.price!,
-                              createdAt: timeNow,
-                              updatedAt: timeNow,
-                              logType: '[MIN]',
-                              logMessage: logMessage);
-                          transaction.refModel =
-                              "users/${owner.userId}/${widget.plantRef}";
-                          ref.watch(singleUserProvider.notifier).getUser();
 
-                          transaction.setPlant(widget.plant);
-                          transaction.ownerID = owner.userId;
-                          await WalletService().buyPlant(
-                              transactionModel: transaction,
-                              reference:
-                                  "users/${owner.userId}/${widget.plantRef}");
-                          ref
-                              .watch(transactionHistory.notifier)
-                              .getTransactionHistory();
-                          if (context.mounted) {
-                            context.pushReplacement(
-                                PaymentSuccessScreen.routePath,
-                                extra: transaction);
-                          }
-                        } else {
-                          context.pop();
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text("Gagal"),
-                                  content: const Text("Saldo tidak cukup"),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          context.pop();
-                                        },
-                                        child: const Text("OK"))
-                                  ],
-                                );
-                              });
-                        }
+                        return;
+                      }
+
+                      String timeNow = DateTime.now().toString();
+                      final owner = userClientController.visitedUserModel!;
+                      final logMessage =
+                          'Pembelian tanaman ${widget.plant.name} milik ${owner.name} berhasil ';
+
+                      final transaction = TransactionModel(
+                        value: widget.plant.price!,
+                        createdAt: timeNow,
+                        updatedAt: timeNow,
+                        logType: '[MIN]',
+                        logMessage: logMessage,
+                      );
+
+                      transaction.refModel =
+                          "users/${owner.userId}/${widget.plantRef}";
+
+                      ref.watch(singleUserProvider.notifier).getUser();
+
+                      transaction.setPlant(widget.plant);
+                      transaction.ownerID = owner.userId;
+
+                      await WalletService().buyPlant(
+                          transactionModel: transaction,
+                          reference:
+                              "users/${owner.userId}/${widget.plantRef}");
+
+                      ref
+                          .watch(transactionHistory.notifier)
+                          .getTransactionHistory();
+
+                      if (context.mounted) {
+                        context.pushReplacement(PaymentSuccessScreen.routePath,
+                            extra: transaction);
                       }
                     },
                     boxShadow: const BoxShadow(

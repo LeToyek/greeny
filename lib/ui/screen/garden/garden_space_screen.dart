@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/plant_category_list.dart';
@@ -130,10 +131,11 @@ class GardenSpaceScreen extends ConsumerWidget {
                           itemCount: maxPlantCount,
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 4,
-                                  childAspectRatio: 7 / 13,
-                                  crossAxisSpacing: 4,
-                                  mainAxisSpacing: 12),
+                            crossAxisCount: 4,
+                            childAspectRatio: 7 / 13,
+                            crossAxisSpacing: 4,
+                            mainAxisSpacing: 12,
+                          ),
                           padding: EdgeInsets.zero,
                           itemBuilder: (context, index) {
                             print('index: $index');
@@ -161,9 +163,14 @@ class GardenSpaceScreen extends ConsumerWidget {
                                 data[index].plant.heightStat != null
                                     ? data[index].plant.heightStat!.last.height
                                     : 0;
+
+                            final isSold =
+                                data[index].plant.marketStatus == "sold";
+
                             return GestureDetector(
                               onTap: data[index].plant.status ==
                                           PlantStatus.dry &&
+                                      !isSold &&
                                       userClientController.isSelf()
                                   ? () {
                                       showWateringDialog(
@@ -195,7 +202,9 @@ class GardenSpaceScreen extends ConsumerWidget {
                                             element['name'] ==
                                             data[index].plant.category)
                                         .toList()[0]['image'],
-                                  ),
+                                  ).animate().saturate(
+                                        end: isSold ? 0.0 : 1.0,
+                                      ),
                                   data[index].plant.status == PlantStatus.dry
                                       ? Positioned(
                                           // top: 0,
@@ -203,20 +212,45 @@ class GardenSpaceScreen extends ConsumerWidget {
                                           // bottom: 0,
                                           // left: 0,
                                           child: Container(
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.blue,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.blue,
+                                            ),
+                                            width: 32,
+                                            height: 32,
+                                            child: const Icon(
+                                              Ionicons.water,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
                                           ),
-                                          width: 32,
-                                          height: 32,
-                                          child: const Icon(
-                                            Ionicons.water,
-                                            color: Colors.white,
-                                            size: 20,
-                                          ),
-                                        ))
+                                        )
+                                          .animate()
+                                          .scale(
+                                            curve: Curves.easeOut,
+                                            duration: 0.5.seconds,
+                                          )
+                                          .animate(
+                                            delay: 1.seconds,
+                                            onPlay: (controller) => controller
+                                                .repeat(reverse: true),
+                                          )
+                                          .scaleXY(
+                                            end: 0.9,
+                                            duration: 1.seconds,
+                                            curve: Curves.easeInOut,
+                                          )
                                       : Container(),
-                                  if (data[index].plant.price != null &&
+                                  if (isSold)
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Image.asset(
+                                          'assets/images/sold-out.png',
+                                        ),
+                                      ),
+                                    )
+                                  else if (data[index].plant.price != null &&
                                       data[index].plant.price != 0)
                                     const Positioned(
                                       top: 4,

@@ -74,11 +74,14 @@ class WalletService {
     return transactionsList;
   }
 
-  Future<void> buyPlant(
-      {required TransactionModel transactionModel,
-      required String reference}) async {
+  Future<void> buyPlant({
+    required TransactionModel transactionModel,
+    required String reference,
+  }) async {
     final transactionRef = userRef.collection('transactions');
+
     print("transactionModel.ownerID ${transactionModel.ownerID}");
+
     try {
       await _firestore.runTransaction((transaction) async {
         transactionModel.fromID = FirebaseAuth.instance.currentUser!.uid;

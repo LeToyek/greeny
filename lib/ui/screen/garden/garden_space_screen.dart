@@ -12,6 +12,7 @@ import 'package:greenify/ui/widgets/action_menu.dart';
 import 'package:greenify/ui/widgets/card/plant_card.dart';
 import 'package:greenify/ui/widgets/watering_dialog.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:super_banners/super_banners.dart';
 
 class GardenSpaceScreen extends ConsumerWidget {
   final String id;
@@ -141,7 +142,7 @@ class GardenSpaceScreen extends ConsumerWidget {
                               print('index: $index');
                               return GestureDetector(
                                 onTap: () => context.push("/garden/form/$id"),
-                                child: PlantCard(
+                                child: const PlantCard(
                                   status: PlantBoxStatus.empty,
                                   title: 'Add Plant',
                                   imageURI: "assets/images/dumPlant.png",
@@ -150,7 +151,7 @@ class GardenSpaceScreen extends ConsumerWidget {
                             }
                             if (index >= data.length) {
                               print('index2: $index');
-                              return PlantCard(
+                              return const PlantCard(
                                 title: 'Empty',
                                 imageURI: "assets/images/dumPlant.png",
                               );
@@ -214,7 +215,26 @@ class GardenSpaceScreen extends ConsumerWidget {
                                             size: 20,
                                           ),
                                         ))
-                                      : Container()
+                                      : Container(),
+                                  if (data[index].plant.price != null &&
+                                      data[index].plant.price != 0)
+                                    const Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: CornerBanner(
+                                        bannerPosition:
+                                            CornerBannerPosition.topRight,
+                                        bannerColor: Colors.red,
+                                        child: Text(
+                                          "FOR SALE",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 8,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             );

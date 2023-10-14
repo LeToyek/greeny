@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>408888696472-dnk5ecvg2n9qk4b6qaidjhss7jti4lh0.apps.googleusercontent.com</string>
+	<string>408888696472-rc1htn19g11pobcb2dbhorqqurer3iu3.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.408888696472-dnk5ecvg2n9qk4b6qaidjhss7jti4lh0</string>
+	<string>com.googleusercontent.apps.408888696472-rc1htn19g11pobcb2dbhorqqurer3iu3</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>408888696472-3f8grjbrjn2jv4404pe1u7k40hftf8s1.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBC5kI9sSUgsmy6at4-_EJmODT_kLs63SE</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>id.greenlock.greeny</string>
+	<string>id.greenlock.greenify</string>
 	<key>PROJECT_ID</key>
 	<string>greenify-f07ad</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:408888696472:ios:37b226c6d2a3ea86707aed</string>
+	<string>1:408888696472:ios:b3245c4cbf9c2c5c707aed</string>
 </dict>
 </plist>

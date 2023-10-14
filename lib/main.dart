@@ -19,20 +19,26 @@ void main() async {
   final BackgroundServices service = BackgroundServices();
 
   service.initIsolate();
-  await AndroidAlarmManager.initialize();
 
   await Firebase.initializeApp();
-  await NotificationHelper().initializeNotification();
+
+  if (Platform.isAndroid) {
+    await AndroidAlarmManager.initialize();
+    await NotificationHelper().initializeNotification();
+  }
 
   await dotenv.load();
   final Directory tempDir = await getTemporaryDirectory();
   Hive.init(tempDir.path);
   final box = await Hive.openBox('prefs');
   final statusNotifier = box.get('is_checked', defaultValue: 0);
+
   if (statusNotifier == 0) {
     box.put('is_checked', 1);
-    await AndroidAlarmManager.oneShot(
-        Duration.zero, 88888888, BackgroundServices.initCallback);
+    if (Platform.isAndroid) {
+      await AndroidAlarmManager.oneShot(
+          Duration.zero, 88888888, BackgroundServices.initCallback);
+    }
   }
 
   runApp(const ProviderScope(child: MyApp()));

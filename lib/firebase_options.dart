@@ -17,19 +17,13 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -52,11 +46,32 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBmj_TqdSJ_bQ-JG0nrTg3S6xQTL4QTJxc',
+    appId: '1:408888696472:web:8d6e4bcd79e7f92c707aed',
+    messagingSenderId: '408888696472',
+    projectId: 'greenify-f07ad',
+    authDomain: 'greenify-f07ad.firebaseapp.com',
+    storageBucket: 'greenify-f07ad.appspot.com',
+    measurementId: 'G-K57BNC94TJ',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDLr8rD4R9TTMotUX_hNyw7racGWY8TOBU',
     appId: '1:408888696472:android:f81ff9e0577f0512707aed',
     messagingSenderId: '408888696472',
     projectId: 'greenify-f07ad',
     storageBucket: 'greenify-f07ad.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBC5kI9sSUgsmy6at4-_EJmODT_kLs63SE',
+    appId: '1:408888696472:ios:b3245c4cbf9c2c5c707aed',
+    messagingSenderId: '408888696472',
+    projectId: 'greenify-f07ad',
+    storageBucket: 'greenify-f07ad.appspot.com',
+    androidClientId: '408888696472-3f8grjbrjn2jv4404pe1u7k40hftf8s1.apps.googleusercontent.com',
+    iosClientId: '408888696472-rc1htn19g11pobcb2dbhorqqurer3iu3.apps.googleusercontent.com',
+    iosBundleId: 'id.greenlock.greenify',
   );
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -205,15 +207,20 @@ class _PlantEditScreenState extends ConsumerState<PlantEditScreen> {
                                     timeController!.hour,
                                     timeController!.minute,
                                   );
-                                  await AndroidAlarmManager.cancel(
-                                      widget.potModel.plant.timeID!);
-                                  final resAlarm =
-                                      await AndroidAlarmManager.oneShotAt(
-                                    tomorrow,
-                                    widget.potModel.plant.timeID!,
-                                    BackgroundServices.callback,
-                                  );
-                                  print('resAlarm $resAlarm');
+
+                                  if (Platform.isAndroid) {
+                                    await AndroidAlarmManager.cancel(
+                                        widget.potModel.plant.timeID!);
+                                    final resAlarm =
+                                        await AndroidAlarmManager.oneShotAt(
+                                      tomorrow,
+                                      widget.potModel.plant.timeID!,
+                                      BackgroundServices.callback,
+                                    );
+                                    print('resAlarm $resAlarm');
+                                  } else {
+                                    // TODO: iOS
+                                  }
 
                                   expController.increaseExp(
                                       _expValue, achievementId);

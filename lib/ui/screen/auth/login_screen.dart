@@ -142,7 +142,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       // print("test");
       // await userNotifier.getUser();
 
-      final error = userNotifier.state.maybeWhen(
+      final user = ref.read(singleUserProvider);
+
+      final error = user.maybeWhen(
         orElse: () => null,
         error: (e, _) => e,
       );

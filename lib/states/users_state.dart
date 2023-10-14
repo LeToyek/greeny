@@ -105,9 +105,10 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   Future<void> loginWithGoogle() async {
     try {
       state = const AsyncValue.loading();
-      final authUser = await FireAuth.signInWithGoogle();
-      final userMod = await usersServices.getUserById(id: authUser!.uid);
-      state = AsyncValue.data([userMod]);
+      await FireAuth.signInWithGoogle();
+      // final userMod = await usersServices.getUserById(id: authUser!.uid);
+      await getUser();
+      // state = AsyncValue.data([userMod]);
     } catch (e) {
       print(e);
       state = AsyncValue.error(e, StackTrace.current);
@@ -137,6 +138,7 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   Future<void> logOut() async {
     try {
       FireAuth.signOut();
+      state = const AsyncValue.data([]);
     } catch (e) {
       state = AsyncError(e, StackTrace.current);
       throw Exception(e);

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -138,8 +140,12 @@ class _GardenPotDetailScreenState extends ConsumerState<GardenPotDetailScreen> {
                                     additionalActions: [
                                       TextButton(
                                           onPressed: () async {
-                                            await AndroidAlarmManager.cancel(
-                                                pot!.plant.timeID!);
+                                            if (Platform.isAndroid) {
+                                              await AndroidAlarmManager.cancel(
+                                                  pot!.plant.timeID!);
+                                            } else {
+                                              // TODO: iOS
+                                            }
                                           },
                                           child: const Text("Matikan"))
                                     ]),

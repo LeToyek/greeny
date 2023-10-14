@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/model/height_model.dart';
@@ -112,7 +114,12 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
       state = const AsyncValue.loading();
       final selectedPlant = fullData[index].plant;
       selectedPlant.status = PlantStatus.healthy;
-      await AndroidAlarmManager.cancel(selectedPlant.timeID!);
+
+      if (Platform.isAndroid) {
+        await AndroidAlarmManager.cancel(selectedPlant.timeID!);
+      } else {
+        // TODO: iOS
+      }
 
       final lastHeight =
           HeightModel(height: height, date: DateTime.now().toString());
@@ -133,9 +140,14 @@ class PotNotifier extends StateNotifier<AsyncValue<List<PotModel>>> {
         hours,
         minutes,
       );
-      final alarm = await AndroidAlarmManager.oneShotAt(
-          tomorrow, selectedPlant.timeID!, BackgroundServices.callback);
-      print('alarm on state $alarm');
+
+      if (Platform.isAndroid) {
+        final alarm = await AndroidAlarmManager.oneShotAt(
+            tomorrow, selectedPlant.timeID!, BackgroundServices.callback);
+        print('alarm on state $alarm');
+      } else {
+        // TODO: iOS
+      }
 
       state = AsyncValue.data(fullData);
     } catch (e) {

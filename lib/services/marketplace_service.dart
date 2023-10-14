@@ -35,7 +35,10 @@ class MarketplaceServiceImpl implements MarketplaceService {
       // convert to pot model
       final potModels = pots.docs
           .map((e) => PotModel.fromQuery(e))
-          .where((element) => element.plant.marketStatus != 'sold')
+          .where((element) =>
+              element.plant.marketStatus != 'sold' &&
+              element.plant.price != null &&
+              element.plant.price! > 0)
           .toList();
 
       // order by created at last is first

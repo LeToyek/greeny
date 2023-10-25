@@ -43,8 +43,8 @@ dependencies:
   riverpod: ^2.3.6
   cloud_firestore: ^4.7.1
   flutter_dotenv: ^5.0.2
-  google_fonts: ^6.1.0
-  uuid: ^4.1.0
+  google_fonts: ^4.0.4
+  uuid: ^3.0.4
   easy_localization: ^3.0.2
   flutter_displaymode: ^0.6.0
   ionicons: ^0.2.2
@@ -77,6 +77,7 @@ dependencies:
   month_year_picker: ^0.3.0+1
   timelines: ^0.1.0
   cached_network_image: ^3.3.0
+  flutter_unity_widget: ^2022.2.0
   
 
 dev_dependencies:

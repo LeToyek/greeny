@@ -82,7 +82,7 @@ class SekelatonScreen extends ConsumerWidget {
       case 3:
         return const Text("Penyakit");
       case 4:
-        return const Text("Peringkat");
+        return const Text("Plotter");
       default:
         return const Text("Home");
     }

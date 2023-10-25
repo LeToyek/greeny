@@ -62,7 +62,7 @@ android {
         applicationId "id.greenlock.greeny"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 21
+        minSdkVersion 24
         multiDexEnabled true
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -87,7 +87,11 @@ flutter {
     source '../..'
 }
 
+
 dependencies {
+    // implementation project(':xrmanifest.androidlib')
+    implementation project(':unityLibrary')
+
     implementation 'org.tensorflow:tensorflow-lite:+'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

@@ -7,16 +7,24 @@ import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 
 class LeaderboardScreen extends ConsumerWidget {
+  static const routePath = "/leaderboard";
+  static const routeName = "Leaderboard";
+
   const LeaderboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(usersProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     final userClientController = ref.read(userClientProvider.notifier);
-    return Material(
-      color: Theme.of(context).colorScheme.background,
-      child: userRef.when(loading: () {
+
+    return Scaffold(
+      backgroundColor: colorScheme.background,
+      appBar: AppBar(
+        title: const Text("Leaderboard"),
+      ),
+      body: userRef.when(loading: () {
         return const Center(
           child: CircularProgressIndicator(),
         );

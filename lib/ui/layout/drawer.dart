@@ -6,6 +6,7 @@ import 'package:greenify/states/theme_mode_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/additional/emblem_screen.dart';
 import 'package:greenify/ui/screen/additional/sold_plant_screen.dart';
+import 'package:greenify/ui/screen/leaderboard/leaderboard_screen.dart';
 import 'package:greenify/ui/screen/payments/history_screen.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -70,10 +71,16 @@ class GrDrawerr extends ConsumerWidget {
                     route: HistoryScreen.routePath),
                 grDrawerItem(
                     context: context,
-                    icon: const Icon(Ionicons.trophy_outline),
+                    icon: const Icon(Ionicons.medal_outline),
                     text: 'Medali',
                     ref: ref,
                     route: EmblemScreen.routePath),
+                grDrawerItem(
+                    context: context,
+                    icon: const Icon(Ionicons.trophy_outline),
+                    text: 'Leaderboard',
+                    ref: ref,
+                    route: LeaderboardScreen.routePath),
                 grDrawerItem(
                     context: context,
                     icon: const Icon(Ionicons.moon_outline),

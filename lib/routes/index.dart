@@ -69,8 +69,7 @@ final _appRoutes = GoRouter(
           return const DiseaseScreen();
         }),
     GoRoute(
-        path: "/leaderboard",
-        builder: (context, state) => const LeaderboardScreen()),
+        path: "/leaderboard", builder: (context, state) => LeaderboardScreen()),
     GoRoute(
         path: WalletManagerScreen.routePath,
         builder: (context, state) => WalletManagerScreen()),

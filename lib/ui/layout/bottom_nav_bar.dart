@@ -28,7 +28,7 @@ class GrBottomNavBar extends ConsumerWidget {
         ),
       ),
       child: Card(
-        margin: const EdgeInsets.only(top: 1, right: 4, left: 4),
+        margin: const EdgeInsets.only(top: 1),
         elevation: 4,
         shadowColor: Theme.of(context).colorScheme.shadow,
         color: Theme.of(context).colorScheme.surfaceVariant,

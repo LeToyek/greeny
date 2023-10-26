@@ -307,46 +307,22 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                                               fontSizeDelta: 4)),
                                   Row(
                                     children: [
-                                      Expanded(
-                                        child: Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 10),
-                                          height: 200,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: CachedNetworkImageProvider(
-                                                  res['images'][0]),
-                                              fit: BoxFit.cover,
+                                      for (final image in res['images'])
+                                        Expanded(
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                right: 10),
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image:
+                                                    CachedNetworkImageProvider(
+                                                        image),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          height: 200,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: CachedNetworkImageProvider(
-                                                  res['images'][1]),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          margin:
-                                              const EdgeInsets.only(left: 10),
-                                          height: 200,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: CachedNetworkImageProvider(
-                                                  res['images'][2]),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                   )
                                 ],

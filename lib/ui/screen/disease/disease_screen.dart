@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/services/disease_service.dart';
 import 'package:greenify/states/exp_state.dart';
-import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/screen/disease/disease_detection_bottom_sheet.dart';
 import 'package:greenify/ui/widgets/achievement_dialog.dart';
 import 'package:image/image.dart' as imglib;
 
@@ -21,36 +22,56 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
   final TFLiteDiseaseDetectionService _diseaseDetectionService =
       TFLiteDiseaseDetectionService();
   late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  Future<void>? _initializeControllerFuture;
   late String imagePath;
   bool isLoading = true;
-  bool isProcessing = false;
+  String? processMessage;
 
   List<CameraDescription> cameras = [];
+
+  // for debugging
+  imglib.Image? debugImagePreview;
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
     final offset = Offset(
       details.localPosition.dx / constraints.maxWidth,
       details.localPosition.dy / constraints.maxHeight,
     );
+
     _controller.setExposurePoint(offset);
     _controller.setFocusPoint(offset);
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Future.microtask(() async {
-      cameras = await availableCameras();
-      _controller = CameraController(
-        cameras[0],
-        ResolutionPreset.medium,
-      );
-      _initializeControllerFuture = _controller.initialize();
-    }).then((value) => setState(() {
-          isLoading = false;
-        }));
+
+    WidgetsBinding.instance.addPostFrameCallback(_initCamera);
+  }
+
+  void _initCamera(_) async {
+    cameras = await availableCameras();
+    _controller = CameraController(
+      cameras[0],
+      ResolutionPreset.medium,
+      enableAudio: false,
+    );
+    _initializeControllerFuture = _controller.initialize();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void changeCamera(CameraDescription cameraDescription) async {
+    await _controller.dispose();
+    _controller = CameraController(
+      cameraDescription,
+      ResolutionPreset.medium,
+      enableAudio: false,
+    );
+    _initializeControllerFuture = _controller.initialize();
+    await _initializeControllerFuture;
+    setState(() {});
   }
 
   @override
@@ -61,29 +82,93 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
     _diseaseDetectionService.dispose();
   }
 
-  void changeCamera(CameraDescription cameraDescription) async {
-    await _controller.dispose();
-    _controller = CameraController(
-      cameraDescription,
-      ResolutionPreset.medium,
-    );
-    _initializeControllerFuture = _controller.initialize();
-    setState(() {});
+  Future<void> _captureAndDetect() async {
+    // Take the Picture in a try / catch block. If anything goes wrong,
+    // catch the error.
+    try {
+      // Ensure that the camera is initialized.
+      setState(() {
+        processMessage = "Capturing...";
+      });
+
+      await _initializeControllerFuture;
+
+      // Attempt to take a picture and get the file `image`
+      // where it was saved.
+      final image = await _controller.takePicture();
+      await _controller.pausePreview();
+
+      if (!mounted) return;
+
+      // If the picture was taken, display it on a new screen.
+      setState(() {
+        processMessage = "Processing...";
+        imagePath = image.path;
+      });
+
+      await Future.delayed(500.milliseconds);
+
+      final bytes = await File(image.path).readAsBytes();
+      final imglib.Image imageRes = imglib.decodeImage(bytes)!;
+
+      if (kDebugMode) {
+        debugImagePreview = imglib.copyResize(
+          imageRes,
+          width: 224,
+          height: 224,
+        );
+      }
+      setState(() {
+        processMessage = "Analyzing...";
+      });
+
+      Map<String, dynamic> res =
+          await _diseaseDetectionService.detectDisease(imageRes);
+
+      await _increaseAIExp();
+
+      if (context.mounted) {
+        showModalBottomSheet(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(24),
+            ),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          context: context,
+          builder: (context) => DiseaseDetectionBottomSheet(res: res),
+        );
+      }
+    } catch (e) {
+      // If an error occurs, log the error to the console.
+      print(e);
+    } finally {
+      setState(() {
+        processMessage = null;
+      });
+
+      await _controller.resumePreview();
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    final expRef = ref.watch(expProvider);
-    final expNotifier = ref.watch(expProvider.notifier);
-    final singleNotifier = ref.read(singleUserProvider.notifier);
-    // final userClientController = ref.read(userClientProvider.notifier);
-
+  Future<void> _increaseAIExp() async {
+    final expNotifier = ref.read(expProvider.notifier);
     int aiExp = 20;
     List<String> achievementIDs = [
       "00zvXoQO7ScRbcSpiiay",
       "E7Y6oP3lzSBHzXRLcN9S"
     ];
+
+    await expNotifier.increaseExp(aiExp, achievementIDs);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final expRef = ref.watch(expProvider);
+    final expNotifier = ref.watch(expProvider.notifier);
+    // final singleNotifier = ref.read(singleUserProvider.notifier);
+    // final userClientController = ref.read(userClientProvider.notifier);
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: FutureBuilder<void>(
@@ -108,18 +193,18 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                     ),
                   ),
                 ),
-                if (isProcessing)
+                if (processMessage != null)
                   Container(
                     color: Colors.black.withOpacity(0.5),
-                    child: const Center(
+                    child: Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CircularProgressIndicator(),
-                          SizedBox(height: 16),
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 16),
                           Text(
-                            "Processing...",
-                            style: TextStyle(color: Colors.white),
+                            processMessage!,
+                            style: const TextStyle(color: Colors.white),
                           )
                         ],
                       ),
@@ -132,7 +217,9 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                         for (var e in data) {
                           if (e.isExist && !e.isClosed) {
                             return AchievementDialog(
-                                achievementModel: e, expNotifier: expNotifier);
+                              achievementModel: e,
+                              expNotifier: expNotifier,
+                            );
                           }
                         }
                       }
@@ -140,6 +227,46 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                     },
                     loading: () => Container(),
                     error: (e, s) => Container(),
+                  ),
+                if (kDebugMode && debugImagePreview != null)
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      child: Image.memory(
+                        imglib.encodeJpg(debugImagePreview!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                if (cameras.length > 1)
+                  Positioned(
+                    bottom: 16,
+                    right: 16,
+                    child: FloatingActionButton(
+                      heroTag: 'fab_change_camera',
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      foregroundColor: Theme.of(context).colorScheme.onSurface,
+                      mini: true,
+                      onPressed: processMessage != null
+                          ? null
+                          : () {
+                              if (_controller.description == cameras[0]) {
+                                changeCamera(cameras[1]);
+                              } else {
+                                changeCamera(cameras[0]);
+                              }
+                            },
+                      child: const Icon(Icons.flip_camera_android),
+                    ),
                   ),
               ],
             );
@@ -149,215 +276,12 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
           }
         },
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FloatingActionButton(
-            // Provide an onPressed callback.
-            heroTag: 'fab_disease',
-            enableFeedback: true,
-
-            onPressed: isProcessing
-                ? null
-                : () async {
-                    // Take the Picture in a try / catch block. If anything goes wrong,
-                    // catch the error.
-                    try {
-                      // Ensure that the camera is initialized.
-                      setState(() {
-                        isProcessing = true;
-                      });
-                      await _initializeControllerFuture;
-
-                      // Attempt to take a picture and get the file `image`
-                      // where it was saved.
-                      final image = await _controller.takePicture();
-
-                      if (!mounted) return;
-
-                      // If the picture was taken, display it on a new screen.
-                      setState(() {
-                        imagePath = image.path;
-                      });
-
-                      final bytes = await File(image.path).readAsBytes();
-                      final imglib.Image imageRes = imglib.decodeImage(bytes)!;
-                      print("imageRes: $imageRes");
-                      Map<String, dynamic> res = await _diseaseDetectionService
-                          .detectDisease(imageRes);
-
-                      await expNotifier.increaseExp(aiExp, achievementIDs);
-                      setState(() {
-                        isProcessing = false;
-                      });
-
-                      if (context.mounted) {
-                        showModalBottomSheet(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(24),
-                            ),
-                          ),
-                          backgroundColor:
-                              Theme.of(context).colorScheme.surface,
-                          context: context,
-                          builder: (context) => SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("Hasil Deteksi Greeny",
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .apply(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onBackground,
-                                                  fontWeightDelta: 2,
-                                                  fontSizeDelta: 4)),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 24,
-                                  ),
-                                  Text(res["nama"],
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge!
-                                          .apply(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              fontWeightDelta: 2,
-                                              fontSizeDelta: 8)),
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                  Text("Penanganan",
-                                      textAlign: TextAlign.start,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .apply(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              fontWeightDelta: 2,
-                                              fontSizeDelta: 4)),
-                                  Text(res["penanganan"],
-                                      textAlign: TextAlign.start,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .apply(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              fontWeightDelta: 1,
-                                              fontSizeDelta: 2)),
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                  Text("Obat",
-                                      textAlign: TextAlign.start,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .apply(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              fontWeightDelta: 2,
-                                              fontSizeDelta: 4)),
-                                  Text(res["obat"],
-                                      textAlign: TextAlign.start,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .apply(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              fontWeightDelta: 1,
-                                              fontSizeDelta: 2)),
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                  Text("Gambar Tanaman",
-                                      textAlign: TextAlign.start,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .apply(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              fontWeightDelta: 2,
-                                              fontSizeDelta: 4)),
-                                  Row(
-                                    children: [
-                                      for (final image in res['images'])
-                                        Expanded(
-                                          child: Container(
-                                            margin: const EdgeInsets.only(
-                                                right: 10),
-                                            height: 200,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image:
-                                                    CachedNetworkImageProvider(
-                                                        image),
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      // If an error occurs, log the error to the console.
-                      print(e);
-                    }
-                  },
-            child: const Icon(Icons.camera_alt),
-          ),
-          const SizedBox(
-            width: 16,
-          ),
-          // change camera
-          FloatingActionButton(
-            heroTag: 'fab_change_camera',
-            onPressed: isProcessing
-                ? null
-                : () {
-                    if (cameras.length > 1) {
-                      if (_controller.description == cameras[0]) {
-                        changeCamera(cameras[1]);
-                      } else {
-                        changeCamera(cameras[0]);
-                      }
-                    }
-                  },
-            child: const Icon(Icons.flip_camera_android),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        // Provide an onPressed callback.
+        heroTag: 'fab_disease',
+        enableFeedback: true,
+        onPressed: processMessage != null ? null : _captureAndDetect,
+        child: const Icon(Icons.camera_alt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

@@ -50,13 +50,13 @@ class GrBottomNavBar extends ConsumerWidget {
               backgroundColor: Colors.transparent,
               selectedItemColor: Theme.of(context).colorScheme.primary,
               unselectedItemColor: Theme.of(context).textTheme.bodySmall!.color,
-              items: [
-                const BottomNavigationBarItem(
+              items: const [
+                BottomNavigationBarItem(
                   icon: Icon(Ionicons.home_outline),
                   activeIcon: Icon(Ionicons.home),
                   label: "Home",
                 ),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                   icon: Icon(Ionicons.book_outline),
                   activeIcon: Icon(Ionicons.book),
                   label: "Artikel",
@@ -66,22 +66,23 @@ class GrBottomNavBar extends ConsumerWidget {
                 //   activeIcon: Icon(Ionicons.leaf),
                 //   label: "Garden",
                 // ),
-                bottomNavIndex == 3
-                    ? const BottomNavigationBarItem(
-                        icon: Icon(
-                          Ionicons.home_outline,
-                        ),
-                        label: "home")
-                    : const BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.wind,
-                            color: Colors.transparent),
-                        label: ""),
-                const BottomNavigationBarItem(
+                // bottomNavIndex == 3
+                //     ? const BottomNavigationBarItem(
+                //         icon: Icon(
+                //           Ionicons.home_outline,
+                //         ),
+                //         label: "home")
+                //     :
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.wind, color: Colors.transparent),
+                  label: "",
+                ),
+                BottomNavigationBarItem(
                   icon: Icon(Ionicons.heart_outline),
                   activeIcon: Icon(Ionicons.heart),
                   label: "Detektor",
                 ),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                   icon: Icon(Ionicons.apps_outline),
                   activeIcon: Icon(Ionicons.apps),
                   label: "Plotter",

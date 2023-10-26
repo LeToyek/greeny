@@ -221,6 +221,9 @@ class _PlotterPlantSelectorState extends ConsumerState<PlotterPlantSelector> {
                                       const SizedBox(height: 8),
                                       Text(
                                         pots[index].plant.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Theme.of(context)
                                               .colorScheme

@@ -182,14 +182,13 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                   child: CameraPreview(
                     _controller,
                     child: LayoutBuilder(
-                      builder:
-                          (BuildContext context, BoxConstraints constraints) {
-                        return GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTapDown: (details) =>
-                              onViewFinderTap(details, constraints),
-                        );
-                      },
+                      builder: (context, constraints) => GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTapDown: (details) => onViewFinderTap(
+                          details,
+                          constraints,
+                        ),
+                      ),
                     ),
                   ),
                 ),

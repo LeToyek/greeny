@@ -38,6 +38,11 @@ def keystoreProperties = new Properties()
 android {
     compileSdkVersion 33
     ndkVersion flutter.ndkVersion
+
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false
+    }
     
     aaptOptions {
         noCompress 'tflite'

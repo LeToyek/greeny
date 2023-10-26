@@ -48,6 +48,7 @@ class _PlotterScreenState extends ConsumerState<PlotterScreen> {
       child: Stack(
         children: [
           Positioned.fill(
+            bottom: 230,
             child: UnityWidget(
               onUnityCreated: onUnityCreated,
               useAndroidViewSurface: false,

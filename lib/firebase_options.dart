@@ -52,6 +52,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '408888696472',
     projectId: 'greenify-f07ad',
     authDomain: 'greenify-f07ad.firebaseapp.com',
+    databaseURL: 'https://greenify-f07ad-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'greenify-f07ad.appspot.com',
     measurementId: 'G-K57BNC94TJ',
   );
@@ -61,6 +62,7 @@ class DefaultFirebaseOptions {
     appId: '1:408888696472:android:f81ff9e0577f0512707aed',
     messagingSenderId: '408888696472',
     projectId: 'greenify-f07ad',
+    databaseURL: 'https://greenify-f07ad-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'greenify-f07ad.appspot.com',
   );
 
@@ -69,6 +71,7 @@ class DefaultFirebaseOptions {
     appId: '1:408888696472:ios:b3245c4cbf9c2c5c707aed',
     messagingSenderId: '408888696472',
     projectId: 'greenify-f07ad',
+    databaseURL: 'https://greenify-f07ad-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'greenify-f07ad.appspot.com',
     androidClientId: '408888696472-3f8grjbrjn2jv4404pe1u7k40hftf8s1.apps.googleusercontent.com',
     iosClientId: '408888696472-rc1htn19g11pobcb2dbhorqqurer3iu3.apps.googleusercontent.com',

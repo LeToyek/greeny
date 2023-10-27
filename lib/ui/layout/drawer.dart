@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/states/theme_mode_state.dart';
 import 'package:greenify/states/users_state.dart';
+import 'package:greenify/ui/screen/IOT/iot_screen.dart';
 import 'package:greenify/ui/screen/additional/emblem_screen.dart';
 import 'package:greenify/ui/screen/additional/sold_plant_screen.dart';
 import 'package:greenify/ui/screen/payments/history_screen.dart';
@@ -92,6 +93,12 @@ class GrDrawerr extends ConsumerWidget {
                     text: 'Tentang Greeny',
                     ref: ref,
                     route: '/about'),
+                grDrawerItem(
+                    context: context,
+                    icon: const Icon(Ionicons.radio_outline),
+                    text: "IOT",
+                    ref: ref,
+                    route: IOTScreen.routePath),
                 Divider(
                   height: 25,
                   thickness: 1,

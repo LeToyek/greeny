@@ -41,7 +41,7 @@ dependencies:
   go_router: ^11.1.2
   firebase_ui_auth: ^1.4.0
   riverpod: ^2.3.6
-  cloud_firestore: ^4.7.1
+  cloud_firestore: ^4.11.1
   flutter_dotenv: ^5.0.2
   google_fonts: ^6.1.0
   uuid: ^4.1.0
@@ -77,6 +77,7 @@ dependencies:
   month_year_picker: ^0.3.0+1
   timelines: ^0.1.0
   cached_network_image: ^3.3.0
+  firebase_database: ^10.3.1
   
 
 dev_dependencies:

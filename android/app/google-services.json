@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "408888696472",
+    "firebase_url": "https://greenify-f07ad-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "greenify-f07ad",
     "storage_bucket": "greenify-f07ad.appspot.com"
   },
@@ -63,6 +64,14 @@
           "android_info": {
             "package_name": "id.greenlock.greeny",
             "certificate_hash": "a7b035034ce2da92ab4cc0a0519786640898c774"
+          }
+        },
+        {
+          "client_id": "408888696472-aq7jrt1hisfnstu0o481f3etqi9nib7o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.greenlock.greeny",
+            "certificate_hash": "d6181bde36ae20cf8e8e18ab51eedc74c21d93a8"
           }
         },
         {

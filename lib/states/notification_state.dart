@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:greenify/services/background_service.dart';
 import 'package:greenify/utils/notification_helper.dart';
@@ -26,8 +28,13 @@ class NotificationNotifier extends StateNotifier<void> {
     final statusNotifier = box.get('status_notifier', defaultValue: 0);
     if (statusNotifier == 0) {
       box.put('status_notifier', 1);
-      await AndroidAlarmManager.oneShot(
-          Duration.zero, 99999999, BackgroundServices.initCallback);
+
+      if (Platform.isAndroid) {
+        await AndroidAlarmManager.oneShot(
+            Duration.zero, 99999999, BackgroundServices.initCallback);
+      } else {
+        // TODO: iOS
+      }
     }
   }
 }

@@ -7,84 +7,38 @@ import 'package:greenify/ui/widgets/card/plain_card.dart';
 import 'package:greenify/utils/validator.dart';
 import 'package:ionicons/ionicons.dart';
 
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = ref.watch(singleUserProvider);
 
     final colorTheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final userAct = ref.watch(singleUserProvider);
-    final funcUserAct = ref.read(singleUserProvider.notifier);
-    final singleUserNotifier = ref.read(singleUserProvider.notifier);
-
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    final refPots = ref.watch(homeProvider.notifier);
-
-    Future<void> submitForm() async {
-      if (formKey.currentState!.validate()) {
-        // Process data.
-        try {
-          String email = emailController.text;
-          String password = passwordController.text;
-
-          await funcUserAct.basicLogin(email: email, password: password);
-          await singleUserNotifier.getUser();
-          if (context.mounted) context.pushReplacement("/");
-          refPots.getPots();
-        } catch (e) {
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: const Text("Error"),
-                    content: Text(e.toString()),
-                    actions: [
-                      TextButton(
-                          onPressed: () => context.pop(),
-                          child: const Text("OK"))
-                    ],
-                  ));
-        }
-      }
-    }
-
-    Future<void> loginWithGoogle() async {
-      try {
-        await funcUserAct.loginWithGoogle();
-        // print("test");
-        await singleUserNotifier.getUser();
-        if (context.mounted) context.pushReplacement("/");
-        refPots.getPots();
-      } catch (e) {
-        showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  title: const Text("Error"),
-                  content: Text(e.toString()),
-                  actions: [
-                    TextButton(
-                        onPressed: () => context.pop(), child: const Text("OK"))
-                  ],
-                ));
-      }
-    }
 
     return Scaffold(
       backgroundColor: colorTheme.background,
       appBar: AppBar(title: const Text('Masuk')),
       body: Stack(
         children: [
-          userAct.when(
-              data: (data) => Container(),
-              loading: () => Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: colorTheme.background,
-                    ),
-                  ),
-              error: (error, stack) => Container()),
           Center(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -165,8 +119,91 @@ class LoginScreen extends ConsumerWidget {
               ),
             ),
           ),
+          user.when(
+            data: (data) => Container(),
+            loading: () => Center(
+              child: CircularProgressIndicator(
+                backgroundColor: colorTheme.background,
+              ),
+            ),
+            error: (error, stack) => Container(),
+          ),
         ],
       ),
     );
+  }
+
+  Future<void> loginWithGoogle() async {
+    try {
+      final postNotifier = ref.read(homeProvider.notifier);
+      final userNotifier = ref.read(singleUserProvider.notifier);
+
+      await userNotifier.loginWithGoogle();
+      // print("test");
+      // await userNotifier.getUser();
+
+      final user = ref.read(singleUserProvider);
+
+      final error = user.maybeWhen(
+        orElse: () => null,
+        error: (e, _) => e,
+      );
+
+      if (error != null) {
+        throw error;
+      }
+
+      if (context.mounted) context.pushReplacement("/");
+
+      postNotifier.getPots();
+    } catch (e) {
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Error"),
+            content: Text(e.toString()),
+            actions: [
+              TextButton(
+                  onPressed: () => context.pop(), child: const Text("OK"))
+            ],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> submitForm() async {
+    if (formKey.currentState!.validate()) {
+      // Process data.
+      try {
+        final postNotifier = ref.read(homeProvider.notifier);
+        final userNotifier = ref.read(singleUserProvider.notifier);
+
+        String email = emailController.text;
+        String password = passwordController.text;
+
+        await userNotifier.basicLogin(email: email, password: password);
+        await userNotifier.getUser();
+
+        if (context.mounted) context.pushReplacement("/");
+
+        postNotifier.getPots();
+      } catch (e) {
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Error"),
+              content: Text(e.toString()),
+              actions: [
+                TextButton(
+                    onPressed: () => context.pop(), child: const Text("OK"))
+              ],
+            ),
+          );
+        }
+      }
+    }
   }
 }

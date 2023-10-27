@@ -118,7 +118,7 @@ class TFLiteDiseaseDetectionService {
 
   Future<Interpreter> get _interpreter async =>
       _interpreterInstance ??= await Interpreter.fromAsset(
-        'lib/assets/model.tflite',
+        'assets/model.tflite',
         options: InterpreterOptions()..threads = 4,
       );
 

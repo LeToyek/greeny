@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:greenify/services/storage_service.dart';
@@ -61,8 +62,8 @@ class _UploadImageContainerState extends State<UploadImageContainer> {
                       color: Colors.grey[200]),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        imageUrl!,
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl!,
                         fit: BoxFit.cover,
                       )),
                 )

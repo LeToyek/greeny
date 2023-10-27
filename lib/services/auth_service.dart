@@ -95,7 +95,7 @@ class FireAuth {
             'Error occured while accessing credentials. Try again.');
       }
     } catch (e) {
-      throw Exception('Error occured!');
+      rethrow;
     }
     return null;
   }

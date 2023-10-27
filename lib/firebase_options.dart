@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDLr8rD4R9TTMotUX_hNyw7racGWY8TOBU',
-    appId: '1:408888696472:android:71eeacd4385143f3707aed',
+    appId: '1:408888696472:android:f81ff9e0577f0512707aed',
     messagingSenderId: '408888696472',
     projectId: 'greenify-f07ad',
     storageBucket: 'greenify-f07ad.appspot.com',
@@ -66,12 +66,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBC5kI9sSUgsmy6at4-_EJmODT_kLs63SE',
-    appId: '1:408888696472:ios:37b226c6d2a3ea86707aed',
+    appId: '1:408888696472:ios:b3245c4cbf9c2c5c707aed',
     messagingSenderId: '408888696472',
     projectId: 'greenify-f07ad',
     storageBucket: 'greenify-f07ad.appspot.com',
-    androidClientId: '408888696472-1tttp8rbpa3bin6fn5i9l4h50m1gbd7q.apps.googleusercontent.com',
-    iosClientId: '408888696472-dnk5ecvg2n9qk4b6qaidjhss7jti4lh0.apps.googleusercontent.com',
-    iosBundleId: 'com.example.greenify',
+    androidClientId: '408888696472-3f8grjbrjn2jv4404pe1u7k40hftf8s1.apps.googleusercontent.com',
+    iosClientId: '408888696472-rc1htn19g11pobcb2dbhorqqurer3iu3.apps.googleusercontent.com',
+    iosBundleId: 'id.greenlock.greenify',
   );
 }

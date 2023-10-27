@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:greenify/constants/user_constants.dart';
 import 'package:greenify/states/book_state.dart';
 import 'package:greenify/states/bottom_nav_bar_state.dart';
+import 'package:greenify/states/marketplace/marketplace_notifier.dart';
 import 'package:greenify/states/pot_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/wallet/manager_screen.dart';
@@ -87,9 +89,9 @@ class HomeScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     return PlainCard(
         color: colorScheme.primary,
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [],
+          children: [],
         ));
   }
 
@@ -157,8 +159,8 @@ class HomeScreen extends ConsumerWidget {
                             ClipRRect(
                                 borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(8)),
-                                child: Image.network(
-                                  book.imageUrl ?? "",
+                                child: CachedNetworkImage(
+                                  imageUrl: book.imageUrl,
                                   width: 150,
                                   height: 180,
                                   fit: BoxFit.cover,
@@ -178,6 +180,8 @@ class HomeScreen extends ConsumerWidget {
                                 children: [
                                   Text(
                                     book.title ?? "Title",
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelMedium!
@@ -278,10 +282,11 @@ class HomeScreen extends ConsumerWidget {
                                                 .apply(fontWeightDelta: 2)),
                                         const SizedBox(width: 16),
                                         CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              data[index].imageUrl == null
-                                                  ? unknownImage
-                                                  : data[index].imageUrl!),
+                                          backgroundImage:
+                                              CachedNetworkImageProvider(
+                                                  data[index].imageUrl == null
+                                                      ? unknownImage
+                                                      : data[index].imageUrl!),
                                         ),
                                         const SizedBox(width: 16),
                                         Text(data[index].name ?? "User"),
@@ -295,7 +300,12 @@ class HomeScreen extends ConsumerWidget {
                               const SizedBox(
                                 height: 6,
                               ),
-                              const Divider()
+                              Divider(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.2),
+                              )
                             ],
                           );
                   },
@@ -329,7 +339,10 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildNewestPlant(BuildContext context, WidgetRef ref) {
     const String bestPlant = "115aa02a-d72e-47bc-b83b-d4ba5bfe06c4";
-    final potRef = ref.watch(bestPotProvider(bestPlant));
+    // final potRef = ref.watch(bestPotProvider(bestPlant));
+
+    final potRef = ref.watch(marketplaceNotifierProvider);
+
     final potNotifier = ref.read(potProvider(bestPlant).notifier);
     final userClientController = ref.read(userClientProvider.notifier);
     // final potNotifier = ref.watch(bestPotProvider(bestPlant).notifier);
@@ -361,68 +374,83 @@ class HomeScreen extends ConsumerWidget {
                   itemCount: 4,
                   itemBuilder: (context, index) {
                     final pot = data[index];
+                    final heroKey = "pot_${pot.id}_$index";
+
                     return InkWell(
                       onTap: () {
-                        const userId = "jCrKt22Hp6eX7unsc0jHvodUmFu1";
+                        print(pot.ref);
+                        final parts = pot.ref!.path.split("/");
+                        final userId = parts[1];
+                        final garden = parts[3];
+                        final potId = parts[5];
+                        // const userId = "jCrKt22Hp6eX7unsc0jHvodUmFu1";
                         userClientController.setVisitedUser(id: userId);
                         userClientController.setVisitedUserModel();
-                        potNotifier.getTopPots(bestPlant).then((_) =>
-                            potNotifier.getPotById(data[index].id!).then((_) =>
-                                context.push(
-                                    "/garden/$bestPlant/detail/${pot.id}")));
+
+                        context.push(
+                          "/garden/$garden/detail/$potId",
+                          extra: {
+                            "pot": pot,
+                            "photoHero": heroKey,
+                          },
+                        );
                       },
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        width: 150,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: NetworkImage(pot.plant.image),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .background
-                                    .withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    pot.plant.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium!
-                                        .apply(
-                                            fontWeightDelta: 2,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface),
-                                  ),
-                                  Text(
-                                    "Rp ${formatMoney(pot.plant.price ?? 0)}",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium!
-                                        .apply(
-                                            fontWeightDelta: 2,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface),
-                                  ),
-                                ],
-                              ),
+                      child: Hero(
+                        tag: heroKey,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          width: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image:
+                                  CachedNetworkImageProvider(pot.plant.image),
+                              fit: BoxFit.cover,
                             ),
-                          ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .background
+                                      .withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      pot.plant.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium!
+                                          .apply(
+                                              fontWeightDelta: 2,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                    ),
+                                    Text(
+                                      "Rp ${formatMoney(pot.plant.price ?? 0)}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium!
+                                          .apply(
+                                              fontWeightDelta: 2,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -454,10 +482,14 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(
                 width: 4,
               ),
-              Text(
-                "Greeny Wallet",
-                style: textTheme.labelMedium!
-                    .apply(fontWeightDelta: 2, color: colorScheme.onSurface),
+              Expanded(
+                child: FittedBox(
+                  child: Text(
+                    "Greeny Wallet",
+                    style: textTheme.labelMedium!.apply(
+                        fontWeightDelta: 2, color: colorScheme.onSurface),
+                  ),
+                ),
               ),
             ],
           ),

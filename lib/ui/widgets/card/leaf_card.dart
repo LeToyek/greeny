@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:greenify/ui/widgets/pill.dart';
 import 'package:ionicons/ionicons.dart';
@@ -53,7 +54,7 @@ class LeafCard extends StatelessWidget {
                       children: [
                         Image(
                             width: double.infinity,
-                            image: NetworkImage(imageUrl))
+                            image: CachedNetworkImageProvider(imageUrl))
                       ],
                     ),
                   ),

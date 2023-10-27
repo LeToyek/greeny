@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
@@ -208,13 +209,19 @@ class _GardenFormScreenState extends ConsumerState<GardenFormScreen> {
                                     timeController.hour,
                                     timeController.minute,
                                   );
-                                  final resAlarm =
-                                      await AndroidAlarmManager.oneShotAt(
-                                    tomorrow,
-                                    randInt,
-                                    BackgroundServices.callback,
-                                  );
-                                  print('resAlarm $resAlarm');
+
+                                  if (Platform.isAndroid) {
+                                    final resAlarm =
+                                        await AndroidAlarmManager.oneShotAt(
+                                      tomorrow,
+                                      randInt,
+                                      BackgroundServices.callback,
+                                    );
+                                    print('resAlarm $resAlarm');
+                                  } else {
+                                    // TODO: IOS
+                                    print('IOS');
+                                  }
 
                                   expController.increaseExp(
                                       _expValue, achievementId);

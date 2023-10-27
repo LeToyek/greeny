@@ -118,7 +118,7 @@ class TFLiteDiseaseDetectionService {
 
   Future<Interpreter> get _interpreter async =>
       _interpreterInstance ??= await Interpreter.fromAsset(
-        'lib/assets/model.tflite',
+        'assets/model.tflite',
         options: InterpreterOptions()..threads = 4,
       );
 
@@ -137,14 +137,12 @@ class TFLiteDiseaseDetectionService {
         imageInput.width,
         (x) {
           final pixel = imageInput.getPixel(x, y);
-          return [pixel.r, pixel.g, pixel.b];
+          return [pixel.r / 255, pixel.g / 255, pixel.b / 255];
         },
       ),
     );
 
     final output = await _runInference(imageMatrix);
-
-    print(output);
 
     return _getDisease(output);
   }
@@ -179,6 +177,12 @@ class TFLiteDiseaseDetectionService {
           bestInd = i;
         }
       }
+    }
+
+    print('Prediction Result: $bestInd');
+
+    if (bestInd > diseaseDataset.length - 1) {
+      bestInd = 0;
     }
 
     return diseaseDataset[bestInd];

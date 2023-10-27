@@ -34,6 +34,19 @@ List<Map<String, dynamic>> diseaseDataset = [
       "https://www.fs.usda.gov/wildflowers/plant-of-the-week/images/cedarapplerust/Gymnosparangium_juniperi-virginianae_23B_lg.jpg"
     ]
   },
+  {"nama": "Apple Sehat", "penanganan": "TODO", "obat": "TODO", "images": []},
+  {
+    "nama": "Blueberry Sehat",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
+  },
+  {
+    "nama": "Healthy Sour Cherry (ceri asam sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
+  },
   {
     "nama": "Sour Cherry Powdery Mildew (mildew tepung pada ceri asam) ",
     "penanganan":
@@ -47,7 +60,7 @@ List<Map<String, dynamic>> diseaseDataset = [
     ]
   },
   {
-    "nama": "Gray Leaf Spot atau Cercospora Leaf Spot",
+    "nama": "Corn (Jagung) Gray Leaf Spot atau Cercospora Leaf Spot",
     "penanganan":
         " Penjadwalan Penyemprotan Fungisida: Jika serangan penyakit terjadi pada tingkat yang mengkhawatirkan, penggunaan fungisida dengan bahan aktif seperti azoxystrobin, pyraclostrobin, atau trifloxystrobin dapat membantu mengendalikan penyebaran jamur penyebab Gray Leaf Spot. ",
     "obat":
@@ -59,7 +72,7 @@ List<Map<String, dynamic>> diseaseDataset = [
     ]
   },
   {
-    "nama": "Common Rust (Rust Umum pada Jagung) ",
+    "nama": "Corn Common Rust (Rust Umum pada Jagung) ",
     "penanganan":
         " Penggunaan Varietas Tahan: Pilih varietas jagung yang memiliki ketahanan terhadap Rust Umum untuk mengurangi risiko serangan penyakit. ",
     "obat":
@@ -71,7 +84,13 @@ List<Map<String, dynamic>> diseaseDataset = [
     ]
   },
   {
-    "nama": "Northern Leaf Blight (Bercak Daun Utara pada Jagung)",
+    "nama": "Healthy Corn (jagung sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
+  },
+  {
+    "nama": "Corn Northern Leaf Blight (Bercak Daun Utara pada Jagung)",
     "penanganan":
         " Rotasi Tanaman: Praktikkan rotasi tanaman dengan tanaman non-jagung untuk mengurangi jumlah patogen di tanah dan mencegah penyebaran penyakit pada musim berikutnya. ",
     "obat":
@@ -105,6 +124,12 @@ List<Map<String, dynamic>> diseaseDataset = [
       "https://www.internationalwinechallenge.com/filestore/jpg/IWC%202020/Canopy/Issue%2035/chronic%20esca_3%20resize.jpg",
       "https://static.wixstatic.com/media/e5076a_9fd186735c5643a8910ff69238a14029~mv2.jpg/v1/fill/w_640,h_600,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e5076a_9fd186735c5643a8910ff69238a14029~mv2.jpg"
     ]
+  },
+  {
+    "nama": "Healthy Grape (anggur sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
   },
   {
     "nama": "Grape Leaf Blight (Bercak Daun Pada Anggur) ",
@@ -143,7 +168,13 @@ List<Map<String, dynamic>> diseaseDataset = [
     ]
   },
   {
-    "nama": "Bell Pepper Bacterial Spot (Bercak Bakteri pada Cabai Bell) ",
+    "nama": "Healthy Peach (persik sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
+  },
+  {
+    "nama": "Bell Pepper Bacterial Spot (Bercak Bakteri pada paprika) ",
     "penanganan":
         " Penggunaan Benih Tahan: Gunakan benih cabai bell yang tahan terhadap Bell Pepper Bacterial Spot untuk mengurangi risiko infeksi. ",
     "obat":
@@ -153,6 +184,12 @@ List<Map<String, dynamic>> diseaseDataset = [
       "https://extension.umd.edu/sites/extension.umd.edu/files/styles/optimized/public/2021-03/hgic_veg_disease_BacterialLeafSpot_2-5605094_400.jpg?itok=o08rOvUY",
       "https://peppergeek.com/wp-content/uploads/2020/08/Pepper-Plant-Leaf-Spot.jpg"
     ]
+  },
+  {
+    "nama": "Healthy Bell Pepper (paprika sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
   },
   {
     "nama": "Potato Early Blight (Early Blight pada Kentang) ",
@@ -167,6 +204,12 @@ List<Map<String, dynamic>> diseaseDataset = [
     ]
   },
   {
+    "nama": "Healthy Potato (kentang sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
+  },
+  {
     "nama": "Potato Late Blight (Late Blight pada Kentang) ",
     "penanganan":
         " Pemupukan yang Seimbang: Berikan pupuk secara seimbang dan sesuai kebutuhan tanaman untuk meningkatkan daya tahan kentang terhadap penyakit. ",
@@ -179,6 +222,18 @@ List<Map<String, dynamic>> diseaseDataset = [
     ]
   },
   {
+    "nama": "Healthy Raspberry (raspberi sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
+  },
+  {
+    "nama": "Healthy Soybean (kedelai sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
+  },
+  {
     "nama": "Squash Powdery Mildew (Powdery Mildew pada Labu)",
     "penanganan":
         " Pengaturan Irigasi: Hindari penyiraman daun labu di malam hari atau di bawah daun, karena kelembaban yang berlebihan dapat menyebabkan perkembangan powdery mildew. ",
@@ -189,6 +244,12 @@ List<Map<String, dynamic>> diseaseDataset = [
       "https://i0.wp.com/savvygardening.com/wp-content/uploads/2021/09/powdery_mildew_on_squash_with_trellis.jpg?resize=600%2C800&ssl=1",
       "https://2.bp.blogspot.com/_k8Tpf_YTDhg/TG2N23trFXI/AAAAAAAAAgQ/uK3RWNELuj0/s1600/Healthy+squash+leaves.jpg"
     ]
+  },
+  {
+    "nama": "Healthy Strawberry (stroberi sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
   },
   {
     "nama": "Strawberry Leaf Scorch (Pengeringan Daun pada Stroberi) ",
@@ -225,6 +286,12 @@ List<Map<String, dynamic>> diseaseDataset = [
       "https://content.ces.ncsu.edu/media/images/IMG_1301.JPG",
       "https://www.bhg.com/thmb/W9Z--tMc82V4OYIVs0a5D6kM0Wk=/2121x0/filters:no_upscale():strip_icc()/tomato-late-blight-7486752-56eb26a9850e426aa8baae2598080b0b.jpg"
     ]
+  },
+  {
+    "nama": "Healthy Tomato (tomat sehat)",
+    "penanganan": "TODO",
+    "obat": "TODO",
+    "images": []
   },
   {
     "nama": "Tomato Late Blight (Late Blight pada Tomat) ",
@@ -287,18 +354,6 @@ List<Map<String, dynamic>> diseaseDataset = [
     ]
   },
   {
-    "nama": "Tomato Yellow Leaf Curl Virus (TYLCV) ",
-    "penanganan":
-        "Pengendalian Vektor: Pengendalian populasi whitefly dengan menggunakan jebakan serangga, penggunaan kain penutup tanaman, atau penggunaan insektisida yang tepat dapat membantu mengurangi penyebaran virus. ",
-    "obat":
-        "Penyakit virus seperti Tomato Yellow Leaf Curl Virus (TYLCV), belum ada obat khusus yang dapat menyembuhkan tanaman yang terinfeksi. Virus tidak dapat diatasi dengan menggunakan obat-obatan seperti penyakit jamur atau bakteri.",
-    "images": [
-      "https://agriculture.vic.gov.au/__data/assets/image/0017/531602/IU-TYLCV_img_1.jpg",
-      "https://www.agric.wa.gov.au/sites/gateway/files/TYLCV%20leaflet%20cropped.jpg",
-      "https://bugwoodcloud.org/images/1536x1024/5411468.jpg"
-    ]
-  },
-  {
     "nama": "Tomato Mosaic Virus (TMV)",
     "penanganan":
         "Pemusnahan Tanaman Terinfeksi: Jika tanaman terinfeksi TMV parah, pertimbangkan untuk mencabut dan memusnahkan tanaman yang terinfeksi untuk mencegah penyebaran lebih lanjut. ",
@@ -308,6 +363,18 @@ List<Map<String, dynamic>> diseaseDataset = [
       "https://www.planetnatural.com/wp-content/uploads/2012/12/mosaic-virus-foliage.jpg",
       "https://www.virtigation.eu/wp-content/uploads/2023/01/TOMV00_8918.jpg",
       "https://blogs.ifas.ufl.edu/stlucieco/files/2023/03/1-141.png"
+    ]
+  },
+  {
+    "nama": "Tomato Yellow Leaf Curl Virus (TYLCV) ",
+    "penanganan":
+        "Pengendalian Vektor: Pengendalian populasi whitefly dengan menggunakan jebakan serangga, penggunaan kain penutup tanaman, atau penggunaan insektisida yang tepat dapat membantu mengurangi penyebaran virus. ",
+    "obat":
+        "Penyakit virus seperti Tomato Yellow Leaf Curl Virus (TYLCV), belum ada obat khusus yang dapat menyembuhkan tanaman yang terinfeksi. Virus tidak dapat diatasi dengan menggunakan obat-obatan seperti penyakit jamur atau bakteri.",
+    "images": [
+      "https://agriculture.vic.gov.au/__data/assets/image/0017/531602/IU-TYLCV_img_1.jpg",
+      "https://www.agric.wa.gov.au/sites/gateway/files/TYLCV%20leaflet%20cropped.jpg",
+      "https://bugwoodcloud.org/images/1536x1024/5411468.jpg"
     ]
   },
 ];

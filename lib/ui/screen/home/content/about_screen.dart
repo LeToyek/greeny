@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/ui/layout/app_bar.dart';
@@ -23,8 +24,9 @@ class AboutScreen extends ConsumerWidget {
                 children: <Widget>[
                   const Header(text: 'Greeny'),
                   const SizedBox(height: 36),
-                  Image.network(
-                    "https://firebasestorage.googleapis.com/v0/b/greenify-f07ad.appspot.com/o/uploads%2Fgreeny%20png.png?alt=media&token=57178ec2-6cb3-4322-b89d-e3c0863193b4",
+                  CachedNetworkImage(
+                    imageUrl:
+                        "https://firebasestorage.googleapis.com/v0/b/greenify-f07ad.appspot.com/o/uploads%2Fgreeny%20png.png?alt=media&token=57178ec2-6cb3-4322-b89d-e3c0863193b4",
                     height: 300,
                   ),
                   const SizedBox(height: 36),

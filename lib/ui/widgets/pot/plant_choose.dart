@@ -5,8 +5,12 @@ import 'package:greenify/states/plant_avatar_state.dart';
 import 'package:greenify/states/theme_mode_state.dart';
 import 'package:ionicons/ionicons.dart';
 
-Widget plantChoose(PageController pageController,
-    PlantAvatarNotifier pageNotifier, BuildContext context, WidgetRef ref) {
+Widget plantChoose(
+  PageController pageController,
+  PlantAvatarNotifier pageNotifier,
+  BuildContext context,
+  WidgetRef ref,
+) {
   final characterImages = plantCategory;
   final theme = ref.watch(themeProvider);
   return Row(

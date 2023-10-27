@@ -49,7 +49,19 @@ List<GoRoute> gardenRoutes = [
       builder: (context, state) {
         final gardenID = state.pathParameters["gardenID"]!;
         final potID = state.pathParameters["potID"]!;
-        return GardenPotDetailScreen(gardenID: gardenID, potID: potID);
+
+        final extra = state.extra as Map<String, dynamic>?;
+        final pot = extra?["pot"] as PotModel?;
+        final photoHero = extra?["photoHero"] as String?;
+        final iconHero = extra?["iconHero"] as String?;
+
+        return GardenPotDetailScreen(
+          gardenID: gardenID,
+          potID: potID,
+          pot: pot,
+          photoHero: photoHero,
+          iconHero: iconHero,
+        );
       }),
   GoRoute(
       name: "garden_detail",

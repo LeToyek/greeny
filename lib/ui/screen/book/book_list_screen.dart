@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -42,8 +43,8 @@ class BookListScreen extends ConsumerWidget {
                                 width: 75,
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      data[index].imageUrl,
+                                    child: CachedNetworkImage(
+                                      imageUrl: data[index].imageUrl,
                                       fit: BoxFit.cover,
                                     )),
                               ),

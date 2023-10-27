@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,8 +59,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             clipBehavior: Clip.none,
                             fit: StackFit.expand,
                             children: [
-                              Image.network(
-                                user.gardens![0].backgroundUrl,
+                              CachedNetworkImage(
+                                imageUrl: user.gardens![0].backgroundUrl,
                                 fit: BoxFit.cover,
                               ),
                               const DecoratedBox(
@@ -143,14 +144,15 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                                     },
                                     child: ClipOval(
                                       child: user.imageUrl != null
-                                          ? Image.network(
-                                              user.imageUrl!,
+                                          ? CachedNetworkImage(
+                                              imageUrl: user.imageUrl!,
                                               width: 80,
                                               height: 80,
                                               fit: BoxFit.cover,
                                             )
-                                          : Image.network(
-                                              'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
+                                          : CachedNetworkImage(
+                                              imageUrl:
+                                                  'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
                                               width: 80,
                                               height: 80,
                                               fit: BoxFit.cover,
@@ -220,13 +222,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.center,
                                                   children: [
-                                                    Image.network(
-                                                        user
-                                                            .achievements![
-                                                                index]
-                                                            .emblem!
-                                                            .imageUrl,
-                                                        height: 100),
+                                                    CachedNetworkImage(
+                                                      imageUrl: user
+                                                          .achievements![index]
+                                                          .emblem!
+                                                          .imageUrl,
+                                                      height: 100,
+                                                    ),
                                                     Text(
                                                       textAlign:
                                                           TextAlign.center,
@@ -300,8 +302,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                                                 child: Stack(
                                                   fit: StackFit.expand,
                                                   children: [
-                                                    Image.network(
-                                                      garden.backgroundUrl,
+                                                    CachedNetworkImage(
+                                                      imageUrl:
+                                                          garden.backgroundUrl,
                                                       fit: BoxFit.fitWidth,
                                                     ),
                                                     DecoratedBox(
@@ -384,12 +387,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                                                     child: ClipRRect(
                                                       borderRadius:
                                                           const BorderRadius
-                                                                  .vertical(
+                                                              .vertical(
                                                               top: Radius
                                                                   .circular(
                                                                       12)),
-                                                      child: Image.network(
-                                                        book.imageUrl,
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: book.imageUrl,
                                                         height: 200,
                                                         width: double.infinity,
                                                         fit: BoxFit.cover,

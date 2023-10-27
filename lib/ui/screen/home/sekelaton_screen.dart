@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/constants/user_constants.dart';
@@ -20,6 +21,11 @@ class SekelatonScreen extends ConsumerWidget {
     // final initializer = ref.watch(notificationProvider);
     return profileNotifier.when(
       data: (data) {
+        if (data.isEmpty) {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
+        }
+
         final user = data[0];
         return Scaffold(
             appBar: index == 0
@@ -76,7 +82,7 @@ class SekelatonScreen extends ConsumerWidget {
       case 3:
         return const Text("Penyakit");
       case 4:
-        return const Text("Peringkat");
+        return const Text("Plotter");
       default:
         return const Text("Home");
     }
@@ -121,8 +127,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   padding: const EdgeInsets.only(right: 8),
                   child: CircleAvatar(
                     radius: 24,
-                    backgroundImage:
-                        NetworkImage(user.imageUrl ?? unknownImage),
+                    backgroundImage: CachedNetworkImageProvider(
+                        user.imageUrl ?? unknownImage),
                   ),
                 ),
 

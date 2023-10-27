@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -119,10 +120,11 @@ class BookDetailScreen extends ConsumerWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          bookData.user!.imageUrl == null
-                                              ? avatarUrl
-                                              : bookData.user!.imageUrl!),
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                              bookData.user!.imageUrl == null
+                                                  ? avatarUrl
+                                                  : bookData.user!.imageUrl!),
                                     ),
                                     const SizedBox(
                                       width: 8,
@@ -148,7 +150,7 @@ class BookDetailScreen extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Image.network(bookData.imageUrl),
+                              CachedNetworkImage(imageUrl: bookData.imageUrl),
                               const SizedBox(height: 10),
                               const SizedBox(height: 10),
                               Html(data: bookData.content),

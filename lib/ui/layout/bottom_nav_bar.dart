@@ -13,61 +13,84 @@ class GrBottomNavBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final int bottomNavIndex = ref.watch(bottomNavProvider);
 
-    return Card(
-      margin: const EdgeInsets.only(top: 1, right: 4, left: 4),
-      elevation: 4,
-      shadowColor: Theme.of(context).colorScheme.shadow,
-      color: Theme.of(context).colorScheme.surfaceVariant,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, -4),
+          ),
+        ],
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
         ),
       ),
-      child: BottomNavigationBar(
-        currentIndex: bottomNavIndex,
-        onTap: (int index) => changeIndex(index, ref),
-        type: BottomNavigationBarType.fixed,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(context).textTheme.bodySmall!.color,
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Ionicons.home_outline),
-            activeIcon: Icon(Ionicons.home),
-            label: "Home",
+      child: Card(
+        margin: const EdgeInsets.only(top: 1),
+        elevation: 4,
+        shadowColor: Theme.of(context).colorScheme.shadow,
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
           ),
-          const BottomNavigationBarItem(
-            icon: Icon(Ionicons.book_outline),
-            activeIcon: Icon(Ionicons.book),
-            label: "Artikel",
-          ),
-          // const BottomNavigationBarItem(
-          //   icon: Icon(Ionicons.leaf_outline),
-          //   activeIcon: Icon(Ionicons.leaf),
-          //   label: "Garden",
-          // ),
-          bottomNavIndex == 3
-              ? const BottomNavigationBarItem(
-                  icon: Icon(
-                    Ionicons.home_outline,
-                  ),
-                  label: "home")
-              : const BottomNavigationBarItem(
+        ),
+        child: SizedBox(
+          // height: 92,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: BottomNavigationBar(
+              currentIndex: bottomNavIndex,
+              onTap: (int index) => changeIndex(index, ref),
+              type: BottomNavigationBarType.fixed,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              selectedItemColor: Theme.of(context).colorScheme.primary,
+              unselectedItemColor: Theme.of(context).textTheme.bodySmall!.color,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Ionicons.home_outline),
+                  activeIcon: Icon(Ionicons.home),
+                  label: "Home",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Ionicons.book_outline),
+                  activeIcon: Icon(Ionicons.book),
+                  label: "Artikel",
+                ),
+                // const BottomNavigationBarItem(
+                //   icon: Icon(Ionicons.leaf_outline),
+                //   activeIcon: Icon(Ionicons.leaf),
+                //   label: "Garden",
+                // ),
+                // bottomNavIndex == 3
+                //     ? const BottomNavigationBarItem(
+                //         icon: Icon(
+                //           Ionicons.home_outline,
+                //         ),
+                //         label: "home")
+                //     :
+                BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.wind, color: Colors.transparent),
-                  label: ""),
-          const BottomNavigationBarItem(
-            icon: Icon(Ionicons.heart_outline),
-            activeIcon: Icon(Ionicons.heart),
-            label: "Detektor",
+                  label: "",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Ionicons.heart_outline),
+                  activeIcon: Icon(Ionicons.heart),
+                  label: "Detektor",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Ionicons.apps_outline),
+                  activeIcon: Icon(Ionicons.apps),
+                  label: "Plotter",
+                ),
+              ],
+            ),
           ),
-          const BottomNavigationBarItem(
-            icon: Icon(Ionicons.trophy_outline),
-            activeIcon: Icon(Ionicons.trophy),
-            label: "Peringkat",
-          ),
-        ],
+        ),
       ),
     );
   }

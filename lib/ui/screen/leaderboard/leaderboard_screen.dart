@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,16 +7,24 @@ import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/widgets/card/plain_card.dart';
 
 class LeaderboardScreen extends ConsumerWidget {
+  static const routePath = "/leaderboard";
+  static const routeName = "Leaderboard";
+
   const LeaderboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(usersProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     final userClientController = ref.read(userClientProvider.notifier);
-    return Material(
-      color: Theme.of(context).colorScheme.background,
-      child: userRef.when(loading: () {
+
+    return Scaffold(
+      backgroundColor: colorScheme.background,
+      appBar: AppBar(
+        title: const Text("Leaderboard"),
+      ),
+      body: userRef.when(loading: () {
         return const Center(
           child: CircularProgressIndicator(),
         );
@@ -45,7 +54,7 @@ class LeaderboardScreen extends ConsumerWidget {
                                 .apply(fontWeightDelta: 2)),
                         const SizedBox(width: 16),
                         CircleAvatar(
-                          backgroundImage: NetworkImage(
+                          backgroundImage: CachedNetworkImageProvider(
                               data[index].imageUrl == null
                                   ? unknownImage
                                   : data[index].imageUrl!),

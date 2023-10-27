@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/states/payments/transaction_history_state.dart';
@@ -46,7 +47,7 @@ class TrxStatusScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(10),
                               color: colorScheme.primary,
                               image: DecorationImage(
-                                  image: NetworkImage(
+                                  image: CachedNetworkImageProvider(
                                       transactionModel.plant!.image),
                                   fit: BoxFit.cover),
                             ),
@@ -454,7 +455,7 @@ class _OnTimeBar extends StatelessWidget {
             shape: BoxShape.circle,
             image: DecorationImage(
               fit: BoxFit.fitWidth,
-              image: NetworkImage(
+              image: CachedNetworkImageProvider(
                 driver.thumbnailUrl,
               ),
             ),

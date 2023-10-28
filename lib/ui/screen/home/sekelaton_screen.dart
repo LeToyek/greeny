@@ -33,6 +33,9 @@ class SekelatonScreen extends ConsumerWidget {
                 : AppBar(
                     centerTitle: true,
                     title: _getAppBarTitle(ref),
+                    elevation: index == 3
+                        ? 0
+                        : Theme.of(context).appBarTheme.elevation,
                   ),
             endDrawer: const GrDrawerr(),
             body: AnimatedSwitcher(
@@ -80,7 +83,7 @@ class SekelatonScreen extends ConsumerWidget {
       case 2:
         return const Text("Garden");
       case 3:
-        return const Text("Penyakit");
+        return const Text("Detektor");
       case 4:
         return const Text("Plotter");
       default:

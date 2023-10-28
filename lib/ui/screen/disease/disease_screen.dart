@@ -1,15 +1,24 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenify/model/disease_model.dart';
+import 'package:greenify/model/soill_model.dart';
 import 'package:greenify/services/disease_service.dart';
+import 'package:greenify/services/soil_service.dart';
 import 'package:greenify/states/exp_state.dart';
 import 'package:greenify/ui/screen/disease/disease_detection_bottom_sheet.dart';
 import 'package:greenify/ui/widgets/achievement_dialog.dart';
 import 'package:image/image.dart' as imglib;
+
+import 'soil_detection_bottom_sheet.dart';
+
+enum DetectionMode {
+  disease,
+  soil,
+}
 
 class DiseaseScreen extends ConsumerStatefulWidget {
   const DiseaseScreen({super.key});
@@ -19,8 +28,12 @@ class DiseaseScreen extends ConsumerStatefulWidget {
 }
 
 class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
+  DetectionMode? _detectionMode = DetectionMode.disease;
+
   final TFLiteDiseaseDetectionService _diseaseDetectionService =
       TFLiteDiseaseDetectionService();
+  final TFLiteSoilDetectionService _soilDetectionService =
+      TFLiteSoilDetectionService();
   late CameraController _controller;
   Future<void>? _initializeControllerFuture;
   late String imagePath;
@@ -28,6 +41,8 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
   String? processMessage;
 
   List<CameraDescription> cameras = [];
+
+  FlashMode flashMode = FlashMode.off;
 
   // for debugging
   imglib.Image? debugImagePreview;
@@ -57,6 +72,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
       enableAudio: false,
     );
     _initializeControllerFuture = _controller.initialize();
+    _controller.setFlashMode(flashMode);
     setState(() {
       isLoading = false;
     });
@@ -70,6 +86,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
       enableAudio: false,
     );
     _initializeControllerFuture = _controller.initialize();
+    _controller.setFlashMode(flashMode);
     await _initializeControllerFuture;
     setState(() {});
   }
@@ -111,33 +128,52 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
       final bytes = await File(image.path).readAsBytes();
       final imglib.Image imageRes = imglib.decodeImage(bytes)!;
 
-      if (kDebugMode) {
-        debugImagePreview = imglib.copyResize(
-          imageRes,
-          width: 224,
-          height: 224,
-        );
-      }
+      // if (kDebugMode) {
+      debugImagePreview = imglib.copyResize(
+        imageRes,
+        width: 220,
+        height: 220,
+      );
+      // }
+
       setState(() {
         processMessage = "Analyzing...";
       });
 
-      Map<String, dynamic> res =
-          await _diseaseDetectionService.detectDisease(imageRes);
+      if (_detectionMode == DetectionMode.disease) {
+        Disease res = await _diseaseDetectionService.detectDisease(imageRes);
 
-      await _increaseAIExp();
+        await _increaseAIExp();
 
-      if (context.mounted) {
-        showModalBottomSheet(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(24),
+        if (context.mounted) {
+          showModalBottomSheet(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
             ),
-          ),
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          context: context,
-          builder: (context) => DiseaseDetectionBottomSheet(res: res),
-        );
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            context: context,
+            builder: (context) => DiseaseDetectionBottomSheet(res: res),
+          );
+        }
+      } else {
+        Soil res = await _soilDetectionService.detectSoil(imageRes);
+
+        await _increaseAIExp();
+
+        if (context.mounted) {
+          showModalBottomSheet(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            context: context,
+            builder: (context) => SoilDetectionBottomSheet(res: res),
+          );
+        }
       }
     } catch (e) {
       // If an error occurs, log the error to the console.
@@ -171,116 +207,240 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return Stack(
-              children: [
-                Positioned.fill(
-                  child: CameraPreview(
-                    _controller,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) => GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTapDown: (details) => onViewFinderTap(
-                          details,
-                          constraints,
-                        ),
-                      ),
-                    ),
-                  ),
+      body: Column(
+        children: [
+          Container(
+            height: 68,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
                 ),
-                if (processMessage != null)
-                  Container(
-                    color: Colors.black.withOpacity(0.5),
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const CircularProgressIndicator(),
-                          const SizedBox(height: 16),
-                          Text(
-                            processMessage!,
-                            style: const TextStyle(color: Colors.white),
-                          )
-                        ],
-                      ),
+              ],
+            ),
+            child: DefaultTabController(
+              initialIndex: 0,
+              length: 2,
+              child: Material(
+                color: Theme.of(context).colorScheme.primary,
+                child: TabBar(
+                  labelColor: Theme.of(context).colorScheme.onPrimary,
+                  unselectedLabelColor:
+                      Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
+                  onTap: (index) {
+                    if (index == 0) {
+                      setState(() {
+                        _detectionMode = DetectionMode.disease;
+                      });
+                    } else {
+                      setState(() {
+                        _detectionMode = DetectionMode.soil;
+                      });
+                    }
+                  },
+                  tabs: const [
+                    Tab(
+                      icon: Icon(Icons.sick),
+                      text: "Penyakit",
                     ),
-                  )
-                else
-                  expRef.when(
-                    data: (data) {
-                      if (data.isNotEmpty) {
-                        for (var e in data) {
-                          if (e.isExist && !e.isClosed) {
-                            return AchievementDialog(
-                              achievementModel: e,
-                              expNotifier: expNotifier,
-                            );
-                          }
-                        }
-                      }
-                      return Container();
-                    },
-                    loading: () => Container(),
-                    error: (e, s) => Container(),
-                  ),
-                if (kDebugMode && debugImagePreview != null)
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      width: 150,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.red,
-                          width: 2,
+                    Tab(
+                      icon: Icon(Icons.grass),
+                      text: "Tanah",
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<void>(
+              future: _initializeControllerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // If the Future is complete, display the preview.
+                  return Stack(
+                    children: [
+                      Positioned.fill(
+                        child: CameraPreview(
+                          _controller,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTapDown: (details) => onViewFinderTap(
+                                details,
+                                constraints,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                      child: Image.memory(
-                        imglib.encodeJpg(debugImagePreview!),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                if (cameras.length > 1)
-                  Positioned(
-                    bottom: 16,
-                    right: 16,
-                    child: FloatingActionButton(
-                      heroTag: 'fab_change_camera',
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      foregroundColor: Theme.of(context).colorScheme.onSurface,
-                      mini: true,
-                      onPressed: processMessage != null
-                          ? null
-                          : () {
-                              if (_controller.description == cameras[0]) {
-                                changeCamera(cameras[1]);
-                              } else {
-                                changeCamera(cameras[0]);
+                      if (processMessage != null)
+                        Container(
+                          color: Colors.black.withOpacity(0.5),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const CircularProgressIndicator(),
+                                const SizedBox(height: 16),
+                                Text(
+                                  processMessage!,
+                                  style: const TextStyle(color: Colors.white),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      else
+                        expRef.when(
+                          data: (data) {
+                            if (data.isNotEmpty) {
+                              for (var e in data) {
+                                if (e.isExist && !e.isClosed) {
+                                  return AchievementDialog(
+                                    achievementModel: e,
+                                    expNotifier: expNotifier,
+                                  );
+                                }
                               }
-                            },
-                      child: const Icon(Icons.flip_camera_android),
-                    ),
-                  ),
-              ],
-            );
-          } else {
-            // Otherwise, display a loading indicator.
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+                            }
+                            return Container();
+                          },
+                          loading: () => Container(),
+                          error: (e, s) => Container(),
+                        ),
+                      Positioned(
+                        top: 16,
+                        right: 16,
+                        child: AnimatedSwitcher(
+                          duration: 250.milliseconds,
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          transitionBuilder: (child, animation) =>
+                              SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
+                          ),
+                          child: debugImagePreview != null
+                              ? Container(
+                                  key: const ValueKey("debug_image_preview"),
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Positioned.fill(
+                                        child: Image.memory(
+                                          imglib.encodeJpg(debugImagePreview!),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: -8,
+                                        right: -8,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.close,
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              debugImagePreview = null;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: Row(
+                          children: [
+                            // flash mode
+                            FloatingActionButton(
+                              heroTag: 'fab_flash_mode',
+                              backgroundColor: flashMode == FlashMode.off
+                                  ? Theme.of(context).colorScheme.surface
+                                  : Theme.of(context).colorScheme.primary,
+                              foregroundColor: flashMode == FlashMode.off
+                                  ? Theme.of(context).colorScheme.onSurface
+                                  : Theme.of(context).colorScheme.onPrimary,
+                              mini: true,
+                              onPressed: processMessage != null
+                                  ? null
+                                  : () async {
+                                      if (flashMode == FlashMode.off) {
+                                        flashMode = FlashMode.torch;
+                                      } else {
+                                        flashMode = FlashMode.off;
+                                      }
+                                      await _controller.setFlashMode(flashMode);
+                                      setState(() {});
+                                    },
+                              child: const Icon(Icons.flash_on),
+                            ),
+                            if (cameras.length > 1)
+                              FloatingActionButton(
+                                heroTag: 'fab_change_camera',
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.surface,
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.onSurface,
+                                mini: true,
+                                onPressed: processMessage != null
+                                    ? null
+                                    : () {
+                                        if (_controller.description ==
+                                            cameras[0]) {
+                                          changeCamera(cameras[1]);
+                                        } else {
+                                          changeCamera(cameras[0]);
+                                        }
+                                      },
+                                child: const Icon(Icons.flip_camera_android),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  // Otherwise, display a loading indicator.
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        // Provide an onPressed callback.
-        heroTag: 'fab_disease',
-        enableFeedback: true,
-        onPressed: processMessage != null ? null : _captureAndDetect,
-        child: const Icon(Icons.camera_alt),
+      floatingActionButton: SizedBox(
+        width: 80,
+        height: 80,
+        child: FloatingActionButton(
+          // Provide an onPressed callback.
+          heroTag: 'fab_disease',
+          enableFeedback: true,
+          onPressed: processMessage != null ? null : _captureAndDetect,
+          child: const Icon(Icons.camera_alt),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

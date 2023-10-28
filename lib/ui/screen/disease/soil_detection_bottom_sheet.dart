@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:greenify/model/disease_model.dart';
+import 'package:greenify/model/soill_model.dart';
 
-class DiseaseDetectionBottomSheet extends StatelessWidget {
-  const DiseaseDetectionBottomSheet({
+class SoilDetectionBottomSheet extends StatelessWidget {
+  const SoilDetectionBottomSheet({
     super.key,
     required this.res,
   });
 
-  final Disease res;
+  final Soil res;
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +45,13 @@ class DiseaseDetectionBottomSheet extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            Text("Penanganan",
+            Text("Deskripsi",
                 textAlign: TextAlign.start,
                 style: Theme.of(context).textTheme.bodyMedium!.apply(
                     color: Theme.of(context).colorScheme.onBackground,
                     fontWeightDelta: 2,
                     fontSizeDelta: 4)),
-            Text(res.handling,
+            Text(res.description,
                 textAlign: TextAlign.start,
                 style: Theme.of(context).textTheme.bodyMedium!.apply(
                     color: Theme.of(context).colorScheme.onBackground,
@@ -60,13 +60,13 @@ class DiseaseDetectionBottomSheet extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            Text("Obat",
+            Text("Tanaman",
                 textAlign: TextAlign.start,
                 style: Theme.of(context).textTheme.bodyMedium!.apply(
                     color: Theme.of(context).colorScheme.onBackground,
                     fontWeightDelta: 2,
                     fontSizeDelta: 4)),
-            Text(res.medicine,
+            Text(res.plants,
                 textAlign: TextAlign.start,
                 style: Theme.of(context).textTheme.bodyMedium!.apply(
                     color: Theme.of(context).colorScheme.onBackground,
@@ -75,7 +75,7 @@ class DiseaseDetectionBottomSheet extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            Text("Gambar Tanaman",
+            Text("Gambar Tanah",
                 textAlign: TextAlign.start,
                 style: Theme.of(context).textTheme.bodyMedium!.apply(
                     color: Theme.of(context).colorScheme.onBackground,

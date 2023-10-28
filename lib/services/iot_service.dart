@@ -11,8 +11,8 @@ final iotServiceProvider = Provider<IOTService>((ref) {
 mixin IOTService {
   IOTModel connect();
   void disconnect();
-  void turnOnPump(bool isOn);
-  void turnOnHumidifier(bool isOn);
+  void turnOnPump(int isOn);
+  void turnOnHumidifier(int isOn);
 }
 
 class IOTServiceImpl implements IOTService {
@@ -37,22 +37,13 @@ class IOTServiceImpl implements IOTService {
   }
 
   @override
-  void turnOnHumidifier(bool isOn) {
-    // TODO: implement turnOnHumidifier
-    if (isOn) {
-      sprayRef.set(1);
-    } else {
-      sprayRef.set(0);
-    }
+  void turnOnHumidifier(int isOn) {
+    sprayRef.set(isOn);
   }
 
   @override
-  void turnOnPump(bool isOn) {
+  void turnOnPump(int isOn) {
     // TODO: implement turnOnPump
-    if (isOn) {
-      pumpRef.set(1);
-    } else {
-      pumpRef.set(0);
-    }
+    pumpRef.set(isOn);
   }
 }

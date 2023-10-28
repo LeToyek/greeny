@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:greenify/states/theme_mode_state.dart';
 import 'package:greenify/states/users_state.dart';
 import 'package:greenify/ui/screen/IOT/iot_screen.dart';
+import 'package:greenify/ui/screen/IOT/scan_screen.dart';
 import 'package:greenify/ui/screen/additional/emblem_screen.dart';
 import 'package:greenify/ui/screen/additional/sold_plant_screen.dart';
 import 'package:greenify/ui/screen/payments/history_screen.dart';
+import 'package:hive/hive.dart';
 import 'package:ionicons/ionicons.dart';
 
 class GrDrawerr extends ConsumerWidget {
@@ -18,6 +20,8 @@ class GrDrawerr extends ConsumerWidget {
     final profileNotifier = ref.watch(singleUserProvider);
     final displayMode = ref.watch(themeProvider);
     final funcDisplayMode = ref.read(themeProvider.notifier);
+    final isIOTConnected =
+        Hive.box("prefs").get("isIOTConnected", defaultValue: false);
 
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -98,7 +102,9 @@ class GrDrawerr extends ConsumerWidget {
                     icon: const Icon(Ionicons.radio_outline),
                     text: "IOT",
                     ref: ref,
-                    route: IOTScreen.routePath),
+                    route: isIOTConnected
+                        ? IOTScreen.routePath
+                        : IOTScannerScreen.routePath),
                 Divider(
                   height: 25,
                   thickness: 1,

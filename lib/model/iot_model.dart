@@ -70,7 +70,7 @@ class AirHumidifierSensor extends IOTModel {
   factory AirHumidifierSensor.fromMap(Map<String, dynamic> map) {
     return AirHumidifierSensor(
       humidityVal: checkInt(map['humidity']),
-      temperatureC: checkDouble(map['temperature']['celsius']),
+      temperatureC: checkDouble(map['temperature']['celcius']),
       temperatureF: checkDouble(map['temperature']['fahrenheit']),
       id: map['id'],
       isOn: checkInt(map['isOn']),

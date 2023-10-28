@@ -60,11 +60,11 @@ class IOTNotifier extends StateNotifier<IOTState> {
     }
   }
 
-  Future<void> turnPump(bool isOn) async {
+  Future<void> turnPump(int isOn) async {
     _service.turnOnPump(isOn);
   }
 
-  Future<void> turnSpray(bool isOn) async {
+  Future<void> turnSpray(int isOn) async {
     _service.turnOnHumidifier(isOn);
   }
 

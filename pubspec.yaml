@@ -78,6 +78,7 @@ dependencies:
   timelines: ^0.1.0
   cached_network_image: ^3.3.0
   firebase_database: ^10.3.1
+  mobile_scanner: ^3.5.1
   
 
 dev_dependencies:

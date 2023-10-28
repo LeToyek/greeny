@@ -241,7 +241,7 @@ class HomeScreen extends ConsumerWidget {
                   child: Text(error.toString()),
                 );
               }, data: (data) {
-                print("data.length: ${data.length}");
+                // print("data.length: ${data.length}");
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(16),

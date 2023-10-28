@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +42,8 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
 
   List<CameraDescription> cameras = [];
 
+  FlashMode flashMode = FlashMode.off;
+
   // for debugging
   imglib.Image? debugImagePreview;
 
@@ -71,6 +72,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
       enableAudio: false,
     );
     _initializeControllerFuture = _controller.initialize();
+    _controller.setFlashMode(flashMode);
     setState(() {
       isLoading = false;
     });
@@ -84,6 +86,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
       enableAudio: false,
     );
     _initializeControllerFuture = _controller.initialize();
+    _controller.setFlashMode(flashMode);
     await _initializeControllerFuture;
     setState(() {});
   }
@@ -125,13 +128,14 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
       final bytes = await File(image.path).readAsBytes();
       final imglib.Image imageRes = imglib.decodeImage(bytes)!;
 
-      if (kDebugMode) {
-        debugImagePreview = imglib.copyResize(
-          imageRes,
-          width: 224,
-          height: 224,
-        );
-      }
+      // if (kDebugMode) {
+      debugImagePreview = imglib.copyResize(
+        imageRes,
+        width: 220,
+        height: 220,
+      );
+      // }
+
       setState(() {
         processMessage = "Analyzing...";
       });
@@ -217,7 +221,7 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
               ],
             ),
             child: DefaultTabController(
-              initialIndex: 1,
+              initialIndex: 0,
               length: 2,
               child: Material(
                 color: Theme.of(context).colorScheme.primary,
@@ -307,48 +311,115 @@ class _DiseaseScreenState extends ConsumerState<DiseaseScreen> {
                           loading: () => Container(),
                           error: (e, s) => Container(),
                         ),
-                      if (kDebugMode && debugImagePreview != null)
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: Container(
-                            width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.red,
-                                width: 2,
+                      Positioned(
+                        top: 16,
+                        right: 16,
+                        child: AnimatedSwitcher(
+                          duration: 250.milliseconds,
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          transitionBuilder: (child, animation) =>
+                              SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
+                          ),
+                          child: debugImagePreview != null
+                              ? Container(
+                                  key: const ValueKey("debug_image_preview"),
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Positioned.fill(
+                                        child: Image.memory(
+                                          imglib.encodeJpg(debugImagePreview!),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: -8,
+                                        right: -8,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.close,
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              debugImagePreview = null;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: Row(
+                          children: [
+                            // flash mode
+                            FloatingActionButton(
+                              heroTag: 'fab_flash_mode',
+                              backgroundColor: flashMode == FlashMode.off
+                                  ? Theme.of(context).colorScheme.surface
+                                  : Theme.of(context).colorScheme.primary,
+                              foregroundColor: flashMode == FlashMode.off
+                                  ? Theme.of(context).colorScheme.onSurface
+                                  : Theme.of(context).colorScheme.onPrimary,
+                              mini: true,
+                              onPressed: processMessage != null
+                                  ? null
+                                  : () async {
+                                      if (flashMode == FlashMode.off) {
+                                        flashMode = FlashMode.torch;
+                                      } else {
+                                        flashMode = FlashMode.off;
+                                      }
+                                      await _controller.setFlashMode(flashMode);
+                                      setState(() {});
+                                    },
+                              child: const Icon(Icons.flash_on),
+                            ),
+                            if (cameras.length > 1)
+                              FloatingActionButton(
+                                heroTag: 'fab_change_camera',
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.surface,
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.onSurface,
+                                mini: true,
+                                onPressed: processMessage != null
+                                    ? null
+                                    : () {
+                                        if (_controller.description ==
+                                            cameras[0]) {
+                                          changeCamera(cameras[1]);
+                                        } else {
+                                          changeCamera(cameras[0]);
+                                        }
+                                      },
+                                child: const Icon(Icons.flip_camera_android),
                               ),
-                            ),
-                            child: Image.memory(
-                              imglib.encodeJpg(debugImagePreview!),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                          ],
                         ),
-                      if (cameras.length > 1)
-                        Positioned(
-                          bottom: 16,
-                          right: 16,
-                          child: FloatingActionButton(
-                            heroTag: 'fab_change_camera',
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
-                            foregroundColor:
-                                Theme.of(context).colorScheme.onSurface,
-                            mini: true,
-                            onPressed: processMessage != null
-                                ? null
-                                : () {
-                                    if (_controller.description == cameras[0]) {
-                                      changeCamera(cameras[1]);
-                                    } else {
-                                      changeCamera(cameras[0]);
-                                    }
-                                  },
-                            child: const Icon(Icons.flip_camera_android),
-                          ),
-                        ),
+                      ),
                     ],
                   );
                 } else {

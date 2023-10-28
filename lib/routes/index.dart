@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:greenify/routes/books_routes.dart';
 import 'package:greenify/routes/garden_routes.dart';
+import 'package:greenify/routes/iot_routes.dart';
 import 'package:greenify/routes/payments_routes.dart';
 import 'package:greenify/routes/users_routes.dart';
 import 'package:greenify/ui/screen/additional/emblem_screen.dart';
@@ -34,6 +35,7 @@ final _appRoutes = GoRouter(
     ...booksRoutes,
     ...gardenRoutes,
     ...paymentsRoutes,
+    ...iotRoutes,
     GoRoute(
         path: TrxStatusScreen.routePath,
         name: TrxStatusScreen.routeName,
@@ -69,7 +71,8 @@ final _appRoutes = GoRouter(
           return const DiseaseScreen();
         }),
     GoRoute(
-        path: "/leaderboard", builder: (context, state) => LeaderboardScreen()),
+        path: "/leaderboard",
+        builder: (context, state) => const LeaderboardScreen()),
     GoRoute(
         path: WalletManagerScreen.routePath,
         builder: (context, state) => WalletManagerScreen()),

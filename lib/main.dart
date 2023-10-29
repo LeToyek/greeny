@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:greenify/config/theme.dart';
+import 'package:greenify/firebase_options.dart';
 import 'package:greenify/routes/index.dart';
 import 'package:greenify/services/background_service.dart';
 import 'package:greenify/states/theme_mode_state.dart';
@@ -20,7 +21,9 @@ void main() async {
 
   service.initIsolate();
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   if (Platform.isAndroid) {
     await AndroidAlarmManager.initialize();

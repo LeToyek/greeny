@@ -25,34 +25,41 @@ class IOTNotifier extends StateNotifier<IOTState> {
 
   IOTNotifier(this._service) : super(const AsyncLoading());
 
+  Future<void> _processData(DataSnapshot data) async {
+    final mapValue = jsonDecode(jsonEncode(data.value)) as Map<String, dynamic>;
+    print("mapValue $mapValue");
+
+    pump = IOTModel.fromMap(mapValue['pump']);
+    spray = IOTModel.fromMap(mapValue['spray']);
+    airHumidifierSensor = AirHumidifierSensor.fromMap(mapValue['dht_11']);
+    soilHumidifierSensor =
+        SoilHumiditySensor.fromMap(mapValue['soil_moisture']);
+
+    print("pump ${pump.id}");
+    print("spray ${spray.id}");
+    print("airHumidifierSensor ${airHumidifierSensor.id}");
+    print("soilHumidifierSensor ${soilHumidifierSensor.id}");
+
+    // print("test run");
+    state = AsyncValue.data(
+      IOTSystem(
+        pump: pump,
+        humidifier: spray,
+        airHumidifierSensor: airHumidifierSensor,
+        soilHumidifierSensor: soilHumidifierSensor,
+      ),
+    );
+  }
+
   Future<void> load() async {
     state = const AsyncValue.loading();
     print("test init");
     final DatabaseReference ref = FirebaseDatabase.instance.ref("/sans1");
     try {
       print("test init");
+
       _onDataAddedSubscription = ref.onValue.listen((event) {
-        final mapValue = jsonDecode(jsonEncode(event.snapshot.value))
-            as Map<String, dynamic>;
-        print("mapValue $mapValue");
-
-        pump = IOTModel.fromMap(mapValue['pump']);
-        spray = IOTModel.fromMap(mapValue['spray']);
-        airHumidifierSensor = AirHumidifierSensor.fromMap(mapValue['dht_11']);
-        soilHumidifierSensor =
-            SoilHumiditySensor.fromMap(mapValue['soil_moisture']);
-
-        print("pump ${pump.id}");
-        print("spray ${spray.id}");
-        print("airHumidifierSensor ${airHumidifierSensor.id}");
-        print("soilHumidifierSensor ${soilHumidifierSensor.id}");
-
-        // print("test run");
-        state = AsyncValue.data(IOTSystem(
-            pump: pump,
-            humidifier: spray,
-            airHumidifierSensor: airHumidifierSensor,
-            soilHumidifierSensor: soilHumidifierSensor));
+        _processData(event.snapshot);
       });
     } catch (e, st) {
       print("error $e");

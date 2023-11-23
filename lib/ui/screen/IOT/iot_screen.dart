@@ -102,7 +102,7 @@ class _IOTScreenState extends ConsumerState<IOTScreen> {
                             _buildDataCard(context,
                                 title: "Tanah",
                                 content:
-                                    "${data.soilHumidifierSensor.humidityVal}%",
+                                    "${data.soilHumidifierSensor.humidityVal}",
                                 icon: Icons.grass),
                           ],
                         ),

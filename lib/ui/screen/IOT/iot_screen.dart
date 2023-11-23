@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +23,53 @@ class _IOTScreenState extends ConsumerState<IOTScreen> {
   bool isOnPump = false;
   bool isOnHumidifier = false;
   bool isAuto = false;
+
+  final FirebaseDatabase _database = FirebaseDatabase.instance;
+
+  StreamSubscription? _iotSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _iotSubscription =
+        _database.ref('sans1').child('is_auto').onValue.listen((event) {
+      if (context.mounted && event.snapshot.value != null) {
+        _updateAuto(event.snapshot.value as num == 1);
+      }
+    });
+  }
+
+  Future<void> _setAuto(bool value) async {
+    setState(() {
+      isAuto = value;
+    });
+
+    await _database.ref('sans1').child('is_auto').set(value ? 1 : 0);
+  }
+
+  Future<void> _updateAuto(bool value) async {
+    final iotFunc = ref.read(iotNotifier.notifier);
+
+    setState(() {
+      if (value) {
+        isOnPump = false;
+        isOnHumidifier = false;
+        iotFunc.turnPump(2);
+        iotFunc.turnSpray(2);
+      } else {
+        iotFunc.turnPump(0);
+        iotFunc.turnSpray(0);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _iotSubscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final iotRef = ref.watch(iotNotifier);
@@ -181,20 +231,7 @@ class _IOTScreenState extends ConsumerState<IOTScreen> {
                           ),
                           trailing: Switch(
                             value: isAuto,
-                            onChanged: (value) {
-                              setState(() {
-                                isAuto = value;
-                                if (isAuto) {
-                                  isOnPump = false;
-                                  isOnHumidifier = false;
-                                  iotFunc.turnPump(2);
-                                  iotFunc.turnSpray(2);
-                                } else {
-                                  iotFunc.turnPump(0);
-                                  iotFunc.turnSpray(0);
-                                }
-                              });
-                            },
+                            onChanged: _setAuto,
                           ),
                         )
                             .animate(

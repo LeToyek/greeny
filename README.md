@@ -1,6 +1,6 @@
-# Greenify 🌱
+# Greeny 🌱
 
-Greenify adalah aplikasi mobile yang bertujuan untuk membuat kegiatan urban agriculture menjadi menyenangkan dan tertata. Aplikasi ini dirancang untuk membantu pengguna dalam memulai dan merawat kebun mereka sendiri, sehingga dapat menciptakan lingkungan hijau di tengah perkotaan.
+Greeny adalah aplikasi mobile yang bertujuan untuk membuat kegiatan urban agriculture menjadi menyenangkan dan tertata. Aplikasi ini dirancang untuk membantu pengguna dalam memulai dan merawat kebun mereka sendiri, sehingga dapat menciptakan lingkungan hijau di tengah perkotaan.
 
 ## Fitur Utama 🌿
 
